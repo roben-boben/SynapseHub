@@ -9966,48 +9966,96 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА: РАБОТАЕТ КАЖДЫЙ РАЗ
+-- ИСПРАВЛЕННАЯ ЛОГИКА
 do
     local spawnSaveEnabled = false
-    local spawnSaveConn = nil
     local savedPos = nil
+    local deathConn = nil
+    local respawnConn = nil
+
+    -- Функция сохранения позиции
+    local function savePosition()
+        local char = LocalPlayer.Character
+        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            savedPos = hrp.CFrame
+            print("Position saved: " .. tostring(savedPos)) -- для отладки
+            return true
+        end
+        return false
+    end
+
+    -- Функция телепортации при возрождении
+    local function teleportToSavedPosition(newChar)
+        if not spawnSaveEnabled or not savedPos then return end
+        
+        task.wait(0.5) -- ждем пока персонаж полностью заспавнится
+        local newHrp = newChar:FindFirstChild("HumanoidRootPart")
+        if newHrp and savedPos then
+            newHrp.CFrame = savedPos
+            newHrp.AssemblyLinearVelocity = Vector3.zero
+            newHrp.AssemblyAngularVelocity = Vector3.zero
+            print("Teleported to: " .. tostring(savedPos)) -- для отладки
+        end
+    end
+
+    -- Функция для настройки отслеживания смерти
+    local function setupDeathTracking()
+        -- Отключаем старые коннекты
+        if deathConn then deathConn:Disconnect() end
+        if respawnConn then respawnConn:Disconnect() end
+        
+        -- Следим за появлением персонажа
+        respawnConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
+            if spawnSaveEnabled then
+                -- Телепортируем на сохраненную позицию
+                teleportToSavedPosition(newChar)
+                
+                -- Настраиваем отслеживание смерти для этого персонажа
+                if deathConn then deathConn:Disconnect() end
+                deathConn = newChar:WaitForChild("Humanoid", 5).Died:Connect(function()
+                    if spawnSaveEnabled then
+                        -- СОХРАНЯЕМ ПОЗИЦИЮ ПРИ СМЕРТИ
+                        savePosition()
+                        print("Death detected, position saved")
+                    end
+                end)
+            end
+        end)
+    end
 
     ssToggleBtn.MouseButton1Click:Connect(function()
         spawnSaveEnabled = not spawnSaveEnabled
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
-            local char = LocalPlayer.Character
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                savedPos = hrp.CFrame
-            end
+            -- Сохраняем текущую позицию
+            savePosition()
             
-            if spawnSaveConn then spawnSaveConn:Disconnect() end
-            spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled then
-                    -- СОХРАНЯЕМ ПОЗИЦИЮ СТАРОГО ПЕРСОНАЖА (МЕСТО СМЕРТИ)
-                    local oldChar = LocalPlayer.Character
-                    local oldHrp = oldChar and oldChar:FindFirstChild("HumanoidRootPart")
-                    if oldHrp then
-                        savedPos = oldHrp.CFrame
+            -- Настраиваем отслеживание
+            setupDeathTracking()
+            
+            -- Если персонаж уже есть, сразу подключаем отслеживание смерти
+            local char = LocalPlayer.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                if deathConn then deathConn:Disconnect() end
+                deathConn = hum.Died:Connect(function()
+                    if spawnSaveEnabled then
+                        savePosition()
+                        print("Death detected, position saved")
                     end
-                    
-                    task.wait(0.5)
-                    local newHrp = newChar:FindFirstChild("HumanoidRootPart")
-                    if newHrp and savedPos then
-                        newHrp.CFrame = savedPos
-                        newHrp.AssemblyLinearVelocity = Vector3.zero
-                        newHrp.AssemblyAngularVelocity = Vector3.zero
-                        savedPos = nil
-                    end
-                end
-            end)
+                end)
+            end
         else
-            if spawnSaveConn then
-                spawnSaveConn:Disconnect()
-                spawnSaveConn = nil
+            -- Отключаем всё при выключении
+            if deathConn then
+                deathConn:Disconnect()
+                deathConn = nil
+            end
+            if respawnConn then
+                respawnConn:Disconnect()
+                respawnConn = nil
             end
             savedPos = nil
         end
