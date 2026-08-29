@@ -8358,7 +8358,7 @@ slCheckmark.Visible = false
 slCheckmark.Parent = slCheckboxBox
 
 -- ============================================================
--- LINE LAG MONSTER (С ТОГЛОМ)
+-- LINE LAG MONSTER! (С ТОГЛОМ КАК В SHURIKEN LAG)
 -- ============================================================
 local slMonsterBox = Instance.new("Frame")
 slMonsterBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
@@ -8437,7 +8437,9 @@ slMonsterCheckmark.Font = Enum.Font.GothamBold
 slMonsterCheckmark.Visible = false
 slMonsterCheckmark.Parent = slMonsterCheckboxBox
 
--- МОНСТР ЛАГ - ТОГГЛ
+-- ============================================================
+-- ТОГГЛ LINE LAG MONSTER!
+-- ============================================================
 local monsterLagEnabled = false
 local monsterLagTask = nil
 
