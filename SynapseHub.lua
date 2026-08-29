@@ -8230,662 +8230,504 @@ miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + bbHeight + gap +
     local currentCanvas = miscContentArea.CanvasSize.Y.Offset
     miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + dffHeight + gap + 20)
 
--- ============================================================
--- ГРУППА 5: SERVER LAG (ПОД DEFENSE FOR FRIENDS)
--- ============================================================
-local dffPosY = defenseForFriendsBox.Position.Y.Offset
-local dffHeight = defenseForFriendsBox.Size.Y.Offset
+    -- ============================================================
+    -- ГРУППА 5: SERVER LAG (ПОД DEFENSE FOR FRIENDS)
+    -- ============================================================
+    local dffPosY = defenseForFriendsBox.Position.Y.Offset
+    local dffHeight = defenseForFriendsBox.Size.Y.Offset
+    
+    local serverLagBox = Instance.new("Frame")
+    serverLagBox.Size = UDim2.new(0, 300, 0, 150)
+    serverLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap)
+    serverLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+    serverLagBox.BackgroundTransparency = 0.25
+    serverLagBox.ClipsDescendants = true
+    serverLagBox.Parent = miscContentArea
 
-local serverLagBox = Instance.new("Frame")
-serverLagBox.Size = UDim2.new(0, 300, 0, 150)
-serverLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap)
-serverLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-serverLagBox.BackgroundTransparency = 0.25
-serverLagBox.ClipsDescendants = true
-serverLagBox.Parent = miscContentArea
+    local slBoxCorner = Instance.new("UICorner")
+    slBoxCorner.CornerRadius = UDim.new(0, 18)
+    slBoxCorner.Parent = serverLagBox
 
-local slBoxCorner = Instance.new("UICorner")
-slBoxCorner.CornerRadius = UDim.new(0, 18)
-slBoxCorner.Parent = serverLagBox
+    local slBoxStroke = Instance.new("UIStroke")
+    slBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+    slBoxStroke.Transparency = 0.2
+    slBoxStroke.Thickness = 1.0
+    slBoxStroke.Parent = serverLagBox
 
-local slBoxStroke = Instance.new("UIStroke")
-slBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-slBoxStroke.Transparency = 0.2
-slBoxStroke.Thickness = 1.0
-slBoxStroke.Parent = serverLagBox
+    local slTitle = Instance.new("TextLabel")
+    slTitle.Size = UDim2.new(1, -30, 0, 30)
+    slTitle.Position = UDim2.new(0, 15, 0, 8)
+    slTitle.BackgroundTransparency = 1
+    slTitle.TextXAlignment = Enum.TextXAlignment.Left
+    slTitle.Text = "Server Lag"
+    slTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    slTitle.TextTransparency = 0.05
+    slTitle.TextSize = 16
+    slTitle.Font = Enum.Font.GothamBold
+    slTitle.Parent = serverLagBox
 
-local slTitle = Instance.new("TextLabel")
-slTitle.Size = UDim2.new(1, -30, 0, 30)
-slTitle.Position = UDim2.new(0, 15, 0, 8)
-slTitle.BackgroundTransparency = 1
-slTitle.TextXAlignment = Enum.TextXAlignment.Left
-slTitle.Text = "Server Lag"
-slTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-slTitle.TextTransparency = 0.05
-slTitle.TextSize = 16
-slTitle.Font = Enum.Font.GothamBold
-slTitle.Parent = serverLagBox
+    local slLine = Instance.new("Frame")
+    slLine.Size = UDim2.new(1, -30, 0, 1.5)
+    slLine.Position = UDim2.new(0, 15, 0, 42)
+    slLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+    slLine.BackgroundTransparency = 0.3
+    slLine.BorderSizePixel = 0
+    slLine.Parent = serverLagBox
 
-local slLine = Instance.new("Frame")
-slLine.Size = UDim2.new(1, -30, 0, 1.5)
-slLine.Position = UDim2.new(0, 15, 0, 42)
-slLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
-slLine.BackgroundTransparency = 0.3
-slLine.BorderSizePixel = 0
-slLine.Parent = serverLagBox
+    local slStartY = 52
+    local slItemHeight = 48
 
-local slStartY = 52
-local slItemHeight = 48
+    local slBox = Instance.new("Frame")
+    slBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
+    slBox.Position = UDim2.new(0, gap, 0, slStartY)
+    slBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+    slBox.BackgroundTransparency = 0.25
+    slBox.ClipsDescendants = true
+    slBox.Parent = serverLagBox
 
--- ============================================================
--- 1. SHURIKEN LAG
--- ============================================================
-local slBox1 = Instance.new("Frame")
-slBox1.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
-slBox1.Position = UDim2.new(0, gap, 0, slStartY)
-slBox1.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-slBox1.BackgroundTransparency = 0.25
-slBox1.ClipsDescendants = true
-slBox1.Parent = serverLagBox
+    local slBoxCorner2 = Instance.new("UICorner")
+    slBoxCorner2.CornerRadius = UDim.new(0, 18)
+    slBoxCorner2.Parent = slBox
 
-local slBoxCorner1 = Instance.new("UICorner")
-slBoxCorner1.CornerRadius = UDim.new(0, 18)
-slBoxCorner1.Parent = slBox1
+    local slBoxStroke2 = Instance.new("UIStroke")
+    slBoxStroke2.Color = Color3.fromRGB(180, 180, 180)
+    slBoxStroke2.Transparency = 0.2
+    slBoxStroke2.Thickness = 1.0
+    slBoxStroke2.Parent = slBox
 
-local slBoxStroke1 = Instance.new("UIStroke")
-slBoxStroke1.Color = Color3.fromRGB(180, 180, 180)
-slBoxStroke1.Transparency = 0.2
-slBoxStroke1.Thickness = 1.0
-slBoxStroke1.Parent = slBox1
+    local slToggleBtn = Instance.new("TextButton")
+    slToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+    slToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+    slToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    slToggleBtn.BackgroundTransparency = 0.2
+    slToggleBtn.Text = ""
+    slToggleBtn.AutoButtonColor = false
+    slToggleBtn.Parent = slBox
 
-local slToggleBtn1 = Instance.new("TextButton")
-slToggleBtn1.Size = UDim2.new(1, -24, 1, -12)
-slToggleBtn1.Position = UDim2.new(0, 12, 0, 6)
-slToggleBtn1.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-slToggleBtn1.BackgroundTransparency = 0.2
-slToggleBtn1.Text = ""
-slToggleBtn1.AutoButtonColor = false
-slToggleBtn1.Parent = slBox1
+    local slToggleCorner = Instance.new("UICorner")
+    slToggleCorner.CornerRadius = UDim.new(0, 14)
+    slToggleCorner.Parent = slToggleBtn
 
-local slToggleCorner1 = Instance.new("UICorner")
-slToggleCorner1.CornerRadius = UDim.new(0, 14)
-slToggleCorner1.Parent = slToggleBtn1
+    local slToggleStroke = Instance.new("UIStroke")
+    slToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+    slToggleStroke.Transparency = 0.2
+    slToggleStroke.Thickness = 0.8
+    slToggleStroke.Parent = slToggleBtn
 
-local slToggleStroke1 = Instance.new("UIStroke")
-slToggleStroke1.Color = Color3.fromRGB(180, 180, 180)
-slToggleStroke1.Transparency = 0.2
-slToggleStroke1.Thickness = 0.8
-slToggleStroke1.Parent = slToggleBtn1
+    local slToggleLabel = Instance.new("TextLabel")
+    slToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+    slToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+    slToggleLabel.BackgroundTransparency = 1
+    slToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    slToggleLabel.Text = "Shuriken Lag"
+    slToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    slToggleLabel.TextSize = 12
+    slToggleLabel.Font = Enum.Font.GothamBold
+    slToggleLabel.Parent = slToggleBtn
 
-local slToggleLabel1 = Instance.new("TextLabel")
-slToggleLabel1.Size = UDim2.new(1, -40, 1, 0)
-slToggleLabel1.Position = UDim2.new(0, 12, 0, 0)
-slToggleLabel1.BackgroundTransparency = 1
-slToggleLabel1.TextXAlignment = Enum.TextXAlignment.Left
-slToggleLabel1.Text = "Shuriken Lag"
-slToggleLabel1.TextColor3 = Color3.fromRGB(200, 200, 200)
-slToggleLabel1.TextSize = 12
-slToggleLabel1.Font = Enum.Font.GothamBold
-slToggleLabel1.Parent = slToggleBtn1
+    local slCheckboxBox = Instance.new("Frame")
+    slCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+    slCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+    slCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+    slCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+    slCheckboxBox.BackgroundTransparency = 0.2
+    slCheckboxBox.BorderSizePixel = 0
+    slCheckboxBox.Parent = slToggleBtn
 
-local slCheckboxBox1 = Instance.new("Frame")
-slCheckboxBox1.Size = UDim2.new(0, 20, 0, 20)
-slCheckboxBox1.AnchorPoint = Vector2.new(1, 0.5)
-slCheckboxBox1.Position = UDim2.new(1, -12, 0.5, 0)
-slCheckboxBox1.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-slCheckboxBox1.BackgroundTransparency = 0.2
-slCheckboxBox1.BorderSizePixel = 0
-slCheckboxBox1.Parent = slToggleBtn1
+    local slCbCorner = Instance.new("UICorner")
+    slCbCorner.CornerRadius = UDim.new(0, 6)
+    slCbCorner.Parent = slCheckboxBox
 
-local slCbCorner1 = Instance.new("UICorner")
-slCbCorner1.CornerRadius = UDim.new(0, 6)
-slCbCorner1.Parent = slCheckboxBox1
+    local slCbStroke = Instance.new("UIStroke")
+    slCbStroke.Color = Color3.fromRGB(150, 150, 150)
+    slCbStroke.Transparency = 0.2
+    slCbStroke.Thickness = 1
+    slCbStroke.Parent = slCheckboxBox
 
-local slCbStroke1 = Instance.new("UIStroke")
-slCbStroke1.Color = Color3.fromRGB(150, 150, 150)
-slCbStroke1.Transparency = 0.2
-slCbStroke1.Thickness = 1
-slCbStroke1.Parent = slCheckboxBox1
+    local slCheckmark = Instance.new("TextLabel")
+    slCheckmark.Size = UDim2.new(1, 0, 1, 0)
+    slCheckmark.BackgroundTransparency = 1
+    slCheckmark.Text = "✓"
+    slCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+    slCheckmark.TextSize = 14
+    slCheckmark.Font = Enum.Font.GothamBold
+    slCheckmark.Visible = false
+    slCheckmark.Parent = slCheckboxBox
 
-local slCheckmark1 = Instance.new("TextLabel")
-slCheckmark1.Size = UDim2.new(1, 0, 1, 0)
-slCheckmark1.BackgroundTransparency = 1
-slCheckmark1.Text = "✓"
-slCheckmark1.TextColor3 = Color3.fromRGB(255, 255, 255)
-slCheckmark1.TextSize = 14
-slCheckmark1.Font = Enum.Font.GothamBold
-slCheckmark1.Visible = false
-slCheckmark1.Parent = slCheckboxBox1
+    -- ============================================================
+    -- ЛОГИКА SHURIKEN LAG (1 ДЕКОЙ + 9 ШИРИКЕНОВ)
+    -- ============================================================
+    local shurikenLagRunning = false
+    local shurikenLagTask = nil
 
--- ============================================================
--- 2. LINE LAG [MONSTER] (30000 ЛИНИЙ)
--- ============================================================
-local slBox2 = Instance.new("Frame")
-slBox2.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
-slBox2.Position = UDim2.new(0, gap, 0, slStartY + slItemHeight + gap)
-slBox2.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-slBox2.BackgroundTransparency = 0.25
-slBox2.ClipsDescendants = true
-slBox2.Parent = serverLagBox
-
-local slBoxCorner2 = Instance.new("UICorner")
-slBoxCorner2.CornerRadius = UDim.new(0, 18)
-slBoxCorner2.Parent = slBox2
-
-local slBoxStroke2 = Instance.new("UIStroke")
-slBoxStroke2.Color = Color3.fromRGB(180, 180, 180)
-slBoxStroke2.Transparency = 0.2
-slBoxStroke2.Thickness = 1.0
-slBoxStroke2.Parent = slBox2
-
-local slToggleBtn2 = Instance.new("TextButton")
-slToggleBtn2.Size = UDim2.new(1, -24, 1, -12)
-slToggleBtn2.Position = UDim2.new(0, 12, 0, 6)
-slToggleBtn2.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-slToggleBtn2.BackgroundTransparency = 0.2
-slToggleBtn2.Text = ""
-slToggleBtn2.AutoButtonColor = false
-slToggleBtn2.Parent = slBox2
-
-local slToggleCorner2 = Instance.new("UICorner")
-slToggleCorner2.CornerRadius = UDim.new(0, 14)
-slToggleCorner2.Parent = slToggleBtn2
-
-local slToggleStroke2 = Instance.new("UIStroke")
-slToggleStroke2.Color = Color3.fromRGB(180, 180, 180)
-slToggleStroke2.Transparency = 0.2
-slToggleStroke2.Thickness = 0.8
-slToggleStroke2.Parent = slToggleBtn2
-
-local slToggleLabel2 = Instance.new("TextLabel")
-slToggleLabel2.Size = UDim2.new(1, -40, 1, 0)
-slToggleLabel2.Position = UDim2.new(0, 12, 0, 0)
-slToggleLabel2.BackgroundTransparency = 1
-slToggleLabel2.TextXAlignment = Enum.TextXAlignment.Left
-slToggleLabel2.Text = "Line Lag [Monster]"
-slToggleLabel2.TextColor3 = Color3.fromRGB(200, 200, 200)
-slToggleLabel2.TextSize = 12
-slToggleLabel2.Font = Enum.Font.GothamBold
-slToggleLabel2.Parent = slToggleBtn2
-
-local slCheckboxBox2 = Instance.new("Frame")
-slCheckboxBox2.Size = UDim2.new(0, 20, 0, 20)
-slCheckboxBox2.AnchorPoint = Vector2.new(1, 0.5)
-slCheckboxBox2.Position = UDim2.new(1, -12, 0.5, 0)
-slCheckboxBox2.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-slCheckboxBox2.BackgroundTransparency = 0.2
-slCheckboxBox2.BorderSizePixel = 0
-slCheckboxBox2.Parent = slToggleBtn2
-
-local slCbCorner2 = Instance.new("UICorner")
-slCbCorner2.CornerRadius = UDim.new(0, 6)
-slCbCorner2.Parent = slCheckboxBox2
-
-local slCbStroke2 = Instance.new("UIStroke")
-slCbStroke2.Color = Color3.fromRGB(150, 150, 150)
-slCbStroke2.Transparency = 0.2
-slCbStroke2.Thickness = 1
-slCbStroke2.Parent = slCheckboxBox2
-
-local slCheckmark2 = Instance.new("TextLabel")
-slCheckmark2.Size = UDim2.new(1, 0, 1, 0)
-slCheckmark2.BackgroundTransparency = 1
-slCheckmark2.Text = "✓"
-slCheckmark2.TextColor3 = Color3.fromRGB(255, 255, 255)
-slCheckmark2.TextSize = 14
-slCheckmark2.Font = Enum.Font.GothamBold
-slCheckmark2.Visible = false
-slCheckmark2.Parent = slCheckboxBox2
-
--- ============================================================
--- ЛОГИКА SHURIKEN LAG (1 ДЕКОЙ + 9 ШИРИКЕНОВ)
--- ============================================================
-local shurikenLagRunning = false
-local shurikenLagTask = nil
-
-local function getHRP2()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        return char.HumanoidRootPart
+    local function getHRP2()
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            return char.HumanoidRootPart
+        end
+        return nil
     end
-    return nil
-end
 
-local function getInv2()
-    return Workspace:FindFirstChild(LocalPlayer.Name .. "SpawnedInToys")
-end
+    local function getInv2()
+        return Workspace:FindFirstChild(LocalPlayer.Name .. "SpawnedInToys")
+    end
 
-local function sno2(part)
-    local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
-    if GE then
-        local SetNetworkOwner = GE:FindFirstChild("SetNetworkOwner")
-        if SetNetworkOwner then
-            SetNetworkOwner:FireServer(part, part.CFrame)
+    local function sno2(part)
+        local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
+        if GE then
+            local SetNetworkOwner = GE:FindFirstChild("SetNetworkOwner")
+            if SetNetworkOwner then
+                SetNetworkOwner:FireServer(part, part.CFrame)
+            end
         end
     end
-end
 
-local function CheckForHome2()
-    local playersInPlots = Workspace:FindFirstChild("PlotItems") and Workspace.PlotItems:FindFirstChild("PlayersInPlots")
-    if playersInPlots and playersInPlots:FindFirstChild(LocalPlayer.Name) then
-        for _, plot in pairs(Workspace.Plots:GetChildren()) do
-            local sign = plot:FindFirstChild("PlotSign")
-            local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
-            if owners then
-                for _, owner in pairs(owners:GetChildren()) do
-                    if owner.Value == LocalPlayer.Name then
-                        local folder = Workspace.PlotItems:FindFirstChild(plot.Name)
-                        if folder then
-                            return true, folder
+    local function CheckForHome2()
+        local playersInPlots = Workspace:FindFirstChild("PlotItems") and Workspace.PlotItems:FindFirstChild("PlayersInPlots")
+        if playersInPlots and playersInPlots:FindFirstChild(LocalPlayer.Name) then
+            for _, plot in pairs(Workspace.Plots:GetChildren()) do
+                local sign = plot:FindFirstChild("PlotSign")
+                local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
+                if owners then
+                    for _, owner in pairs(owners:GetChildren()) do
+                        if owner.Value == LocalPlayer.Name then
+                            local folder = Workspace.PlotItems:FindFirstChild(plot.Name)
+                            if folder then
+                                return true, folder
+                            end
                         end
                     end
                 end
             end
         end
-    end
-    return false, nil
-end
-
-local function SpawnToy2(ToyName)
-    local SpawnToyRemote = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("SpawnToyRemoteFunction")
-    local inv = getInv2()
-    local InPlot = LocalPlayer:FindFirstChild("InPlot")
-    local InOwnedPlot = LocalPlayer:FindFirstChild("InOwnedPlot")
-    local CanSpawnToy = LocalPlayer:FindFirstChild("CanSpawnToy")
-    local hrp = getHRP2()
-    
-    if InPlot and InPlot.Value and not (InOwnedPlot and InOwnedPlot.Value) then 
-        InPlot:GetPropertyChangedSignal("Value"):Wait()
-    end 
-    if CanSpawnToy and not CanSpawnToy.Value then 
-        local t = tick()
-        while CanSpawnToy and not CanSpawnToy.Value and (tick() - t < 3) do
-            task.wait(0.1)
-        end
+        return false, nil
     end
 
-    local SpawnCF = hrp and hrp.CFrame * CFrame.new(0, 14, 20) or CFrame.new(0, 10, 0)
-    
-    local inOwned, house = CheckForHome2()
-    local Container = inOwned and house or inv
-    if not Container then return nil end
-
-    local spawnedObject = nil
-    local connection
-    connection = Container.ChildAdded:Connect(function(child)
-        if child.Name == ToyName then
-            spawnedObject = child
+    local function SpawnToy2(ToyName)
+        local SpawnToyRemote = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("SpawnToyRemoteFunction")
+        local inv = getInv2()
+        local InPlot = LocalPlayer:FindFirstChild("InPlot")
+        local InOwnedPlot = LocalPlayer:FindFirstChild("InOwnedPlot")
+        local CanSpawnToy = LocalPlayer:FindFirstChild("CanSpawnToy")
+        local hrp = getHRP2()
+        
+        if InPlot and InPlot.Value and not (InOwnedPlot and InOwnedPlot.Value) then 
+            InPlot:GetPropertyChangedSignal("Value"):Wait()
+        end 
+        if CanSpawnToy and not CanSpawnToy.Value then 
+            local t = tick()
+            while CanSpawnToy and not CanSpawnToy.Value and (tick() - t < 3) do
+                task.wait(0.1)
+            end
         end
-    end)
 
-    task.spawn(function()
-        pcall(function()
-            SpawnToyRemote:InvokeServer(ToyName, SpawnCF, Vector3.zero)
+        local SpawnCF = hrp and hrp.CFrame * CFrame.new(0, 14, 20) or CFrame.new(0, 10, 0)
+        
+        local inOwned, house = CheckForHome2()
+        local Container = inOwned and house or inv
+        if not Container then return nil end
+
+        local spawnedObject = nil
+        local connection
+        connection = Container.ChildAdded:Connect(function(child)
+            if child.Name == ToyName then
+                spawnedObject = child
+            end
         end)
-    end)
 
-    local start = tick()
-    repeat task.wait() until spawnedObject or (tick() - start) > 2.5
-    connection:Disconnect()
-    return spawnedObject
-end
+        task.spawn(function()
+            pcall(function()
+                SpawnToyRemote:InvokeServer(ToyName, SpawnCF, Vector3.zero)
+            end)
+        end)
 
-local function ClearLagToys2()
-    local inv = getInv2()
-    local DestroyToy = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
-    if inv and DestroyToy then
-        for _, v in pairs(inv:GetChildren()) do
-            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
-                pcall(function()
-                    DestroyToy:FireServer(v)
-                end)
-            end
-        end
+        local start = tick()
+        repeat task.wait() until spawnedObject or (tick() - start) > 2.5
+        connection:Disconnect()
+        return spawnedObject
     end
-    local inOwned, house = CheckForHome2()
-    if inOwned and house and DestroyToy then
-        for _, v in pairs(house:GetChildren()) do
-            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
-                pcall(function()
-                    DestroyToy:FireServer(v)
-                end)
-            end
-        end
-    end
-end
 
-local function startShurikenLag()
-    if shurikenLagRunning then return end
-    shurikenLagRunning = true
-    slCheckmark1.Visible = true
-
-    ClearLagToys2()
-    task.wait(0.3)
-
-    shurikenLagTask = task.spawn(function()
-        local oldCF = getHRP2() and getHRP2().CFrame
-        local charCF = oldCF
-        
-        -- 1. СОЗДАЁМ 1 ДЕКОЙ И 9 ШИРИКЕНОВ
-        local decoys = {}
-        local shurikens = {}
-        
-        local decoy = SpawnToy2("YouDecoy")
-        if decoy then
-            decoy.Name = "LagDecoy"
-            table.insert(decoys, decoy)
-        end
-        task.wait(0.3)
-        
-        for i = 1, 9 do
-            local shur = SpawnToy2("NinjaShuriken")
-            if shur then
-                shur.Name = "LagShuriken"
-                table.insert(shurikens, shur)
-            end
-            task.wait(0.1)
-        end
-
-        if #decoys == 0 or #shurikens == 0 then
-            shurikenLagRunning = false
-            slCheckmark1.Visible = false
-            return
-        end
-
-        -- 2. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ДЕКОЯ
-        for _, decoyObj in pairs(decoys) do
-            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
-            if decoyHRP then
-                for _, part in pairs(decoyObj:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                        part.CanQuery = false
-                    end
+    local function ClearLagToys2()
+        local inv = getInv2()
+        local DestroyToy = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
+        if inv and DestroyToy then
+            for _, v in pairs(inv:GetChildren()) do
+                if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
+                    pcall(function()
+                        DestroyToy:FireServer(v)
+                    end)
                 end
-                
-                repeat
-                    decoyHRP.Anchored = true
-                    sno2(decoyHRP)
-                    task.wait(0.01)
-                until decoyObj:FindFirstChild("Head") and decoyObj.Head:FindFirstChild("PartOwner") or not shurikenLagRunning
             end
         end
+        local inOwned, house = CheckForHome2()
+        if inOwned and house and DestroyToy then
+            for _, v in pairs(house:GetChildren()) do
+                if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
+                    pcall(function()
+                        DestroyToy:FireServer(v)
+                    end)
+                end
+            end
+        end
+    end
 
-        -- 3. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ШИРИКЕНОВ И КРЕПИМ ИХ К ДЕКОЮ
-        for _, shuriken in pairs(shurikens) do
-            if not shurikenLagRunning then break end
+    local function startShurikenLag()
+        if shurikenLagRunning then return end
+        shurikenLagRunning = true
+        slCheckmark.Visible = true
+
+        ClearLagToys2()
+        task.wait(0.3)
+
+        shurikenLagTask = task.spawn(function()
+            local oldCF = getHRP2() and getHRP2().CFrame
+            local charCF = oldCF
             
-            local StickyPart = shuriken:FindFirstChild("StickyPart")
-            if StickyPart then
-                for _, part in pairs(shuriken:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                        part.CanQuery = false
-                        if part.Transparency ~= 1 then
-                            part.Transparency = 0
+            -- ============================================================
+            -- 1. СОЗДАЁМ 1 ДЕКОЙ И 9 ШИРИКЕНОВ
+            -- ============================================================
+            local decoys = {}
+            local shurikens = {}
+            
+            -- Создаём 1 декой
+            local decoy = SpawnToy2("YouDecoy")
+            if decoy then
+                decoy.Name = "LagDecoy"
+                table.insert(decoys, decoy)
+            end
+            task.wait(0.3)
+            
+            -- Создаём 9 ширикенов
+            for i = 1, 9 do
+                local shur = SpawnToy2("NinjaShuriken")
+                if shur then
+                    shur.Name = "LagShuriken"
+                    table.insert(shurikens, shur)
+                end
+                task.wait(0.1)
+            end
+
+            if #decoys == 0 or #shurikens == 0 then
+                shurikenLagRunning = false
+                slCheckmark.Visible = false
+                return
+            end
+
+            -- ============================================================
+            -- 2. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ДЕКОЯ
+            -- ============================================================
+            for _, decoyObj in pairs(decoys) do
+                local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
+                if decoyHRP then
+                    for _, part in pairs(decoyObj:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                            part.CanQuery = false
+                        end
+                    end
+                    
+                    repeat
+                        decoyHRP.Anchored = true
+                        sno2(decoyHRP)
+                        task.wait(0.01)
+                    until decoyObj:FindFirstChild("Head") and decoyObj.Head:FindFirstChild("PartOwner") or not shurikenLagRunning
+                end
+            end
+
+            -- ============================================================
+            -- 3. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ШИРИКЕНОВ И КРЕПИМ ИХ К ДЕКОЮ
+            -- ============================================================
+            for _, shuriken in pairs(shurikens) do
+                if not shurikenLagRunning then break end
+                
+                local StickyPart = shuriken:FindFirstChild("StickyPart")
+                if StickyPart then
+                    for _, part in pairs(shuriken:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                            part.CanQuery = false
+                            if part.Transparency ~= 1 then
+                                part.Transparency = 0
+                            end
+                        end
+                    end
+                    
+                    repeat
+                        sno2(StickyPart)
+                        task.wait(0.01)
+                    until StickyPart:FindFirstChild("PartOwner") or not shurikenLagRunning
+                    
+                    if #decoys > 0 then
+                        local decoyHRP = decoys[1]:FindFirstChild("HumanoidRootPart")
+                        if decoyHRP then
+                            pcall(function()
+                                ReplicatedStorage.PlayerEvents.StickyPartEvent:FireServer(
+                                    StickyPart,
+                                    decoyHRP,
+                                    CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(90), math.rad(90))
+                                )
+                            end)
                         end
                     end
                 end
-                
-                repeat
-                    sno2(StickyPart)
-                    task.wait(0.01)
-                until StickyPart:FindFirstChild("PartOwner") or not shurikenLagRunning
-                
-                if #decoys > 0 then
-                    local decoyHRP = decoys[1]:FindFirstChild("HumanoidRootPart")
-                    if decoyHRP then
-                        pcall(function()
-                            ReplicatedStorage.PlayerEvents.StickyPartEvent:FireServer(
-                                StickyPart,
-                                decoyHRP,
-                                CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(90), math.rad(90))
-                            )
-                        end)
-                    end
-                end
+                task.wait(0.03)
             end
-            task.wait(0.03)
-        end
 
-        -- 4. ГЛАВНЫЙ ЦИКЛ ЛАГА
-        for decoyindex, decoyObj in ipairs(decoys) do
-            if not shurikenLagRunning then break end
-            
-            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
-            if decoyHRP then
-                decoyHRP.Anchored = true
+            -- ============================================================
+            -- 4. ГЛАВНЫЙ ЦИКЛ ЛАГА
+            -- ============================================================
+            for decoyindex, decoyObj in ipairs(decoys) do
+                if not shurikenLagRunning then break end
                 
-                local startindex = (decoyindex - 1) * 9 + 1
-                local endindex = math.min(startindex + 8, #shurikens)
-                
-                for shurikenindex = startindex, endindex do
-                    if not shurikenLagRunning then break end
+                local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
+                if decoyHRP then
+                    decoyHRP.Anchored = true
                     
-                    local shuriken = shurikens[shurikenindex]
-                    if not shuriken then break end
+                    local startindex = (decoyindex - 1) * 9 + 1
+                    local endindex = math.min(startindex + 8, #shurikens)
                     
-                    local StickyPart = shuriken:FindFirstChild("StickyPart")
-                    if StickyPart then
-                        local BodyPosition1 = Instance.new("BodyPosition")
-                        BodyPosition1.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        BodyPosition1.P = 100000
-                        BodyPosition1.D = 1000
-                        BodyPosition1.Parent = StickyPart
+                    for shurikenindex = startindex, endindex do
+                        if not shurikenLagRunning then break end
                         
-                        local BodyPosition2 = Instance.new("BodyPosition")
-                        BodyPosition2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        BodyPosition2.P = 100000
-                        BodyPosition2.D = 1000
-                        BodyPosition2.Parent = StickyPart
+                        local shuriken = shurikens[shurikenindex]
+                        if not shuriken then break end
                         
-                        StickyPart.AssemblyAngularVelocity = Vector3.new(
-                            math.random(-1000, 1000) * 100,
-                            math.random(-1000, 1000) * 100,
-                            math.random(-1000, 1000) * 100
-                        )
-                        
-                        task.defer(function()
-                            local posOffset = 0
-                            local direction = 1
-                            local angle = 0
+                        local StickyPart = shuriken:FindFirstChild("StickyPart")
+                        if StickyPart then
+                            -- 2 BodyPosition для каждой части
+                            local BodyPosition1 = Instance.new("BodyPosition")
+                            BodyPosition1.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                            BodyPosition1.P = 100000
+                            BodyPosition1.D = 1000
+                            BodyPosition1.Parent = StickyPart
                             
-                            while shurikenLagRunning and shuriken.Parent and decoyObj.Parent do
-                                posOffset = posOffset + (1 * direction)
-                                if posOffset > 15 then
-                                    posOffset = 15
-                                    direction = -1
-                                elseif posOffset < -15 then
-                                    posOffset = -15
-                                    direction = 1
+                            local BodyPosition2 = Instance.new("BodyPosition")
+                            BodyPosition2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                            BodyPosition2.P = 100000
+                            BodyPosition2.D = 1000
+                            BodyPosition2.Parent = StickyPart
+                            
+                            StickyPart.AssemblyAngularVelocity = Vector3.new(
+                                math.random(-1000, 1000) * 100,
+                                math.random(-1000, 1000) * 100,
+                                math.random(-1000, 1000) * 100
+                            )
+                            
+                            task.defer(function()
+                                local posOffset = 0
+                                local direction = 1
+                                local angle = 0
+                                
+                                while shurikenLagRunning and shuriken.Parent and decoyObj.Parent do
+                                    -- БЕШЕНАЯ СМЕНА ПОЗИЦИИ
+                                    posOffset = posOffset + (1 * direction)
+                                    if posOffset > 15 then
+                                        posOffset = 15
+                                        direction = -1
+                                    elseif posOffset < -15 then
+                                        posOffset = -15
+                                        direction = 1
+                                    end
+                                    
+                                    angle = angle + 0.5
+                                    if angle > math.pi * 2 then angle = 0 end
+                                    
+                                    -- ПЕРВЫЙ BodyPosition
+                                    BodyPosition1.Position = Vector3.new(
+                                        decoyHRP.Position.X + math.cos(angle) * 5 + math.random(-2, 2),
+                                        decoyHRP.Position.Y + posOffset + math.random(-2, 2),
+                                        decoyHRP.Position.Z + math.sin(angle) * 5 + math.random(-2, 2)
+                                    )
+                                    
+                                    -- ВТОРОЙ BodyPosition
+                                    BodyPosition2.Position = Vector3.new(
+                                        decoyHRP.Position.X + math.cos(angle + math.pi) * 5 + math.random(-2, 2),
+                                        decoyHRP.Position.Y - posOffset + math.random(-2, 2),
+                                        decoyHRP.Position.Z + math.sin(angle + math.pi) * 5 + math.random(-2, 2)
+                                    )
+                                    
+                                    -- МАКСИМАЛЬНОЕ ВРАЩЕНИЕ
+                                    StickyPart.AssemblyAngularVelocity = Vector3.new(
+                                        math.random(-9999, 9999) * 10,
+                                        math.random(-9999, 9999) * 10,
+                                        math.random(-9999, 9999) * 10
+                                    )
+                                    
+                                    -- ПЕРЕЗАХВАТ ВЛАДЕЛЬЦА КАЖДЫЙ ЦИКЛ
+                                    sno2(StickyPart)
+                                    
+                                    RunService.RenderStepped:Wait()
                                 end
                                 
-                                angle = angle + 0.5
-                                if angle > math.pi * 2 then angle = 0 end
-                                
-                                BodyPosition1.Position = Vector3.new(
-                                    decoyHRP.Position.X + math.cos(angle) * 5 + math.random(-2, 2),
-                                    decoyHRP.Position.Y + posOffset + math.random(-2, 2),
-                                    decoyHRP.Position.Z + math.sin(angle) * 5 + math.random(-2, 2)
-                                )
-                                
-                                BodyPosition2.Position = Vector3.new(
-                                    decoyHRP.Position.X + math.cos(angle + math.pi) * 5 + math.random(-2, 2),
-                                    decoyHRP.Position.Y - posOffset + math.random(-2, 2),
-                                    decoyHRP.Position.Z + math.sin(angle + math.pi) * 5 + math.random(-2, 2)
-                                )
-                                
-                                StickyPart.AssemblyAngularVelocity = Vector3.new(
-                                    math.random(-9999, 9999) * 10,
-                                    math.random(-9999, 9999) * 10,
-                                    math.random(-9999, 9999) * 10
-                                )
-                                
-                                sno2(StickyPart)
-                                
-                                RunService.RenderStepped:Wait()
-                            end
-                            
-                            if BodyPosition1 and BodyPosition1.Parent then BodyPosition1:Destroy() end
-                            if BodyPosition2 and BodyPosition2.Parent then BodyPosition2:Destroy() end
-                        end)
+                                if BodyPosition1 and BodyPosition1.Parent then BodyPosition1:Destroy() end
+                                if BodyPosition2 and BodyPosition2.Parent then BodyPosition2:Destroy() end
+                            end)
+                        end
                     end
-                end
-                task.wait(0.05)
-            end
-        end
-        
-        -- 5. ПОДДЕРЖИВАЕМ ЛАГ
-        while shurikenLagRunning do
-            for _, shuriken in pairs(shurikens) do
-                if shuriken and shuriken.Parent then
-                    local StickyPart = shuriken:FindFirstChild("StickyPart")
-                    if StickyPart then
-                        sno2(StickyPart)
-                        StickyPart.AssemblyAngularVelocity = Vector3.new(
-                            math.random(-9999, 9999) * 10,
-                            math.random(-9999, 9999) * 10,
-                            math.random(-9999, 9999) * 10
-                        )
-                    end
+                    task.wait(0.05)
                 end
             end
-            RunService.RenderStepped:Wait()
-        end
-        
-        -- 6. ОЧИСТКА
-        ClearLagToys2()
-        
-        local hrp = getHRP2()
-        if hrp and charCF then
-            pcall(function()
-                hrp.CFrame = charCF
-                hrp.AssemblyLinearVelocity = Vector3.zero
-                hrp.AssemblyAngularVelocity = Vector3.zero
-            end)
-        end
-        
+            
+            -- ============================================================
+            -- 5. ПОДДЕРЖИВАЕМ ЛАГ
+            -- ============================================================
+            while shurikenLagRunning do
+                for _, shuriken in pairs(shurikens) do
+                    if shuriken and shuriken.Parent then
+                        local StickyPart = shuriken:FindFirstChild("StickyPart")
+                        if StickyPart then
+                            sno2(StickyPart)
+                            StickyPart.AssemblyAngularVelocity = Vector3.new(
+                                math.random(-9999, 9999) * 10,
+                                math.random(-9999, 9999) * 10,
+                                math.random(-9999, 9999) * 10
+                            )
+                        end
+                    end
+                end
+                RunService.RenderStepped:Wait()
+            end
+            
+            -- ============================================================
+            -- 6. ОЧИСТКА
+            -- ============================================================
+            ClearLagToys2()
+            
+            local hrp = getHRP2()
+            if hrp and charCF then
+                pcall(function()
+                    hrp.CFrame = charCF
+                    hrp.AssemblyLinearVelocity = Vector3.zero
+                    hrp.AssemblyAngularVelocity = Vector3.zero
+                end)
+            end
+            
+            shurikenLagRunning = false
+            slCheckmark.Visible = false
+        end)
+    end
+
+    local function stopShurikenLag()
         shurikenLagRunning = false
-        slCheckmark1.Visible = false
-    end)
-end
-
-local function stopShurikenLag()
-    shurikenLagRunning = false
-    if shurikenLagTask then
-        task.cancel(shurikenLagTask)
-        shurikenLagTask = nil
-    end
-    slCheckmark1.Visible = false
-    ClearLagToys2()
-end
-
-slToggleBtn1.MouseButton1Click:Connect(function()
-    if shurikenLagRunning then
-        stopShurikenLag()
-    else
-        startShurikenLag()
-    end
-end)
-
--- ============================================================
--- ЛОГИКА LINE LAG [MONSTER] (30000 ЛИНИЙ)
--- ============================================================
-local monsterLagRunning = false
-local monsterLagTask = nil
-local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
-
-local function startMonsterLag()
-    if monsterLagRunning then return end
-    if not CreateGrabLine then return end
-    
-    monsterLagRunning = true
-    slCheckmark2.Visible = true
-    
-    monsterLagTask = task.spawn(function()
-        local LINE_COUNT = 30000
-        local spawnedLines = 0
-        local totalSpawned = 0
-        
-        local spawnLocation = Workspace:FindFirstChild("SpawnLocation") or Workspace:FindFirstChild("Spawn")
-
-        while monsterLagRunning do
-            if not CreateGrabLine then break end
-            
-            local batchSize = 100
-            local batches = math.ceil(LINE_COUNT / batchSize)
-            
-            for batch = 1, batches do
-                if not monsterLagRunning then break end
-                
-                local startIdx = (batch - 1) * batchSize + 1
-                local endIdx = math.min(batch * batchSize, LINE_COUNT)
-                
-                for i = startIdx, endIdx do
-                    if not monsterLagRunning then break end
-                    
-                    local randomPos = Vector3.new(
-                        math.random(-999999, 999999),
-                        math.random(-999999, 999999),
-                        math.random(-999999, 999999)
-                    )
-                    
-                    local randomAngle = CFrame.Angles(
-                        math.rad(math.random(0, 360)),
-                        math.rad(math.random(0, 360)),
-                        math.rad(math.random(0, 360))
-                    )
-                    
-                    local targetCF = CFrame.new(randomPos) * randomAngle
-                    
-                    pcall(function()
-                        CreateGrabLine:FireServer(
-                            spawnLocation or Workspace.Terrain,
-                            targetCF
-                        )
-                    end)
-                    
-                    spawnedLines = spawnedLines + 1
-                    totalSpawned = totalSpawned + 1
-                end
-                
-                task.wait(0.01)
-            end
-            
-            task.wait(0.1)
+        if shurikenLagTask then
+            task.cancel(shurikenLagTask)
+            shurikenLagTask = nil
         end
-        
-        monsterLagRunning = false
-        slCheckmark2.Visible = false
+        slCheckmark.Visible = false
+        ClearLagToys2()
+    end
+
+    slToggleBtn.MouseButton1Click:Connect(function()
+        if shurikenLagRunning then
+            stopShurikenLag()
+        else
+            startShurikenLag()
+        end
     end)
-end
 
-local function stopMonsterLag()
-    monsterLagRunning = false
-    if monsterLagTask then
-        task.cancel(monsterLagTask)
-        monsterLagTask = nil
-    end
-    slCheckmark2.Visible = false
-end
-
-slToggleBtn2.MouseButton1Click:Connect(function()
-    if monsterLagRunning then
-        stopMonsterLag()
-    else
-        startMonsterLag()
-    end
-end)
-
--- ============================================================
--- ВЫСОТА ГРУППЫ SERVER LAG
--- ============================================================
-local slHeight = slStartY + (slItemHeight + gap) * 2 + gap
-serverLagBox.Size = UDim2.new(0, 300, 0, slHeight)
-
--- ОБНОВЛЯЕМ CANVAS
-local finalCanvas2 = miscContentArea.CanvasSize.Y.Offset
-miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas2 + slHeight + gap + 20)
+    -- ОБНОВЛЯЕМ CANVAS
+    local finalCanvas = miscContentArea.CanvasSize.Y.Offset
+    miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
 end
 
 -- ============================================================================
@@ -9885,7 +9727,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION (РАБОТАЕТ 1 РАЗ, ПОТОМ УДАЛЯЕТСЯ)
+-- 3. SPAWN SAVE POSITION (РАБОТАЕТ 1 РАЗ НА СМЕРТЬ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,7 +9808,7 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА: СПАВН СЕЙВ ПОЗИШН (РАБОТАЕТ 1 РАЗ)
+-- ЛОГИКА: РАБОТАЕТ 1 РАЗ НА СМЕРТЬ
 do
     local spawnSaveEnabled = false
     local spawnSaveConn = nil
@@ -9981,7 +9823,6 @@ do
             used = false
             savedPos = nil
             
-            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -10014,7 +9855,7 @@ do
 end
 
 -- ============================================================
--- 4. BACK TRAIL (НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ, ТОЛЬКО ПРИ ДВИЖЕНИИ)
+-- 4. BACK TRAIL (ВЕРТИКАЛЬНЫЙ, БЕЛЫЙ->ЧЕРНЫЙ, 0.5)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -10095,12 +9936,12 @@ btCheckmark.Font = Enum.Font.GothamBold
 btCheckmark.Visible = false
 btCheckmark.Parent = btCheckboxBox
 
--- ЛОГИКА BACK TRAIL (НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ)
+-- ЛОГИКА BACK TRAIL (ВЕРТИКАЛЬНЫЙ, БЕЛЫЙ->ЧЕРНЫЙ)
 do
     local backTrailEnabled = false
     local trailTask = nil
     local trailParts = {}
-    local MAX_TRAIL = 50
+    local MAX_TRAIL = 80
 
     local function clearTrail()
         for _, part in pairs(trailParts) do
@@ -10116,7 +9957,7 @@ do
         clearTrail()
         
         trailTask = task.spawn(function()
-            local lastPos = nil
+            local lastPositions = {}
             local isMoving = false
             local stopTimer = 0
             
@@ -10124,8 +9965,9 @@ do
                 local char = LocalPlayer.Character
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 local hum = char and char:FindFirstChildOfClass("Humanoid")
+                local head = char and char:FindFirstChild("Head")
                 
-                if hrp and hum then
+                if hrp and hum and head then
                     local vel = hrp.AssemblyLinearVelocity
                     local speed = (Vector3.new(vel.X, 0, vel.Z)).Magnitude
                     
@@ -10141,46 +9983,54 @@ do
                     
                     if isMoving then
                         -- ПОЗИЦИЯ НА СПИНЕ (на 0.3 студа назад)
-                        local backPos = hrp.CFrame * CFrame.new(0, 0.3, -0.5)
-                        local currentPos = backPos.Position
+                        local backPos = hrp.CFrame * CFrame.new(0, 0, -0.4)
+                        local backPosWorld = backPos.Position
                         
-                        if lastPos then
-                            local dist = (currentPos - lastPos).Magnitude
-                            if dist > 0.15 then
-                                -- ТОНКАЯ ЛИНИЯ
-                                local part = Instance.new("Part")
-                                part.Size = Vector3.new(0.05, 0.05, dist)
-                                part.CFrame = CFrame.lookAt(lastPos, currentPos) * CFrame.new(0, 0, -(dist / 2))
-                                part.Anchored = true
-                                part.CanCollide = false
-                                part.CanQuery = false
-                                part.Transparency = 0.25
-                                part.Material = Enum.Material.Neon
-                                part.Parent = workspace
-                                
-                                -- ЦВЕТ: ЧЕРНЫЙ->БЕЛЫЙ
-                                local progress = #trailParts / MAX_TRAIL
-                                part.Color = Color3.fromRGB(255 * progress, 255 * progress, 255 * progress)
-                                
-                                table.insert(trailParts, part)
-                                
-                                if #trailParts > MAX_TRAIL then
-                                    local oldest = table.remove(trailParts, 1)
-                                    if oldest and oldest.Parent then
-                                        oldest:Destroy()
-                                    end
-                                end
-                                
-                                -- ОБНОВЛЯЕМ ЦВЕТА ВСЕХ ЛИНИЙ
-                                for i, p in ipairs(trailParts) do
-                                    local prog = i / #trailParts
-                                    p.Color = Color3.fromRGB(255 * prog, 255 * prog, 255 * prog)
-                                    p.Transparency = 0.25
-                                end
+                        -- ВЕРТИКАЛЬНАЯ ЛИНИЯ: ОТ НОГ (низ) ДО ГОЛОВЫ (верх)
+                        local footY = hrp.Position.Y - 1.5
+                        local headY = head.Position.Y + 0.3
+                        local midY = (footY + headY) / 2
+                        local height = headY - footY
+                        
+                        -- СОЗДАЕМ ВЕРТИКАЛЬНУЮ ЛИНИЮ
+                        local verticalPart = Instance.new("Part")
+                        verticalPart.Size = Vector3.new(0.05, height, 0.05)
+                        verticalPart.CFrame = CFrame.new(backPosWorld.X, midY, backPosWorld.Z)
+                        verticalPart.Anchored = true
+                        verticalPart.CanCollide = false
+                        verticalPart.CanQuery = false
+                        verticalPart.Transparency = 0.5
+                        verticalPart.Material = Enum.Material.Neon
+                        verticalPart.Parent = workspace
+                        
+                        -- ЦВЕТА: БЕЛЫЙ -> ЧЕРНЫЙ (НАОБОРОТ)
+                        local progress = #trailParts / MAX_TRAIL
+                        local colorValue = 255 - (255 * progress)
+                        verticalPart.Color = Color3.fromRGB(colorValue, colorValue, colorValue)
+                        
+                        -- ПЛАВНОЕ ПОЯВЛЕНИЕ (alpha от 0 к 0.5)
+                        local alpha = math.min(#trailParts / 10, 0.5)
+                        verticalPart.Transparency = 0.5 - alpha
+                        
+                        table.insert(trailParts, verticalPart)
+                        
+                        if #trailParts > MAX_TRAIL then
+                            local oldest = table.remove(trailParts, 1)
+                            if oldest and oldest.Parent then
+                                oldest:Destroy()
                             end
                         end
                         
-                        lastPos = currentPos
+                        -- ОБНОВЛЯЕМ ЦВЕТА И ПРОЗРАЧНОСТЬ
+                        for i, p in ipairs(trailParts) do
+                            local prog = i / #trailParts
+                            local val = 255 - (255 * prog)
+                            p.Color = Color3.fromRGB(val, val, val)
+                            
+                            -- ПЛАВНОЕ ИСЧЕЗНОВЕНИЕ
+                            local alpha2 = 0.5 * (i / #trailParts)
+                            p.Transparency = 0.5 - alpha2
+                        end
                     else
                         -- ЕСЛИ СТОИТ - УДАЛЯЕМ ВСЁ
                         if #trailParts > 0 then
@@ -10191,11 +10041,16 @@ do
                             end
                             trailParts = {}
                         end
-                        lastPos = nil
                     end
                 else
-                    lastPos = nil
-                    isMoving = false
+                    if #trailParts > 0 then
+                        for _, p in pairs(trailParts) do
+                            if p and p.Parent then
+                                p:Destroy()
+                            end
+                        end
+                        trailParts = {}
+                    end
                 end
                 
                 task.wait(0.02)
