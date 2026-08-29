@@ -10236,7 +10236,7 @@ end
 
 -- ВЫСОТА ФРЕЙМА (уменьшена на 10 пикселей)
 local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap - 10
-playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
+playerFeaturesBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
 -- ============================================================
