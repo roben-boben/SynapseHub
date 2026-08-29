@@ -9568,7 +9568,7 @@ pclCheckmark.Font = Enum.Font.GothamBold
 pclCheckmark.Visible = false
 pclCheckmark.Parent = pclCheckboxBox
 
--- PCLD ESP логика (без изменений)
+-- PCLD ESP логика
 do
     local pclEspEnabled = false
     local espBoxes = {}
@@ -9800,7 +9800,7 @@ akEspCheckmark.Font = Enum.Font.GothamBold
 akEspCheckmark.Visible = false
 akEspCheckmark.Parent = akEspCheckboxBox
 
--- Anti Kick ESP логика (без изменений)
+-- Anti Kick ESP логика
 do
     local akEspEnabled = false
     local highlights = {}
@@ -10234,6 +10234,10 @@ do
         end
     end)
 end
+
+-- ВЫСОТА ФРЕЙМА (уменьшена на 10 пикселей)
+local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap - 10
+playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
 -- ============================================================
