@@ -8728,6 +8728,678 @@ miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + bbHeight + gap +
     -- ОБНОВЛЯЕМ CANVAS
     local finalCanvas = miscContentArea.CanvasSize.Y.Offset
     miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
+
+-- ============================================================
+-- PACKET LAG - ПОЛНАЯ ВЕРСИЯ С UI ОПОВЕЩЕНИЯМИ (ИСПРАВЛЕННАЯ)
+-- ============================================================
+
+-- ============================================================
+-- ГРУППА 5: PACKET LAG (ВСТАВЬ В MISC TAB ПОСЛЕ SERVER LAG)
+-- ============================================================
+
+local packetLagBox = Instance.new("Frame")
+packetLagBox.Size = UDim2.new(0, 300, 0, 0)
+packetLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap + 170)
+packetLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+packetLagBox.BackgroundTransparency = 0.25
+packetLagBox.ClipsDescendants = true
+packetLagBox.Parent = miscContentArea
+
+local plBoxCorner = Instance.new("UICorner")
+plBoxCorner.CornerRadius = UDim.new(0, 18)
+plBoxCorner.Parent = packetLagBox
+
+local plBoxStroke = Instance.new("UIStroke")
+plBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+plBoxStroke.Transparency = 0.2
+plBoxStroke.Thickness = 1.0
+plBoxStroke.Parent = packetLagBox
+
+local plTitle = Instance.new("TextLabel")
+plTitle.Size = UDim2.new(1, -30, 0, 30)
+plTitle.Position = UDim2.new(0, 15, 0, 8)
+plTitle.BackgroundTransparency = 1
+plTitle.TextXAlignment = Enum.TextXAlignment.Left
+plTitle.Text = "Packet Lag"
+plTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+plTitle.TextTransparency = 0.05
+plTitle.TextSize = 16
+plTitle.Font = Enum.Font.GothamBold
+plTitle.Parent = packetLagBox
+
+local plLine = Instance.new("Frame")
+plLine.Size = UDim2.new(1, -30, 0, 1.5)
+plLine.Position = UDim2.new(0, 15, 0, 42)
+plLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+plLine.BackgroundTransparency = 0.3
+plLine.BorderSizePixel = 0
+plLine.Parent = packetLagBox
+
+local plStartY = 52
+local plItemHeight = 48
+local plGap = 10
+
+-- ============================================================
+-- ПОЛЗУНОК РАЗМЕРА ПАКЕТА
+-- ============================================================
+local sizeBox = Instance.new("Frame")
+sizeBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
+sizeBox.Position = UDim2.new(0, plGap, 0, plStartY)
+sizeBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+sizeBox.BackgroundTransparency = 0.25
+sizeBox.ClipsDescendants = true
+sizeBox.Parent = packetLagBox
+
+local sizeBoxCorner = Instance.new("UICorner")
+sizeBoxCorner.CornerRadius = UDim.new(0, 18)
+sizeBoxCorner.Parent = sizeBox
+
+local sizeBoxStroke = Instance.new("UIStroke")
+sizeBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+sizeBoxStroke.Transparency = 0.2
+sizeBoxStroke.Thickness = 1.0
+sizeBoxStroke.Parent = sizeBox
+
+local sizeLabel = Instance.new("TextLabel")
+sizeLabel.Size = UDim2.new(1, -40, 0, 20)
+sizeLabel.Position = UDim2.new(0, 12, 0, 4)
+sizeLabel.BackgroundTransparency = 1
+sizeLabel.TextXAlignment = Enum.TextXAlignment.Left
+sizeLabel.Text = "Packet Size: 0.10 MB"
+sizeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+sizeLabel.TextTransparency = 0.05
+sizeLabel.TextSize = 12
+sizeLabel.Font = Enum.Font.GothamBold
+sizeLabel.Parent = sizeBox
+
+local sizeSliderBar = Instance.new("Frame")
+sizeSliderBar.Size = UDim2.new(0, 220, 0, 10)
+sizeSliderBar.Position = UDim2.new(0, 15, 0, 28)
+sizeSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+sizeSliderBar.BackgroundTransparency = 0.2
+sizeSliderBar.BorderSizePixel = 0
+sizeSliderBar.Parent = sizeBox
+
+local sizeBarCorner = Instance.new("UICorner")
+sizeBarCorner.CornerRadius = UDim.new(1, 0)
+sizeBarCorner.Parent = sizeSliderBar
+
+local initialScale = (0.1 - 0.01) / (20 - 0.01)
+local sizeSliderFill = Instance.new("Frame")
+sizeSliderFill.Size = UDim2.new(initialScale, 0, 1, 0)
+sizeSliderFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sizeSliderFill.BackgroundTransparency = 0.05
+sizeSliderFill.BorderSizePixel = 0
+sizeSliderFill.Parent = sizeSliderBar
+
+local sizeFillCorner = Instance.new("UICorner")
+sizeFillCorner.CornerRadius = UDim.new(1, 0)
+sizeFillCorner.Parent = sizeSliderFill
+
+local sizeSliderButton = Instance.new("TextButton")
+sizeSliderButton.Size = UDim2.new(0, 18, 0, 18)
+sizeSliderButton.Position = UDim2.new(initialScale, -9, 0.5, -9)
+sizeSliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sizeSliderButton.BackgroundTransparency = 0
+sizeSliderButton.Text = ""
+sizeSliderButton.Parent = sizeSliderBar
+
+local sizeButtonCorner = Instance.new("UICorner")
+sizeButtonCorner.CornerRadius = UDim.new(1, 0)
+sizeButtonCorner.Parent = sizeSliderButton
+
+local sizeButtonStroke = Instance.new("UIStroke")
+sizeButtonStroke.Color = Color3.fromRGB(140, 140, 140)
+sizeButtonStroke.Thickness = 1
+sizeButtonStroke.Parent = sizeSliderButton
+
+local packetSizeMB = 0.1
+local sizeSliding = false
+
+local function updateSizeSlider(input)
+    local mousePos = input.Position.X
+    local barAbsolutePos = sizeSliderBar.AbsolutePosition.X
+    local barAbsoluteSize = sizeSliderBar.AbsoluteSize.X
+    
+    local relativeX = math.clamp(mousePos - barAbsolutePos, 0, barAbsoluteSize)
+    local scale = math.clamp(relativeX / barAbsoluteSize, 0, 1)
+    
+    sizeSliderButton.Position = UDim2.new(scale, -9, 0.5, -9)
+    sizeSliderFill.Size = UDim2.new(scale, 0, 1, 0)
+    
+    packetSizeMB = math.floor((0.01 + (scale * (20 - 0.01))) * 100 + 0.5) / 100
+    sizeLabel.Text = "Packet Size: " .. string.format("%.2f", packetSizeMB) .. " MB"
+end
+
+sizeSliderButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        sizeSliding = true
+        updateSizeSlider(input)
+    end
+end)
+
+sizeSliderBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        sizeSliding = true
+        updateSizeSlider(input)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        sizeSliding = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if sizeSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        updateSizeSlider(input)
+    end
+end)
+
+-- ============================================================
+-- SEND PACKET (КНОПКА)
+-- ============================================================
+local sendBox = Instance.new("Frame")
+sendBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
+sendBox.Position = UDim2.new(0, plGap, 0, plStartY + plItemHeight + plGap)
+sendBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+sendBox.BackgroundTransparency = 0.25
+sendBox.ClipsDescendants = true
+sendBox.Parent = packetLagBox
+
+local sendBoxCorner = Instance.new("UICorner")
+sendBoxCorner.CornerRadius = UDim.new(0, 18)
+sendBoxCorner.Parent = sendBox
+
+local sendBoxStroke = Instance.new("UIStroke")
+sendBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+sendBoxStroke.Transparency = 0.2
+sendBoxStroke.Thickness = 1.0
+sendBoxStroke.Parent = sendBox
+
+local sendToggleBtn = Instance.new("TextButton")
+sendToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+sendToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+sendToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+sendToggleBtn.BackgroundTransparency = 0.2
+sendToggleBtn.Text = ""
+sendToggleBtn.AutoButtonColor = false
+sendToggleBtn.Parent = sendBox
+
+local sendToggleCorner = Instance.new("UICorner")
+sendToggleCorner.CornerRadius = UDim.new(0, 14)
+sendToggleCorner.Parent = sendToggleBtn
+
+local sendToggleStroke = Instance.new("UIStroke")
+sendToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+sendToggleStroke.Transparency = 0.2
+sendToggleStroke.Thickness = 0.8
+sendToggleStroke.Parent = sendToggleBtn
+
+local sendToggleLabel = Instance.new("TextLabel")
+sendToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+sendToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+sendToggleLabel.BackgroundTransparency = 1
+sendToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+sendToggleLabel.Text = "Send Packets"
+sendToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+sendToggleLabel.TextSize = 12
+sendToggleLabel.Font = Enum.Font.GothamBold
+sendToggleLabel.Parent = sendToggleBtn
+
+local sendCheckboxBox = Instance.new("Frame")
+sendCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+sendCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+sendCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+sendCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+sendCheckboxBox.BackgroundTransparency = 0.2
+sendCheckboxBox.BorderSizePixel = 0
+sendCheckboxBox.Parent = sendToggleBtn
+
+local sendCbCorner = Instance.new("UICorner")
+sendCbCorner.CornerRadius = UDim.new(0, 6)
+sendCbCorner.Parent = sendCheckboxBox
+
+local sendCbStroke = Instance.new("UIStroke")
+sendCbStroke.Color = Color3.fromRGB(150, 150, 150)
+sendCbStroke.Transparency = 0.2
+sendCbStroke.Thickness = 1
+sendCbStroke.Parent = sendCheckboxBox
+
+local sendCheckmark = Instance.new("TextLabel")
+sendCheckmark.Size = UDim2.new(1, 0, 1, 0)
+sendCheckmark.BackgroundTransparency = 1
+sendCheckmark.Text = "✓"
+sendCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+sendCheckmark.TextSize = 14
+sendCheckmark.Font = Enum.Font.GothamBold
+sendCheckmark.Visible = false
+sendCheckmark.Parent = sendCheckboxBox
+
+-- ============================================================
+-- DETECT PACKET (КНОПКА)
+-- ============================================================
+local detectBox = Instance.new("Frame")
+detectBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
+detectBox.Position = UDim2.new(0, plGap, 0, plStartY + (plItemHeight + plGap) * 2)
+detectBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+detectBox.BackgroundTransparency = 0.25
+detectBox.ClipsDescendants = true
+detectBox.Parent = packetLagBox
+
+local detectBoxCorner = Instance.new("UICorner")
+detectBoxCorner.CornerRadius = UDim.new(0, 18)
+detectBoxCorner.Parent = detectBox
+
+local detectBoxStroke = Instance.new("UIStroke")
+detectBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+detectBoxStroke.Transparency = 0.2
+detectBoxStroke.Thickness = 1.0
+detectBoxStroke.Parent = detectBox
+
+local detectToggleBtn = Instance.new("TextButton")
+detectToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+detectToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+detectToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+detectToggleBtn.BackgroundTransparency = 0.2
+detectToggleBtn.Text = ""
+detectToggleBtn.AutoButtonColor = false
+detectToggleBtn.Parent = detectBox
+
+local detectToggleCorner = Instance.new("UICorner")
+detectToggleCorner.CornerRadius = UDim.new(0, 14)
+detectToggleCorner.Parent = detectToggleBtn
+
+local detectToggleStroke = Instance.new("UIStroke")
+detectToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+detectToggleStroke.Transparency = 0.2
+detectToggleStroke.Thickness = 0.8
+detectToggleStroke.Parent = detectToggleBtn
+
+local detectToggleLabel = Instance.new("TextLabel")
+detectToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+detectToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+detectToggleLabel.BackgroundTransparency = 1
+detectToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+detectToggleLabel.Text = "Detect Packets"
+detectToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+detectToggleLabel.TextSize = 12
+detectToggleLabel.Font = Enum.Font.GothamBold
+detectToggleLabel.Parent = detectToggleBtn
+
+local detectCheckboxBox = Instance.new("Frame")
+detectCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+detectCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+detectCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+detectCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+detectCheckboxBox.BackgroundTransparency = 0.2
+detectCheckboxBox.BorderSizePixel = 0
+detectCheckboxBox.Parent = detectToggleBtn
+
+local detectCbCorner = Instance.new("UICorner")
+detectCbCorner.CornerRadius = UDim.new(0, 6)
+detectCbCorner.Parent = detectCheckboxBox
+
+local detectCbStroke = Instance.new("UIStroke")
+detectCbStroke.Color = Color3.fromRGB(150, 150, 150)
+detectCbStroke.Transparency = 0.2
+detectCbStroke.Thickness = 1
+detectCbStroke.Parent = detectCheckboxBox
+
+local detectCheckmark = Instance.new("TextLabel")
+detectCheckmark.Size = UDim2.new(1, 0, 1, 0)
+detectCheckmark.BackgroundTransparency = 1
+detectCheckmark.Text = "✓"
+detectCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+detectCheckmark.TextSize = 14
+detectCheckmark.Font = Enum.Font.GothamBold
+detectCheckmark.Visible = false
+detectCheckmark.Parent = detectCheckboxBox
+
+-- ============================================================
+-- ВЫСОТА ФРЕЙМА
+-- ============================================================
+local plHeight = plStartY + 3 * (plItemHeight + plGap) + plGap
+packetLagBox.Size = UDim2.new(0, 300, 0, plHeight)
+
+-- ============================================================
+-- ЛОГИКА ОТПРАВКИ ПАКЕТОВ
+-- ============================================================
+local sendPacketsActive = false
+local sendPacketsTask = nil
+local sentMBTotal = 0  -- СУММАРНО ОТПРАВЛЕНО МБ
+
+local function calculateRepeats(sizeMB)
+    local targetBytes = sizeMB * 1024 * 1024
+    local repeats = math.floor(targetBytes / 143)
+    return math.max(1, repeats)
+end
+
+local function startSendPackets()
+    if sendPacketsActive then return end
+    sendPacketsActive = true
+    sendCheckmark.Visible = true
+    sentMBTotal = 0
+    
+    sendPacketsTask = task.spawn(function()
+        local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
+        if not GE then
+            sendPacketsActive = false
+            sendCheckmark.Visible = false
+            return
+        end
+        
+        local extendGrabLine = GE:FindFirstChild("ExtendGrabLine")
+        if not extendGrabLine then
+            sendPacketsActive = false
+            sendCheckmark.Visible = false
+            return
+        end
+        
+        while sendPacketsActive do
+            local repeats = calculateRepeats(packetSizeMB)
+            local packet = string.rep("metaballs metaballs metaballs metaballs metaballs metaballs metaballs metaballs", repeats)
+            
+            pcall(function()
+                extendGrabLine:FireServer(packet)
+            end)
+            
+            -- СУММИРУЕМ ОТПРАВЛЕННЫЕ МБ
+            sentMBTotal = sentMBTotal + packetSizeMB
+            
+            -- ПОКАЗЫВАЕМ ОПОВЕЩЕНИЕ (Packet Amount = сколько МБ отправил)
+            showSendNotification(sentMBTotal)
+            
+            task.wait(0.05)
+        end
+    end)
+end
+
+local function stopSendPackets()
+    sendPacketsActive = false
+    if sendPacketsTask then
+        task.cancel(sendPacketsTask)
+        sendPacketsTask = nil
+    end
+    sendCheckmark.Visible = false
+end
+
+-- ============================================================
+-- ЛОГИКА ДЕТЕКТА ПАКЕТОВ
+-- ============================================================
+local detectPacketsActive = false
+local detectPacketsTask = nil
+local playerPacketMB = {}  -- ХРАНИМ СКОЛЬКО МБ ОТПРАВИЛ КАЖДЫЙ ИГРОК
+
+local function startDetectPackets()
+    if detectPacketsActive then return end
+    detectPacketsActive = true
+    detectCheckmark.Visible = true
+    
+    detectPacketsTask = task.spawn(function()
+        local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
+        if not GE then
+            detectPacketsActive = false
+            detectCheckmark.Visible = false
+            return
+        end
+        
+        local extendGrabLine = GE:FindFirstChild("ExtendGrabLine")
+        if not extendGrabLine then
+            detectPacketsActive = false
+            detectCheckmark.Visible = false
+            return
+        end
+        
+        -- ПЕРЕХВАТЫВАЕМ OnClientEvent
+        local oldEvent = extendGrabLine.OnClientEvent
+        extendGrabLine.OnClientEvent = function(arg1, data)
+            if typeof(data) == "string" and string.len(data) > 300 then
+                local sender = arg1
+                if type(sender) == "string" then
+                    sender = sender
+                elseif type(sender) == "Instance" then
+                    sender = sender.Name
+                else
+                    sender = "Unknown"
+                end
+                
+                -- ИГНОРИРУЕМ СВОИ ПАКЕТЫ
+                if sender == LocalPlayer.Name then
+                    return
+                end
+                
+                local sizeMB = string.len(data) / (1024 * 1024)
+                
+                if not playerPacketMB[sender] then
+                    playerPacketMB[sender] = 0
+                end
+                playerPacketMB[sender] = playerPacketMB[sender] + sizeMB
+                
+                -- ПОКАЗЫВАЕМ ОПОВЕЩЕНИЕ (Packet Amount = сколько МБ отправил)
+                showDetectNotification(sender, playerPacketMB[sender], sizeMB)
+            end
+            
+            -- ВЫЗЫВАЕМ ОРИГИНАЛЬНЫЙ ОБРАБОТЧИК
+            if oldEvent then
+                oldEvent(arg1, data)
+            end
+        end
+        
+        while detectPacketsActive do
+            task.wait(0.1)
+        end
+        
+        -- ВОССТАНАВЛИВАЕМ
+        extendGrabLine.OnClientEvent = oldEvent
+    end)
+end
+
+local function stopDetectPackets()
+    detectPacketsActive = false
+    if detectPacketsTask then
+        task.cancel(detectPacketsTask)
+        detectPacketsTask = nil
+    end
+    detectCheckmark.Visible = false
+    playerPacketMB = {}
+end
+
+-- ============================================================
+-- UI ОПОВЕЩЕНИЯ
+-- ============================================================
+local notificationContainer = Instance.new("Frame")
+notificationContainer.Size = UDim2.new(0, 310, 0, 0)
+notificationContainer.Position = UDim2.new(1, -320, 0, 50)
+notificationContainer.BackgroundTransparency = 1
+notificationContainer.ClipsDescendants = true
+notificationContainer.ZIndex = 100
+notificationContainer.Parent = playerGui
+
+local notifications = {}
+local MAX_NOTIFICATIONS = 5
+
+local function createNotificationFrame(titleText, playerName, packetMB, isDetect, sizeMB)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 144)
+    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+    frame.BackgroundTransparency = 0.15
+    frame.ClipsDescendants = true
+    frame.ZIndex = 101
+    frame.Parent = notificationContainer
+    
+    frame.Position = UDim2.new(1, 0, 0, 0)
+    
+    local frameCorner = Instance.new("UICorner")
+    frameCorner.CornerRadius = UDim.new(0, 18)
+    frameCorner.Parent = frame
+    
+    local frameStroke = Instance.new("UIStroke")
+    frameStroke.Color = isDetect and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 255, 0)
+    frameStroke.Transparency = 0.3
+    frameStroke.Thickness = 1.5
+    frameStroke.Parent = frame
+    
+    -- ЗАГОЛОВОК
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -20, 0, 35)
+    titleLabel.Position = UDim2.new(0, 10, 0, 8)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Text = titleText
+    titleLabel.TextColor3 = isDetect and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(100, 255, 100)
+    titleLabel.TextTransparency = 0.05
+    titleLabel.TextSize = 16
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Parent = frame
+    
+    -- РАЗДЕЛИТЕЛЬ
+    local line = Instance.new("Frame")
+    line.Size = UDim2.new(1, -20, 0, 1.5)
+    line.Position = UDim2.new(0, 10, 0, 45)
+    line.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+    line.BackgroundTransparency = 0.3
+    line.BorderSizePixel = 0
+    line.Parent = frame
+    
+    -- ИГРОК
+    local playerLabel = Instance.new("TextLabel")
+    playerLabel.Size = UDim2.new(1, -20, 0, 30)
+    playerLabel.Position = UDim2.new(0, 10, 0, 50)
+    playerLabel.BackgroundTransparency = 1
+    playerLabel.TextXAlignment = Enum.TextXAlignment.Left
+    playerLabel.Text = "Player: " .. playerName
+    playerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    playerLabel.TextTransparency = 0.05
+    playerLabel.TextSize = 14
+    playerLabel.Font = Enum.Font.GothamBold
+    playerLabel.Parent = frame
+    
+    -- КОЛИЧЕСТВО МБ (СУММАРНО)
+    local packetLabel = Instance.new("TextLabel")
+    packetLabel.Size = UDim2.new(1, -20, 0, 30)
+    packetLabel.Position = UDim2.new(0, 10, 0, 82)
+    packetLabel.BackgroundTransparency = 1
+    packetLabel.TextXAlignment = Enum.TextXAlignment.Left
+    packetLabel.Text = "Packet Amount: " .. string.format("%.2f", packetMB) .. " MB"
+    packetLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    packetLabel.TextTransparency = 0.05
+    packetLabel.TextSize = 14
+    packetLabel.Font = Enum.Font.Gotham
+    packetLabel.Parent = frame
+    
+    -- РАЗМЕР ПОСЛЕДНЕГО ПАКЕТА (ТОЛЬКО ДЛЯ ДЕТЕКТА)
+    if isDetect and sizeMB then
+        local sizeLabel = Instance.new("TextLabel")
+        sizeLabel.Size = UDim2.new(1, -20, 0, 30)
+        sizeLabel.Position = UDim2.new(0, 10, 0, 114)
+        sizeLabel.BackgroundTransparency = 1
+        sizeLabel.TextXAlignment = Enum.TextXAlignment.Left
+        sizeLabel.Text = "Last Packet: " .. string.format("%.2f", sizeMB) .. " MB"
+        sizeLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+        sizeLabel.TextTransparency = 0.05
+        sizeLabel.TextSize = 12
+        sizeLabel.Font = Enum.Font.Gotham
+        sizeLabel.Parent = frame
+    end
+    
+    return frame
+end
+
+local function showSendNotification(sentMB)
+    local frame = createNotificationFrame("📤 Send Packets!", LocalPlayer.Name, sentMB, false)
+    
+    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 0, 0, 0)
+    })
+    
+    table.insert(notifications, {frame = frame, time = tick()})
+    updateNotificationPositions()
+    tweenIn:Play()
+    
+    task.delay(5, function()
+        removeNotification(frame)
+    end)
+end
+
+local function showDetectNotification(playerName, totalMB, lastPacketMB)
+    local frame = createNotificationFrame("⚠️ Packet Lag Detected!", playerName, totalMB, true, lastPacketMB)
+    
+    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 0, 0, 0)
+    })
+    
+    table.insert(notifications, {frame = frame, time = tick()})
+    updateNotificationPositions()
+    tweenIn:Play()
+    
+    task.delay(5, function()
+        removeNotification(frame)
+    end)
+end
+
+local function updateNotificationPositions()
+    local spacing = 154
+    local totalHeight = #notifications * spacing
+    
+    notificationContainer.Size = UDim2.new(0, 310, 0, math.min(totalHeight, MAX_NOTIFICATIONS * spacing))
+    
+    for i, data in ipairs(notifications) do
+        local position = (i - 1) * spacing
+        local tween = TweenService:Create(data.frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0, 0, 0, position)
+        })
+        tween:Play()
+    end
+end
+
+local function removeNotification(frame)
+    local tweenOut = TweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(1, 0, 0, frame.Position.Y.Offset)
+    })
+    
+    tweenOut:Play()
+    tweenOut.Completed:Connect(function()
+        frame:Destroy()
+        
+        for i, data in ipairs(notifications) do
+            if data.frame == frame then
+                table.remove(notifications, i)
+                break
+            end
+        end
+        
+        updateNotificationPositions()
+    end)
+end
+
+-- ============================================================
+-- ПОДКЛЮЧАЕМ КНОПКИ
+-- ============================================================
+sendToggleBtn.MouseButton1Click:Connect(function()
+    if sendPacketsActive then
+        stopSendPackets()
+    else
+        startSendPackets()
+    end
+end)
+
+detectToggleBtn.MouseButton1Click:Connect(function()
+    if detectPacketsActive then
+        stopDetectPackets()
+    else
+        startDetectPackets()
+    end
+end)
+
+-- ============================================================
+-- ОБНОВЛЯЕМ CANVAS
+-- ============================================================
+local finalCanvas = miscContentArea.CanvasSize.Y.Offset
+miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + plHeight + gap + 20)
+
+print("[Packet Lag] Загружен!")
 end
 
 -- ============================================================================
