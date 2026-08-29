@@ -9966,62 +9966,65 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ИСПРАВЛЕННАЯ ЛОГИКА
+-- ЛОГИКА
 do
     local spawnSaveEnabled = false
     local savedPos = nil
     local deathConn = nil
     local respawnConn = nil
 
-    -- Функция сохранения позиции
     local function savePosition()
         local char = LocalPlayer.Character
         local hrp = char and char:FindFirstChild("HumanoidRootPart")
         if hrp then
             savedPos = hrp.CFrame
-            print("Position saved: " .. tostring(savedPos)) -- для отладки
-            return true
         end
-        return false
     end
 
-    -- Функция телепортации при возрождении
     local function teleportToSavedPosition(newChar)
         if not spawnSaveEnabled or not savedPos then return end
         
-        task.wait(0.5) -- ждем пока персонаж полностью заспавнится
+        task.wait(0.5)
         local newHrp = newChar:FindFirstChild("HumanoidRootPart")
         if newHrp and savedPos then
             newHrp.CFrame = savedPos
             newHrp.AssemblyLinearVelocity = Vector3.zero
             newHrp.AssemblyAngularVelocity = Vector3.zero
-            print("Teleported to: " .. tostring(savedPos)) -- для отладки
+            
+            task.wait(0.1)
+            savePosition()
         end
     end
 
-    -- Функция для настройки отслеживания смерти
-    local function setupDeathTracking()
-        -- Отключаем старые коннекты
-        if deathConn then deathConn:Disconnect() end
+    local function setupTracking()
         if respawnConn then respawnConn:Disconnect() end
         
-        -- Следим за появлением персонажа
         respawnConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
             if spawnSaveEnabled then
-                -- Телепортируем на сохраненную позицию
                 teleportToSavedPosition(newChar)
                 
-                -- Настраиваем отслеживание смерти для этого персонажа
-                if deathConn then deathConn:Disconnect() end
-                deathConn = newChar:WaitForChild("Humanoid", 5).Died:Connect(function()
-                    if spawnSaveEnabled then
-                        -- СОХРАНЯЕМ ПОЗИЦИЮ ПРИ СМЕРТИ
-                        savePosition()
-                        print("Death detected, position saved")
-                    end
-                end)
+                local hum = newChar:WaitForChild("Humanoid", 5)
+                if hum then
+                    if deathConn then deathConn:Disconnect() end
+                    deathConn = hum.Died:Connect(function()
+                        if spawnSaveEnabled then
+                            savePosition()
+                        end
+                    end)
+                end
             end
         end)
+        
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            if deathConn then deathConn:Disconnect() end
+            deathConn = hum.Died:Connect(function()
+                if spawnSaveEnabled then
+                    savePosition()
+                end
+            end)
+        end
     end
 
     ssToggleBtn.MouseButton1Click:Connect(function()
@@ -10029,26 +10032,9 @@ do
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            -- Сохраняем текущую позицию
             savePosition()
-            
-            -- Настраиваем отслеживание
-            setupDeathTracking()
-            
-            -- Если персонаж уже есть, сразу подключаем отслеживание смерти
-            local char = LocalPlayer.Character
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                if deathConn then deathConn:Disconnect() end
-                deathConn = hum.Died:Connect(function()
-                    if spawnSaveEnabled then
-                        savePosition()
-                        print("Death detected, position saved")
-                    end
-                end)
-            end
+            setupTracking()
         else
-            -- Отключаем всё при выключении
             if deathConn then
                 deathConn:Disconnect()
                 deathConn = nil
@@ -10061,7 +10047,6 @@ do
         end
     end)
 end
-
 -- ВЫСОТА ФРЕЙМА (3 айтема + 3 гапа)
 local pvHeight = pvStartY + (3 * itemHeight) + (3 * gap)
 playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
