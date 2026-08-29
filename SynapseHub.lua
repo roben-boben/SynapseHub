@@ -9568,7 +9568,7 @@ pclCheckmark.Font = Enum.Font.GothamBold
 pclCheckmark.Visible = false
 pclCheckmark.Parent = pclCheckboxBox
 
--- PCLD ESP ЛОГИКА (без изменений)
+-- PCLD ESP логика (без изменений)
 do
     local pclEspEnabled = false
     local espBoxes = {}
@@ -9800,7 +9800,7 @@ akEspCheckmark.Font = Enum.Font.GothamBold
 akEspCheckmark.Visible = false
 akEspCheckmark.Parent = akEspCheckboxBox
 
--- Anti Kick ESP логика
+-- Anti Kick ESP логика (без изменений)
 do
     local akEspEnabled = false
     local highlights = {}
@@ -9885,7 +9885,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION (ТОЛЬКО 1 РАЗ, ПОТОМ УДАЛЯЕТСЯ)
+-- 3. SPAWN SAVE POSITION (РАБОТАЕТ 1 РАЗ, ПОТОМ УДАЛЯЕТСЯ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,39 +9966,39 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА SPAWN SAVE POSITION (ТОЛЬКО 1 РАЗ)
+-- ЛОГИКА: СПАВН СЕЙВ ПОЗИШН (РАБОТАЕТ 1 РАЗ)
 do
     local spawnSaveEnabled = false
-    local savedSpawnCF = nil
     local spawnSaveConn = nil
-    local hasTeleported = false
+    local savedPos = nil
+    local used = false
 
     ssToggleBtn.MouseButton1Click:Connect(function()
         spawnSaveEnabled = not spawnSaveEnabled
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            hasTeleported = false
-            savedSpawnCF = nil
+            used = false
+            savedPos = nil
             
             -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
-                savedSpawnCF = hrp.CFrame
+                savedPos = hrp.CFrame
             end
             
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled and savedSpawnCF and not hasTeleported then
+                if spawnSaveEnabled and savedPos and not used then
                     task.wait(0.5)
                     local newHrp = newChar:FindFirstChild("HumanoidRootPart")
                     if newHrp then
-                        newHrp.CFrame = savedSpawnCF
+                        newHrp.CFrame = savedPos
                         newHrp.AssemblyLinearVelocity = Vector3.zero
                         newHrp.AssemblyAngularVelocity = Vector3.zero
-                        hasTeleported = true -- ПОМЕЧАЕМ ЧТО ТЕЛЕПОРТИРОВАЛИ
-                        savedSpawnCF = nil -- УДАЛЯЕМ ТОЧКУ
+                        used = true
+                        savedPos = nil
                     end
                 end
             end)
@@ -10007,14 +10007,14 @@ do
                 spawnSaveConn:Disconnect()
                 spawnSaveConn = nil
             end
-            savedSpawnCF = nil
-            hasTeleported = false
+            savedPos = nil
+            used = false
         end
     end)
 end
 
 -- ============================================================
--- 4. BACK TRAIL (ТОНКАЯ ЛИНИЯ НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ)
+-- 4. BACK TRAIL (НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ, ТОЛЬКО ПРИ ДВИЖЕНИИ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -10095,20 +10095,20 @@ btCheckmark.Font = Enum.Font.GothamBold
 btCheckmark.Visible = false
 btCheckmark.Parent = btCheckboxBox
 
--- ЛОГИКА BACK TRAIL (ТОНКАЯ ЛИНИЯ НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ)
+-- ЛОГИКА BACK TRAIL (НА СПИНЕ, ЧЕРНЫЙ->БЕЛЫЙ)
 do
     local backTrailEnabled = false
     local trailTask = nil
-    local trailBeams = {}
-    local MAX_TRAIL = 60
+    local trailParts = {}
+    local MAX_TRAIL = 50
 
     local function clearTrail()
-        for _, beam in pairs(trailBeams) do
-            if beam and beam.Parent then
-                beam:Destroy()
+        for _, part in pairs(trailParts) do
+            if part and part.Parent then
+                part:Destroy()
             end
         end
-        trailBeams = {}
+        trailParts = {}
     end
 
     local function startTrail()
@@ -10118,7 +10118,7 @@ do
         trailTask = task.spawn(function()
             local lastPos = nil
             local isMoving = false
-            local moveTimer = 0
+            local stopTimer = 0
             
             while backTrailEnabled do
                 local char = LocalPlayer.Character
@@ -10126,82 +10126,70 @@ do
                 local hum = char and char:FindFirstChildOfClass("Humanoid")
                 
                 if hrp and hum then
-                    -- ПРОВЕРЯЕМ ДВИЖЕТСЯ ЛИ ИГРОК
-                    local velocity = hrp.AssemblyLinearVelocity
-                    local speed = (Vector3.new(velocity.X, 0, velocity.Z)).Magnitude
+                    local vel = hrp.AssemblyLinearVelocity
+                    local speed = (Vector3.new(vel.X, 0, vel.Z)).Magnitude
                     
                     if speed > 0.5 then
                         isMoving = true
-                        moveTimer = 0
+                        stopTimer = 0
                     else
-                        moveTimer = moveTimer + 0.02
-                        if moveTimer > 0.3 then
+                        stopTimer = stopTimer + 0.02
+                        if stopTimer > 0.3 then
                             isMoving = false
                         end
                     end
                     
-                    -- СОЗДАЕМ ЛИНИЮ ТОЛЬКО КОГДА ДВИЖЕТСЯ
                     if isMoving then
-                        -- ПОЗИЦИЯ ПРЯМО НА СПИНЕ (на 0.5 студа назад и чуть выше пояса)
-                        local backPos = hrp.CFrame * CFrame.new(0, 0.2, -0.7)
+                        -- ПОЗИЦИЯ НА СПИНЕ (на 0.3 студа назад)
+                        local backPos = hrp.CFrame * CFrame.new(0, 0.3, -0.5)
                         local currentPos = backPos.Position
                         
                         if lastPos then
                             local dist = (currentPos - lastPos).Magnitude
-                            if dist > 0.2 then
-                                -- СОЗДАЕМ ТОНКУЮ ЛИНИЮ
-                                local beam = Instance.new("Part")
-                                beam.Size = Vector3.new(0.05, 0.05, dist)
-                                beam.CFrame = CFrame.lookAt(lastPos, currentPos) * CFrame.new(0, 0, -(dist / 2))
-                                beam.Anchored = true
-                                beam.CanCollide = false
-                                beam.CanQuery = false
-                                beam.Transparency = 0.25
-                                beam.Material = Enum.Material.Neon
-                                beam.Parent = workspace
+                            if dist > 0.15 then
+                                -- ТОНКАЯ ЛИНИЯ
+                                local part = Instance.new("Part")
+                                part.Size = Vector3.new(0.05, 0.05, dist)
+                                part.CFrame = CFrame.lookAt(lastPos, currentPos) * CFrame.new(0, 0, -(dist / 2))
+                                part.Anchored = true
+                                part.CanCollide = false
+                                part.CanQuery = false
+                                part.Transparency = 0.25
+                                part.Material = Enum.Material.Neon
+                                part.Parent = workspace
                                 
-                                -- ЧЕРНЫЙ->БЕЛЫЙ ПЕРЕЛИВ
-                                local progress = #trailBeams / MAX_TRAIL
-                                local color = Color3.fromRGB(
-                                    255 * progress,
-                                    255 * progress,
-                                    255 * progress
-                                )
-                                beam.Color = color
+                                -- ЦВЕТ: ЧЕРНЫЙ->БЕЛЫЙ
+                                local progress = #trailParts / MAX_TRAIL
+                                part.Color = Color3.fromRGB(255 * progress, 255 * progress, 255 * progress)
                                 
-                                table.insert(trailBeams, beam)
+                                table.insert(trailParts, part)
                                 
-                                if #trailBeams > MAX_TRAIL then
-                                    local oldest = table.remove(trailBeams, 1)
+                                if #trailParts > MAX_TRAIL then
+                                    local oldest = table.remove(trailParts, 1)
                                     if oldest and oldest.Parent then
                                         oldest:Destroy()
                                     end
                                 end
                                 
-                                -- ОБНОВЛЯЕМ ЦВЕТ ВСЕХ ЛИНИЙ
-                                for i, b in ipairs(trailBeams) do
-                                    local progress2 = i / #trailBeams
-                                    local color2 = Color3.fromRGB(
-                                        255 * progress2,
-                                        255 * progress2,
-                                        255 * progress2
-                                    )
-                                    b.Color = color2
-                                    b.Transparency = 0.25
+                                -- ОБНОВЛЯЕМ ЦВЕТА ВСЕХ ЛИНИЙ
+                                for i, p in ipairs(trailParts) do
+                                    local prog = i / #trailParts
+                                    p.Color = Color3.fromRGB(255 * prog, 255 * prog, 255 * prog)
+                                    p.Transparency = 0.25
                                 end
                             end
                         end
                         
                         lastPos = currentPos
                     else
-                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ ВСЕ ЛИНИИ
-                        if #trailBeams > 0 then
-                            for _, b in pairs(trailBeams) do
-                                if b and b.Parent then
-                                    b:Destroy()
+                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ ВСЁ
+                        if #trailParts > 0 then
+                            for _, p in pairs(trailParts) do
+                                if p and p.Parent then
+                                    p:Destroy()
                                 end
                             end
-                            trailBeams = {}
+                            trailParts = {}
                         end
                         lastPos = nil
                     end
