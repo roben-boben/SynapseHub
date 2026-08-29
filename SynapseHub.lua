@@ -9484,12 +9484,16 @@ pvLine2.BackgroundTransparency = 0.3
 pvLine2.BorderSizePixel = 0
 pvLine2.Parent = playerVisualsBox
 
+local gap = 10
+local pvStartY = 52
+local itemHeight = 48
+
 -- ============================================================
 -- 1. PCLD ESP
 -- ============================================================
 local pclDespBox = Instance.new("Frame")
-pclDespBox.Size = UDim2.new(0, 270, 0, 48)
-pclDespBox.Position = UDim2.new(0, 15, 0, 52)
+pclDespBox.Size = UDim2.new(0, 270, 0, itemHeight)
+pclDespBox.Position = UDim2.new(0, 15, 0, pvStartY)
 pclDespBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 pclDespBox.BackgroundTransparency = 0.25
 pclDespBox.ClipsDescendants = true
@@ -9717,9 +9721,11 @@ end
 -- ============================================================
 -- 2. ANTI KICK ESP
 -- ============================================================
+local pvY = pvStartY + itemHeight + gap
+
 local antiKickEspBox = Instance.new("Frame")
-antiKickEspBox.Size = UDim2.new(0, 270, 0, 48)
-antiKickEspBox.Position = UDim2.new(0, 15, 0, 52 + 48 + 10)
+antiKickEspBox.Size = UDim2.new(0, 270, 0, itemHeight)
+antiKickEspBox.Position = UDim2.new(0, 15, 0, pvY)
 antiKickEspBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 antiKickEspBox.BackgroundTransparency = 0.25
 antiKickEspBox.ClipsDescendants = true
@@ -9881,9 +9887,11 @@ end
 -- ============================================================
 -- 3. SPAWN SAVE POSITION
 -- ============================================================
+pvY = pvY + itemHeight + gap
+
 local spawnSaveBox = Instance.new("Frame")
-spawnSaveBox.Size = UDim2.new(0, 270, 0, 48)
-spawnSaveBox.Position = UDim2.new(0, 15, 0, 52 + 48 + 10 + 48 + 10)
+spawnSaveBox.Size = UDim2.new(0, 270, 0, itemHeight)
+spawnSaveBox.Position = UDim2.new(0, 15, 0, pvY)
 spawnSaveBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 spawnSaveBox.BackgroundTransparency = 0.25
 spawnSaveBox.ClipsDescendants = true
@@ -9958,7 +9966,7 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА SPAWN SAVE POSITION (ONLY 1 USE)
+-- ЛОГИКА SPAWN SAVE POSITION
 do
     local spawnSaveEnabled = false
     local savedSpawnCF = nil
@@ -9972,7 +9980,6 @@ do
         if spawnSaveEnabled then
             teleportedOnce = false
             
-            -- СОХРАНЯЕМ ПОЗИЦИЮ ПРИ ВКЛЮЧЕНИИ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -9981,7 +9988,6 @@ do
                 savedSpawnCF = CFrame.new(0, 10, 0)
             end
             
-            -- ПОДПИСЫВАЕМСЯ НА ВОЗРОЖДЕНИЕ
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
                 if spawnSaveEnabled and not teleportedOnce and savedSpawnCF then
@@ -10006,8 +10012,175 @@ do
     end)
 end
 
+-- ============================================================
+-- 4. BACK TRAIL (СЛЕД ЗА ИГРОКОМ)
+-- ============================================================
+pvY = pvY + itemHeight + gap
+
+local backTrailBox = Instance.new("Frame")
+backTrailBox.Size = UDim2.new(0, 270, 0, itemHeight)
+backTrailBox.Position = UDim2.new(0, 15, 0, pvY)
+backTrailBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+backTrailBox.BackgroundTransparency = 0.25
+backTrailBox.ClipsDescendants = true
+backTrailBox.Parent = playerVisualsBox
+
+local btBoxCorner = Instance.new("UICorner")
+btBoxCorner.CornerRadius = UDim.new(0, 18)
+btBoxCorner.Parent = backTrailBox
+
+local btBoxStroke = Instance.new("UIStroke")
+btBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+btBoxStroke.Transparency = 0.2
+btBoxStroke.Thickness = 1.0
+btBoxStroke.Parent = backTrailBox
+
+local btToggleBtn = Instance.new("TextButton")
+btToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+btToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+btToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+btToggleBtn.BackgroundTransparency = 0.2
+btToggleBtn.Text = ""
+btToggleBtn.AutoButtonColor = false
+btToggleBtn.Parent = backTrailBox
+
+local btToggleCorner = Instance.new("UICorner")
+btToggleCorner.CornerRadius = UDim.new(0, 14)
+btToggleCorner.Parent = btToggleBtn
+
+local btToggleStroke = Instance.new("UIStroke")
+btToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+btToggleStroke.Transparency = 0.2
+btToggleStroke.Thickness = 0.8
+btToggleStroke.Parent = btToggleBtn
+
+local btToggleLabel = Instance.new("TextLabel")
+btToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+btToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+btToggleLabel.BackgroundTransparency = 1
+btToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+btToggleLabel.Text = "Back Trail"
+btToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+btToggleLabel.TextSize = 12
+btToggleLabel.Font = Enum.Font.GothamBold
+btToggleLabel.Parent = btToggleBtn
+
+local btCheckboxBox = Instance.new("Frame")
+btCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+btCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+btCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+btCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+btCheckboxBox.BackgroundTransparency = 0.2
+btCheckboxBox.BorderSizePixel = 0
+btCheckboxBox.Parent = btToggleBtn
+
+local btCbCorner = Instance.new("UICorner")
+btCbCorner.CornerRadius = UDim.new(0, 6)
+btCbCorner.Parent = btCheckboxBox
+
+local btCbStroke = Instance.new("UIStroke")
+btCbStroke.Color = Color3.fromRGB(150, 150, 150)
+btCbStroke.Transparency = 0.2
+btCbStroke.Thickness = 1
+btCbStroke.Parent = btCheckboxBox
+
+local btCheckmark = Instance.new("TextLabel")
+btCheckmark.Size = UDim2.new(1, 0, 1, 0)
+btCheckmark.BackgroundTransparency = 1
+btCheckmark.Text = "✓"
+btCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+btCheckmark.TextSize = 14
+btCheckmark.Font = Enum.Font.GothamBold
+btCheckmark.Visible = false
+btCheckmark.Parent = btCheckboxBox
+
+-- ЛОГИКА BACK TRAIL
+do
+    local backTrailEnabled = false
+    local trailParts = {}
+    local trailTask = nil
+    local MAX_TRAIL = 50
+    local TRAIL_INTERVAL = 0.05
+
+    local function clearTrail()
+        for _, part in pairs(trailParts) do
+            if part and part.Parent then
+                part:Destroy()
+            end
+        end
+        trailParts = {}
+    end
+
+    local function startTrail()
+        if trailTask then task.cancel(trailTask) end
+        
+        trailTask = task.spawn(function()
+            clearTrail()
+            
+            while backTrailEnabled do
+                local char = LocalPlayer.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                
+                if hrp then
+                    -- СОЗДАЕМ НОВУЮ ЧАСТИЦУ СЛЕДА
+                    local part = Instance.new("Part")
+                    part.Size = Vector3.new(1, 0.2, 1)
+                    part.CFrame = hrp.CFrame * CFrame.new(0, -2, 0)
+                    part.Anchored = true
+                    part.CanCollide = false
+                    part.CanQuery = false
+                    part.Transparency = 0.8
+                    part.BrickColor = BrickColor.new("Bright blue")
+                    part.Material = Enum.Material.Neon
+                    part.Parent = workspace
+                    
+                    -- ДОБАВЛЯЕМ В СПИСОК
+                    table.insert(trailParts, part)
+                    
+                    -- ЕСЛИ ПАРТОВ СЛИШКОМ МНОГО - УДАЛЯЕМ САМЫЙ СТАРЫЙ
+                    if #trailParts > MAX_TRAIL then
+                        local oldest = table.remove(trailParts, 1)
+                        if oldest and oldest.Parent then
+                            oldest:Destroy()
+                        end
+                    end
+                    
+                    -- ПЛАВНО УМЕНЬШАЕМ ПРОЗРАЧНОСТЬ ВСЕХ ПАРТОВ
+                    for i, trailPart in ipairs(trailParts) do
+                        local alpha = 0.3 + (0.7 * (i / #trailParts))
+                        trailPart.Transparency = 1 - alpha
+                        
+                        -- МЕНЯЕМ РАЗМЕР - НОВЫЕ БОЛЬШЕ, СТАРЫЕ МЕНЬШЕ
+                        local sizeScale = 0.3 + (0.7 * (i / #trailParts))
+                        trailPart.Size = Vector3.new(sizeScale, 0.2, sizeScale)
+                    end
+                end
+                
+                task.wait(TRAIL_INTERVAL)
+            end
+            
+            clearTrail()
+        end)
+    end
+
+    btToggleBtn.MouseButton1Click:Connect(function()
+        backTrailEnabled = not backTrailEnabled
+        btCheckmark.Visible = backTrailEnabled
+        
+        if backTrailEnabled then
+            startTrail()
+        else
+            if trailTask then
+                task.cancel(trailTask)
+                trailTask = nil
+            end
+            clearTrail()
+        end
+    end)
+end
+
 -- ВЫСОТА ФРЕЙМА
-local pvHeight = 52 + 48 + 10 + 48 + 10 + 48 + 10 + 20
+local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap
 playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
