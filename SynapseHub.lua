@@ -9568,7 +9568,7 @@ pclCheckmark.Font = Enum.Font.GothamBold
 pclCheckmark.Visible = false
 pclCheckmark.Parent = pclCheckboxBox
 
--- PCLD ESP логика
+-- PCLD ESP логика (без изменений)
 do
     local pclEspEnabled = false
     local espBoxes = {}
@@ -9800,7 +9800,7 @@ akEspCheckmark.Font = Enum.Font.GothamBold
 akEspCheckmark.Visible = false
 akEspCheckmark.Parent = akEspCheckboxBox
 
--- Anti Kick ESP логика
+-- Anti Kick ESP логика (без изменений)
 do
     local akEspEnabled = false
     local highlights = {}
@@ -9885,7 +9885,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION (СОХРАНЯЕТ ПОЗИЦИЮ СМЕРТИ КАЖДЫЙ РАЗ)
+-- 3. SPAWN SAVE POSITION (РАБОТАЕТ 1 РАЗ НА СМЕРТЬ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,18 +9966,21 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА: СОХРАНЯЕТ ПОЗИЦИЮ КАЖДЫЙ РАЗ ПРИ СМЕРТИ
+-- ЛОГИКА: РАБОТАЕТ 1 РАЗ НА СМЕРТЬ
 do
     local spawnSaveEnabled = false
     local spawnSaveConn = nil
     local savedPos = nil
+    local used = false
 
     ssToggleBtn.MouseButton1Click:Connect(function()
         spawnSaveEnabled = not spawnSaveEnabled
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
+            used = false
+            savedPos = nil
+            
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -9986,20 +9989,14 @@ do
             
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled then
-                    -- СОХРАНЯЕМ ПОЗИЦИЮ СТАРОГО ПЕРСОНАЖА (МЕСТО СМЕРТИ)
-                    local oldChar = LocalPlayer.Character
-                    local oldHrp = oldChar and oldChar:FindFirstChild("HumanoidRootPart")
-                    if oldHrp then
-                        savedPos = oldHrp.CFrame
-                    end
-                    
+                if spawnSaveEnabled and savedPos and not used then
                     task.wait(0.5)
                     local newHrp = newChar:FindFirstChild("HumanoidRootPart")
-                    if newHrp and savedPos then
+                    if newHrp then
                         newHrp.CFrame = savedPos
                         newHrp.AssemblyLinearVelocity = Vector3.zero
                         newHrp.AssemblyAngularVelocity = Vector3.zero
+                        used = true
                         savedPos = nil
                     end
                 end
@@ -10010,6 +10007,7 @@ do
                 spawnSaveConn = nil
             end
             savedPos = nil
+            used = false
         end
     end)
 end
@@ -10101,7 +10099,7 @@ do
     local backTrailEnabled = false
     local trailTask = nil
     local trailParts = {}
-    local MAX_TRAIL = 120
+    local MAX_TRAIL = 80
 
     local function clearTrail()
         for _, part in pairs(trailParts) do
@@ -10117,6 +10115,7 @@ do
         clearTrail()
         
         trailTask = task.spawn(function()
+            local lastPositions = {}
             local isMoving = false
             local stopTimer = 0
             
@@ -10141,17 +10140,17 @@ do
                     end
                     
                     if isMoving then
-                        -- ПОЗИЦИЯ НА СПИНЕ
+                        -- ПОЗИЦИЯ НА СПИНЕ (на 0.3 студа назад)
                         local backPos = hrp.CFrame * CFrame.new(0, 0, -0.4)
                         local backPosWorld = backPos.Position
                         
-                        -- ОТ НОГ ДО ГОЛОВЫ
+                        -- ВЕРТИКАЛЬНАЯ ЛИНИЯ: ОТ НОГ (низ) ДО ГОЛОВЫ (верх)
                         local footY = hrp.Position.Y - 1.5
                         local headY = head.Position.Y + 0.3
                         local midY = (footY + headY) / 2
                         local height = headY - footY
                         
-                        -- ВЕРТИКАЛЬНАЯ ЛИНИЯ
+                        -- СОЗДАЕМ ВЕРТИКАЛЬНУЮ ЛИНИЮ
                         local verticalPart = Instance.new("Part")
                         verticalPart.Size = Vector3.new(0.05, height, 0.05)
                         verticalPart.CFrame = CFrame.new(backPosWorld.X, midY, backPosWorld.Z)
@@ -10162,13 +10161,13 @@ do
                         verticalPart.Material = Enum.Material.Neon
                         verticalPart.Parent = workspace
                         
-                        -- БЕЛЫЙ -> ЧЕРНЫЙ (НАОБОРОТ ОТ ПРОШЛОГО)
+                        -- ЦВЕТА: БЕЛЫЙ -> ЧЕРНЫЙ (НАОБОРОТ)
                         local progress = #trailParts / MAX_TRAIL
                         local colorValue = 255 - (255 * progress)
                         verticalPart.Color = Color3.fromRGB(colorValue, colorValue, colorValue)
                         
                         -- ПЛАВНОЕ ПОЯВЛЕНИЕ (alpha от 0 к 0.5)
-                        local alpha = math.min(#trailParts / 15, 0.5)
+                        local alpha = math.min(#trailParts / 10, 0.5)
                         verticalPart.Transparency = 0.5 - alpha
                         
                         table.insert(trailParts, verticalPart)
@@ -10180,18 +10179,18 @@ do
                             end
                         end
                         
-                        -- ОБНОВЛЯЕМ ВСЕ ЛИНИИ
+                        -- ОБНОВЛЯЕМ ЦВЕТА И ПРОЗРАЧНОСТЬ
                         for i, p in ipairs(trailParts) do
                             local prog = i / #trailParts
                             local val = 255 - (255 * prog)
                             p.Color = Color3.fromRGB(val, val, val)
                             
-                            -- ПЛАВНОЕ ИСЧЕЗНОВЕНИЕ К КОНЦУ
+                            -- ПЛАВНОЕ ИСЧЕЗНОВЕНИЕ
                             local alpha2 = 0.5 * (i / #trailParts)
                             p.Transparency = 0.5 - alpha2
                         end
                     else
-                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ
+                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ ВСЁ
                         if #trailParts > 0 then
                             for _, p in pairs(trailParts) do
                                 if p and p.Parent then
