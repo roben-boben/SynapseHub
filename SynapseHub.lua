@@ -9568,7 +9568,7 @@ pclCheckmark.Font = Enum.Font.GothamBold
 pclCheckmark.Visible = false
 pclCheckmark.Parent = pclCheckboxBox
 
--- PCLD ESP ЛОГИКА
+-- PCLD ESP ЛОГИКА (без изменений)
 do
     local pclEspEnabled = false
     local espBoxes = {}
@@ -9885,7 +9885,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION (СОХРАНЯЕТ МЕСТО СМЕРТИ КАЖДЫЙ РАЗ)
+-- 3. SPAWN SAVE POSITION (СОХРАНЯЕТ ПОЗИЦИЮ СМЕРТИ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,47 +9966,39 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА SPAWN SAVE POSITION (СОХРАНЯЕТ МЕСТО СМЕРТИ)
+-- ЛОГИКА SPAWN SAVE POSITION (СОХРАНЯЕТ ПОЗИЦИЮ СМЕРТИ)
 do
     local spawnSaveEnabled = false
     local savedSpawnCF = nil
     local spawnSaveConn = nil
-    local deathConn = nil
 
     ssToggleBtn.MouseButton1Click:Connect(function()
         spawnSaveEnabled = not spawnSaveEnabled
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
+            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ ПРИ ВКЛЮЧЕНИИ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
                 savedSpawnCF = hrp.CFrame
             end
             
-            -- СЛЕДИМ ЗА СМЕРТЬЮ И СОХРАНЯЕМ ПОЗИЦИЮ
-            if deathConn then deathConn:Disconnect() end
-            deathConn = RunService.Heartbeat:Connect(function()
-                if spawnSaveEnabled then
-                    local char = LocalPlayer.Character
-                    local hum = char and char:FindFirstChildOfClass("Humanoid")
-                    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                    
-                    -- ЕСЛИ ЗДОРОВЬЕ СТАЛО 0 ИЛИ ПЕРСОНАЖ ИСЧЕЗ - СОХРАНЯЕМ ПОЗИЦИЮ
-                    if hum and hum.Health <= 0 and hrp then
-                        savedSpawnCF = hrp.CFrame
-                    end
-                end
-            end)
-            
-            -- ПРИ ВОЗРОЖДЕНИИ ТЕЛЕПОРТИРУЕМ В СОХРАНЕННУЮ ПОЗИЦИЮ
+            -- ОТСЛЕЖИВАЕМ СМЕРТЬ И СОХРАНЯЕМ ПОЗИЦИЮ
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled and savedSpawnCF then
+                if spawnSaveEnabled then
+                    -- СОХРАНЯЕМ ПОЗИЦИЮ СМЕРТИ (ПОСЛЕДНЯЯ ПОЗИЦИЯ ПЕРЕД ВОЗРОЖДЕНИЕМ)
+                    local oldChar = LocalPlayer.Character
+                    local oldHrp = oldChar and oldChar:FindFirstChild("HumanoidRootPart")
+                    if oldHrp then
+                        savedSpawnCF = oldHrp.CFrame
+                    end
+                    
+                    -- ТЕЛЕПОРТИРУЕМ В СОХРАНЕННУЮ ПОЗИЦИЮ
                     task.wait(0.5)
                     local newHrp = newChar:FindFirstChild("HumanoidRootPart")
-                    if newHrp then
+                    if newHrp and savedSpawnCF then
                         newHrp.CFrame = savedSpawnCF
                         newHrp.AssemblyLinearVelocity = Vector3.zero
                         newHrp.AssemblyAngularVelocity = Vector3.zero
@@ -10017,10 +10009,6 @@ do
             if spawnSaveConn then
                 spawnSaveConn:Disconnect()
                 spawnSaveConn = nil
-            end
-            if deathConn then
-                deathConn:Disconnect()
-                deathConn = nil
             end
             savedSpawnCF = nil
         end
@@ -10114,8 +10102,8 @@ do
     local backTrailEnabled = false
     local trailTask = nil
     local trailBeams = {}
-    local MAX_TRAIL = 40
-    local TRAIL_INTERVAL = 0.03
+    local MAX_TRAIL = 50
+    local TRAIL_INTERVAL = 0.02
 
     local function clearTrail()
         for _, beam in pairs(trailBeams) do
@@ -10124,20 +10112,6 @@ do
             end
         end
         trailBeams = {}
-    end
-
-    local function createBeam(startPos, endPos, color)
-        local beam = Instance.new("Part")
-        beam.Size = Vector3.new(0.2, 0.2, (startPos - endPos).Magnitude)
-        beam.CFrame = CFrame.lookAt(startPos, endPos) * CFrame.new(0, 0, -(beam.Size.Z / 2))
-        beam.Anchored = true
-        beam.CanCollide = false
-        beam.CanQuery = false
-        beam.Transparency = 0.3
-        beam.BrickColor = BrickColor.new("Bright blue")
-        beam.Material = Enum.Material.Neon
-        beam.Parent = workspace
-        return beam
     end
 
     local function startTrail()
@@ -10154,18 +10128,27 @@ do
                 local hum = char and char:FindFirstChildOfClass("Humanoid")
                 
                 if hrp and hum then
-                    -- ПОЗИЦИЯ ЗА СПИНОЙ (на 3 студа назад и чуть выше)
-                    local backPos = hrp.CFrame * CFrame.new(0, 0.5, -2.5)
+                    -- ПОЗИЦИЯ ЗА СПИНОЙ (на 3.5 студа назад и чуть выше)
+                    local backPos = hrp.CFrame * CFrame.new(0, 0.5, -3.5)
                     local currentPos = backPos.Position
                     
                     if lastPos then
                         local dist = (currentPos - lastPos).Magnitude
-                        if dist > 0.5 then
-                            -- СОЗДАЕМ ТОНКИЙ ДЛИННЫЙ БИМ МЕЖДУ ТОЧКАМИ
-                            local beam = createBeam(lastPos, currentPos, Color3.fromRGB(0, 150, 255))
+                        if dist > 0.3 then
+                            -- СОЗДАЕМ ТОНКИЙ ДЛИННЫЙ БИМ
+                            local beam = Instance.new("Part")
+                            beam.Size = Vector3.new(0.1, 0.1, dist)
+                            beam.CFrame = CFrame.lookAt(lastPos, currentPos) * CFrame.new(0, 0, -(dist / 2))
+                            beam.Anchored = true
+                            beam.CanCollide = false
+                            beam.CanQuery = false
+                            beam.Transparency = 0.2
+                            beam.BrickColor = BrickColor.new("Bright blue")
+                            beam.Material = Enum.Material.Neon
+                            beam.Parent = workspace
+                            
                             table.insert(trailBeams, beam)
                             
-                            -- УДАЛЯЕМ СТАРЫЕ
                             if #trailBeams > MAX_TRAIL then
                                 local oldest = table.remove(trailBeams, 1)
                                 if oldest and oldest.Parent then
@@ -10173,11 +10156,11 @@ do
                                 end
                             end
                             
-                            -- МЕНЯЕМ ПРОЗРАЧНОСТЬ
+                            -- ПЛАВНАЯ ПРОЗРАЧНОСТЬ И РАЗМЕР
                             for i, b in ipairs(trailBeams) do
-                                local alpha = 0.1 + (0.7 * (i / #trailBeams))
+                                local alpha = 0.05 + (0.7 * (i / #trailBeams))
                                 b.Transparency = 1 - alpha
-                                local size = 0.05 + (0.3 * (i / #trailBeams))
+                                local size = 0.05 + (0.15 * (i / #trailBeams))
                                 b.Size = Vector3.new(size, size, b.Size.Z)
                             end
                         end
@@ -10211,8 +10194,8 @@ do
     end)
 end
 
--- ВЫСОТА ФРЕЙМА
-local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap
+-- ВЫСОТА ФРЕЙМА (уменьшена на 10 пикселей)
+local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap - 10
 playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
