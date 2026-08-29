@@ -8857,628 +8857,272 @@ shCheckmark.Visible = false
 shCheckmark.Parent = shCheckboxBox
 
 -- ============================================================
--- LINE LAG [MONSTER] (ИЗ ПЕРВОГО ФАЙЛА - createLagWithGrabLine)
+-- ГРУППА 6: PACKET LAG (ПОД SHURIKEN LAG)
 -- ============================================================
-local monsterBox = Instance.new("Frame")
-monsterBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
-monsterBox.Position = UDim2.new(0, gap, 0, slStartY + slItemHeight + gap)
-monsterBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-monsterBox.BackgroundTransparency = 0.25
-monsterBox.ClipsDescendants = true
-monsterBox.Parent = serverLagBox
+local slPosY = serverLagBox.Position.Y.Offset
+local slHeight = serverLagBox.Size.Y.Offset
 
-local mBoxCorner = Instance.new("UICorner")
-mBoxCorner.CornerRadius = UDim.new(0, 18)
-mBoxCorner.Parent = monsterBox
+local packetLagBox = Instance.new("Frame")
+packetLagBox.Size = UDim2.new(0, 300, 0, 96)
+packetLagBox.Position = UDim2.new(0, 20, 0, slPosY + slHeight + gap)
+packetLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+packetLagBox.BackgroundTransparency = 0.25
+packetLagBox.ClipsDescendants = true
+packetLagBox.Parent = miscContentArea
 
-local mBoxStroke = Instance.new("UIStroke")
-mBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-mBoxStroke.Transparency = 0.2
-mBoxStroke.Thickness = 1.0
-mBoxStroke.Parent = monsterBox
+local plBoxCorner = Instance.new("UICorner")
+plBoxCorner.CornerRadius = UDim.new(0, 18)
+plBoxCorner.Parent = packetLagBox
 
-local mToggleBtn = Instance.new("TextButton")
-mToggleBtn.Size = UDim2.new(1, -24, 0, 28)
-mToggleBtn.Position = UDim2.new(0, 12, 0, 8)
-mToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-mToggleBtn.BackgroundTransparency = 0.2
-mToggleBtn.Text = ""
-mToggleBtn.AutoButtonColor = false
-mToggleBtn.Parent = monsterBox
+local plBoxStroke = Instance.new("UIStroke")
+plBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+plBoxStroke.Transparency = 0.2
+plBoxStroke.Thickness = 1.0
+plBoxStroke.Parent = packetLagBox
 
-local mToggleCorner = Instance.new("UICorner")
-mToggleCorner.CornerRadius = UDim.new(0, 14)
-mToggleCorner.Parent = mToggleBtn
+local plTitle = Instance.new("TextLabel")
+plTitle.Size = UDim2.new(1, -30, 0, 30)
+plTitle.Position = UDim2.new(0, 15, 0, 8)
+plTitle.BackgroundTransparency = 1
+plTitle.TextXAlignment = Enum.TextXAlignment.Left
+plTitle.Text = "Packet Lag"
+plTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+plTitle.TextTransparency = 0.05
+plTitle.TextSize = 16
+plTitle.Font = Enum.Font.GothamBold
+plTitle.Parent = packetLagBox
 
-local mToggleStroke = Instance.new("UIStroke")
-mToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-mToggleStroke.Transparency = 0.2
-mToggleStroke.Thickness = 0.8
-mToggleStroke.Parent = mToggleBtn
+local plLine = Instance.new("Frame")
+plLine.Size = UDim2.new(1, -30, 0, 1.5)
+plLine.Position = UDim2.new(0, 15, 0, 42)
+plLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+plLine.BackgroundTransparency = 0.3
+plLine.BorderSizePixel = 0
+plLine.Parent = packetLagBox
 
-local mToggleLabel = Instance.new("TextLabel")
-mToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-mToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-mToggleLabel.BackgroundTransparency = 1
-mToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-mToggleLabel.Text = "Line Lag [Monster]"
-mToggleLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-mToggleLabel.TextSize = 12
-mToggleLabel.Font = Enum.Font.GothamBold
-mToggleLabel.Parent = mToggleBtn
-
-local mCheckboxBox = Instance.new("Frame")
-mCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-mCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-mCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-mCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-mCheckboxBox.BackgroundTransparency = 0.2
-mCheckboxBox.BorderSizePixel = 0
-mCheckboxBox.Parent = mToggleBtn
-
-local mCbCorner = Instance.new("UICorner")
-mCbCorner.CornerRadius = UDim.new(0, 6)
-mCbCorner.Parent = mCheckboxBox
-
-local mCbStroke = Instance.new("UIStroke")
-mCbStroke.Color = Color3.fromRGB(150, 150, 150)
-mCbStroke.Transparency = 0.2
-mCbStroke.Thickness = 1
-mCbStroke.Parent = mCheckboxBox
-
-local mCheckmark = Instance.new("TextLabel")
-mCheckmark.Size = UDim2.new(1, 0, 1, 0)
-mCheckmark.BackgroundTransparency = 1
-mCheckmark.Text = "✓"
-mCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-mCheckmark.TextSize = 14
-mCheckmark.Font = Enum.Font.GothamBold
-mCheckmark.Visible = false
-mCheckmark.Parent = mCheckboxBox
-
--- ПОЛЗУНОК ДЛЯ MONSTER LAG (как в первом файле)
-local mSliderFrame = Instance.new("Frame")
-mSliderFrame.Size = UDim2.new(1, -24, 0, 22)
-mSliderFrame.Position = UDim2.new(0, 12, 0, 45)
-mSliderFrame.BackgroundTransparency = 1
-mSliderFrame.Parent = monsterBox
-
-local mSliderLabel = Instance.new("TextLabel")
-mSliderLabel.Size = UDim2.new(0.4, 0, 1, 0)
-mSliderLabel.Position = UDim2.new(0, 0, 0, 0)
-mSliderLabel.BackgroundTransparency = 1
-mSliderLabel.TextXAlignment = Enum.TextXAlignment.Left
-mSliderLabel.Text = "Intensity: 100"
-mSliderLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-mSliderLabel.TextSize = 11
-mSliderLabel.Font = Enum.Font.Gotham
-mSliderLabel.Parent = mSliderFrame
-
-local mSliderBar = Instance.new("Frame")
-mSliderBar.Size = UDim2.new(0.55, 0, 0.6, 0)
-mSliderBar.Position = UDim2.new(0.4, 5, 0.5, -4)
-mSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
-mSliderBar.BackgroundTransparency = 0.2
-mSliderBar.BorderSizePixel = 0
-mSliderBar.Parent = mSliderFrame
-
-local mSliderBarCorner = Instance.new("UICorner")
-mSliderBarCorner.CornerRadius = UDim.new(1, 0)
-mSliderBarCorner.Parent = mSliderBar
-
-local mSliderFill = Instance.new("Frame")
-mSliderFill.Size = UDim2.new(0.5, 0, 1, 0)
-mSliderFill.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-mSliderFill.BackgroundTransparency = 0.15
-mSliderFill.BorderSizePixel = 0
-mSliderFill.Parent = mSliderBar
-
-local mSliderFillCorner = Instance.new("UICorner")
-mSliderFillCorner.CornerRadius = UDim.new(1, 0)
-mSliderFillCorner.Parent = mSliderFill
-
-local mSliderButton = Instance.new("TextButton")
-mSliderButton.Size = UDim2.new(0, 16, 0, 16)
-mSliderButton.Position = UDim2.new(0.5, -8, 0.5, -8)
-mSliderButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-mSliderButton.BackgroundTransparency = 0
-mSliderButton.Text = ""
-mSliderButton.Parent = mSliderBar
-
-local mSliderButtonCorner = Instance.new("UICorner")
-mSliderButtonCorner.CornerRadius = UDim.new(1, 0)
-mSliderButtonCorner.Parent = mSliderButton
-
-local mSliderButtonStroke = Instance.new("UIStroke")
-mSliderButtonStroke.Color = Color3.fromRGB(140, 140, 140)
-mSliderButtonStroke.Thickness = 1
-mSliderButtonStroke.Parent = mSliderButton
+local plStartY = 52
+local plItemHeight = 36
 
 -- ============================================================
--- ЛОГИКА SHURIKEN LAG (ОРИГИНАЛ)
+-- ПОЛЗУНОК РАЗМЕРА ПАКЕТА (0.1 - 1.6 МБ)
 -- ============================================================
-local shurikenLagRunning = false
-local shurikenLagTask = nil
+local plSliderBox = Instance.new("Frame")
+plSliderBox.Size = UDim2.new(1, -gap * 2, 0, plItemHeight)
+plSliderBox.Position = UDim2.new(0, gap, 0, plStartY)
+plSliderBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+plSliderBox.BackgroundTransparency = 0.25
+plSliderBox.ClipsDescendants = true
+plSliderBox.Parent = packetLagBox
 
-local function getHRP2()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        return char.HumanoidRootPart
-    end
-    return nil
-end
+local plSBoxCorner = Instance.new("UICorner")
+plSBoxCorner.CornerRadius = UDim.new(0, 12)
+plSBoxCorner.Parent = plSliderBox
 
-local function getInv2()
-    return Workspace:FindFirstChild(LocalPlayer.Name .. "SpawnedInToys")
-end
+local plSBoxStroke = Instance.new("UIStroke")
+plSBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+plSBoxStroke.Transparency = 0.2
+plSBoxStroke.Thickness = 1.0
+plSBoxStroke.Parent = plSliderBox
 
-local function sno2(part)
-    local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
-    if GE then
-        local SetNetworkOwner = GE:FindFirstChild("SetNetworkOwner")
-        if SetNetworkOwner then
-            SetNetworkOwner:FireServer(part, part.CFrame)
-        end
-    end
-end
+local plSliderLabel = Instance.new("TextLabel")
+plSliderLabel.Size = UDim2.new(0.35, -5, 1, 0)
+plSliderLabel.Position = UDim2.new(0, 8, 0, 0)
+plSliderLabel.BackgroundTransparency = 1
+plSliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+plSliderLabel.Text = "Size: 0.10 MB"
+plSliderLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+plSliderLabel.TextSize = 11
+plSliderLabel.Font = Enum.Font.Gotham
+plSliderLabel.Parent = plSliderBox
 
-local function CheckForHome2()
-    local playersInPlots = Workspace:FindFirstChild("PlotItems") and Workspace.PlotItems:FindFirstChild("PlayersInPlots")
-    if playersInPlots and playersInPlots:FindFirstChild(LocalPlayer.Name) then
-        for _, plot in pairs(Workspace.Plots:GetChildren()) do
-            local sign = plot:FindFirstChild("PlotSign")
-            local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
-            if owners then
-                for _, owner in pairs(owners:GetChildren()) do
-                    if owner.Value == LocalPlayer.Name then
-                        local folder = Workspace.PlotItems:FindFirstChild(plot.Name)
-                        if folder then
-                            return true, folder
-                        end
-                    end
-                end
-            end
-        end
-    end
-    return false, nil
-end
+local plSliderBar = Instance.new("Frame")
+plSliderBar.Size = UDim2.new(0.55, -5, 0.6, 0)
+plSliderBar.Position = UDim2.new(0.38, 0, 0.5, -4)
+plSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+plSliderBar.BackgroundTransparency = 0.2
+plSliderBar.BorderSizePixel = 0
+plSliderBar.Parent = plSliderBox
 
-local function SpawnToy2(ToyName)
-    local SpawnToyRemote = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("SpawnToyRemoteFunction")
-    local inv = getInv2()
-    local InPlot = LocalPlayer:FindFirstChild("InPlot")
-    local InOwnedPlot = LocalPlayer:FindFirstChild("InOwnedPlot")
-    local CanSpawnToy = LocalPlayer:FindFirstChild("CanSpawnToy")
-    local hrp = getHRP2()
-    
-    if InPlot and InPlot.Value and not (InOwnedPlot and InOwnedPlot.Value) then 
-        InPlot:GetPropertyChangedSignal("Value"):Wait()
-    end 
-    if CanSpawnToy and not CanSpawnToy.Value then 
-        local t = tick()
-        while CanSpawnToy and not CanSpawnToy.Value and (tick() - t < 3) do
-            task.wait(0.1)
-        end
-    end
+local plBarCorner = Instance.new("UICorner")
+plBarCorner.CornerRadius = UDim.new(1, 0)
+plBarCorner.Parent = plSliderBar
 
-    local SpawnCF = hrp and hrp.CFrame * CFrame.new(0, 14, 20) or CFrame.new(0, 10, 0)
-    
-    local inOwned, house = CheckForHome2()
-    local Container = inOwned and house or inv
-    if not Container then return nil end
+local plSliderFill = Instance.new("Frame")
+plSliderFill.Size = UDim2.new(0.1, 0, 1, 0)
+plSliderFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+plSliderFill.BackgroundTransparency = 0.05
+plSliderFill.BorderSizePixel = 0
+plSliderFill.Parent = plSliderBar
 
-    local spawnedObject = nil
-    local connection
-    connection = Container.ChildAdded:Connect(function(child)
-        if child.Name == ToyName then
-            spawnedObject = child
-        end
-    end)
+local plFillCorner = Instance.new("UICorner")
+plFillCorner.CornerRadius = UDim.new(1, 0)
+plFillCorner.Parent = plSliderFill
 
-    task.spawn(function()
-        pcall(function()
-            SpawnToyRemote:InvokeServer(ToyName, SpawnCF, Vector3.zero)
-        end)
-    end)
+local plSliderButton = Instance.new("TextButton")
+plSliderButton.Size = UDim2.new(0, 14, 0, 14)
+plSliderButton.Position = UDim2.new(0.1, -7, 0.5, -7)
+plSliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+plSliderButton.BackgroundTransparency = 0
+plSliderButton.Text = ""
+plSliderButton.Parent = plSliderBar
 
-    local start = tick()
-    repeat task.wait() until spawnedObject or (tick() - start) > 2.5
-    connection:Disconnect()
-    return spawnedObject
-end
+local plBtnCorner = Instance.new("UICorner")
+plBtnCorner.CornerRadius = UDim.new(1, 0)
+plBtnCorner.Parent = plSliderButton
 
-local function ClearLagToys2()
-    local inv = getInv2()
-    local DestroyToy = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
-    if inv and DestroyToy then
-        for _, v in pairs(inv:GetChildren()) do
-            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
-                pcall(function()
-                    DestroyToy:FireServer(v)
-                end)
-            end
-        end
-    end
-    local inOwned, house = CheckForHome2()
-    if inOwned and house and DestroyToy then
-        for _, v in pairs(house:GetChildren()) do
-            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
-                pcall(function()
-                    DestroyToy:FireServer(v)
-                end)
-            end
-        end
-    end
-end
+local plBtnStroke = Instance.new("UIStroke")
+plBtnStroke.Color = Color3.fromRGB(140, 140, 140)
+plBtnStroke.Thickness = 1
+plBtnStroke.Parent = plSliderButton
 
-local function startShurikenLag()
-    if shurikenLagRunning then return end
-    shurikenLagRunning = true
-    shCheckmark.Visible = true
+local packetSizeMB = 0.1
+local plSliding = false
 
-    ClearLagToys2()
-    task.wait(0.3)
-
-    shurikenLagTask = task.spawn(function()
-        local oldCF = getHRP2() and getHRP2().CFrame
-        local charCF = oldCF
-        
-        local decoys = {}
-        local shurikens = {}
-        
-        local decoy = SpawnToy2("YouDecoy")
-        if decoy then
-            decoy.Name = "LagDecoy"
-            table.insert(decoys, decoy)
-        end
-        task.wait(0.3)
-        
-        for i = 1, 9 do
-            local shur = SpawnToy2("NinjaShuriken")
-            if shur then
-                shur.Name = "LagShuriken"
-                table.insert(shurikens, shur)
-            end
-            task.wait(0.1)
-        end
-
-        if #decoys == 0 or #shurikens == 0 then
-            shurikenLagRunning = false
-            shCheckmark.Visible = false
-            return
-        end
-
-        for _, decoyObj in pairs(decoys) do
-            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
-            if decoyHRP then
-                for _, part in pairs(decoyObj:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                        part.CanQuery = false
-                    end
-                end
-                
-                repeat
-                    decoyHRP.Anchored = true
-                    sno2(decoyHRP)
-                    task.wait(0.01)
-                until decoyObj:FindFirstChild("Head") and decoyObj.Head:FindFirstChild("PartOwner") or not shurikenLagRunning
-            end
-        end
-
-        for _, shuriken in pairs(shurikens) do
-            if not shurikenLagRunning then break end
-            
-            local StickyPart = shuriken:FindFirstChild("StickyPart")
-            if StickyPart then
-                for _, part in pairs(shuriken:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                        part.CanQuery = false
-                        if part.Transparency ~= 1 then
-                            part.Transparency = 0
-                        end
-                    end
-                end
-                
-                repeat
-                    sno2(StickyPart)
-                    task.wait(0.01)
-                until StickyPart:FindFirstChild("PartOwner") or not shurikenLagRunning
-                
-                if #decoys > 0 then
-                    local decoyHRP = decoys[1]:FindFirstChild("HumanoidRootPart")
-                    if decoyHRP then
-                        pcall(function()
-                            ReplicatedStorage.PlayerEvents.StickyPartEvent:FireServer(
-                                StickyPart,
-                                decoyHRP,
-                                CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(90), math.rad(90))
-                            )
-                        end)
-                    end
-                end
-            end
-            task.wait(0.03)
-        end
-
-        for decoyindex, decoyObj in ipairs(decoys) do
-            if not shurikenLagRunning then break end
-            
-            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
-            if decoyHRP then
-                decoyHRP.Anchored = true
-                
-                local startindex = (decoyindex - 1) * 9 + 1
-                local endindex = math.min(startindex + 8, #shurikens)
-                
-                for shurikenindex = startindex, endindex do
-                    if not shurikenLagRunning then break end
-                    
-                    local shuriken = shurikens[shurikenindex]
-                    if not shuriken then break end
-                    
-                    local StickyPart = shuriken:FindFirstChild("StickyPart")
-                    if StickyPart then
-                        local BodyPosition1 = Instance.new("BodyPosition")
-                        BodyPosition1.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        BodyPosition1.P = 100000
-                        BodyPosition1.D = 1000
-                        BodyPosition1.Parent = StickyPart
-                        
-                        local BodyPosition2 = Instance.new("BodyPosition")
-                        BodyPosition2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        BodyPosition2.P = 100000
-                        BodyPosition2.D = 1000
-                        BodyPosition2.Parent = StickyPart
-                        
-                        StickyPart.AssemblyAngularVelocity = Vector3.new(
-                            math.random(-1000, 1000) * 100,
-                            math.random(-1000, 1000) * 100,
-                            math.random(-1000, 1000) * 100
-                        )
-                        
-                        task.defer(function()
-                            local posOffset = 0
-                            local direction = 1
-                            local angle = 0
-                            
-                            while shurikenLagRunning and shuriken.Parent and decoyObj.Parent do
-                                posOffset = posOffset + (1 * direction)
-                                if posOffset > 15 then
-                                    posOffset = 15
-                                    direction = -1
-                                elseif posOffset < -15 then
-                                    posOffset = -15
-                                    direction = 1
-                                end
-                                
-                                angle = angle + 0.5
-                                if angle > math.pi * 2 then angle = 0 end
-                                
-                                BodyPosition1.Position = Vector3.new(
-                                    decoyHRP.Position.X + math.cos(angle) * 5 + math.random(-2, 2),
-                                    decoyHRP.Position.Y + posOffset + math.random(-2, 2),
-                                    decoyHRP.Position.Z + math.sin(angle) * 5 + math.random(-2, 2)
-                                )
-                                
-                                BodyPosition2.Position = Vector3.new(
-                                    decoyHRP.Position.X + math.cos(angle + math.pi) * 5 + math.random(-2, 2),
-                                    decoyHRP.Position.Y - posOffset + math.random(-2, 2),
-                                    decoyHRP.Position.Z + math.sin(angle + math.pi) * 5 + math.random(-2, 2)
-                                )
-                                
-                                StickyPart.AssemblyAngularVelocity = Vector3.new(
-                                    math.random(-9999, 9999) * 10,
-                                    math.random(-9999, 9999) * 10,
-                                    math.random(-9999, 9999) * 10
-                                )
-                                
-                                sno2(StickyPart)
-                                
-                                RunService.RenderStepped:Wait()
-                            end
-                            
-                            if BodyPosition1 and BodyPosition1.Parent then BodyPosition1:Destroy() end
-                            if BodyPosition2 and BodyPosition2.Parent then BodyPosition2:Destroy() end
-                        end)
-                    end
-                end
-                task.wait(0.05)
-            end
-        end
-        
-        while shurikenLagRunning do
-            for _, shuriken in pairs(shurikens) do
-                if shuriken and shuriken.Parent then
-                    local StickyPart = shuriken:FindFirstChild("StickyPart")
-                    if StickyPart then
-                        sno2(StickyPart)
-                        StickyPart.AssemblyAngularVelocity = Vector3.new(
-                            math.random(-9999, 9999) * 10,
-                            math.random(-9999, 9999) * 10,
-                            math.random(-9999, 9999) * 10
-                        )
-                    end
-                end
-            end
-            RunService.RenderStepped:Wait()
-        end
-        
-        ClearLagToys2()
-        
-        local hrp = getHRP2()
-        if hrp and charCF then
-            pcall(function()
-                hrp.CFrame = charCF
-                hrp.AssemblyLinearVelocity = Vector3.zero
-                hrp.AssemblyAngularVelocity = Vector3.zero
-            end)
-        end
-        
-        shurikenLagRunning = false
-        shCheckmark.Visible = false
-    end)
-end
-
-local function stopShurikenLag()
-    shurikenLagRunning = false
-    if shurikenLagTask then
-        task.cancel(shurikenLagTask)
-        shurikenLagTask = nil
-    end
-    shCheckmark.Visible = false
-    ClearLagToys2()
-end
-
-shToggleBtn.MouseButton1Click:Connect(function()
-    if shurikenLagRunning then
-        stopShurikenLag()
-    else
-        startShurikenLag()
-    end
-end)
-
--- ============================================================
--- ЛОГИКА LINE LAG [MONSTER] (ИЗ ПЕРВОГО ФАЙЛА)
--- ============================================================
-local monsterLagRunning = false
-local monsterLagTask = nil
-local monsterIntensity = 100
-
--- ЛОГИКА ПОЛЗУНКА
-local mSliding = false
-local function updateMSlider(input)
+local function updatePlSlider(input)
     local mousePos = input.Position.X
-    local barAbsolutePos = mSliderBar.AbsolutePosition.X
-    local barAbsoluteSize = mSliderBar.AbsoluteSize.X
+    local barAbsPos = plSliderBar.AbsolutePosition.X
+    local barAbsSize = plSliderBar.AbsoluteSize.X
     
-    local relativeX = math.clamp(mousePos - barAbsolutePos, 0, barAbsoluteSize)
-    local scale = math.clamp(relativeX / barAbsoluteSize, 0, 1)
+    local relativeX = math.clamp(mousePos - barAbsPos, 0, barAbsSize)
+    local scale = math.clamp(relativeX / barAbsSize, 0, 1)
     
-    mSliderButton.Position = UDim2.new(scale, -8, 0.5, -8)
-    mSliderFill.Size = UDim2.new(scale, 0, 1, 0)
+    plSliderButton.Position = UDim2.new(scale, -7, 0.5, -7)
+    plSliderFill.Size = UDim2.new(scale, 0, 1, 0)
     
-    monsterIntensity = math.floor(1 + (scale * 29999) + 0.5)
-    mSliderLabel.Text = "Intensity: " .. tostring(monsterIntensity)
+    packetSizeMB = math.round((0.1 + (scale * 1.5)) * 100) / 100
+    plSliderLabel.Text = "Size: " .. string.format("%.2f", packetSizeMB) .. " MB"
 end
 
-mSliderButton.InputBegan:Connect(function(input)
+plSliderButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        mSliding = true
-        updateMSlider(input)
+        plSliding = true
+        updatePlSlider(input)
     end
 end)
 
-mSliderBar.InputBegan:Connect(function(input)
+plSliderBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        mSliding = true
-        updateMSlider(input)
+        plSliding = true
+        updatePlSlider(input)
     end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        mSliding = false
+        plSliding = false
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if mSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        updateMSlider(input)
+    if plSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        updatePlSlider(input)
     end
 end)
 
--- ФУНКЦИЯ LINE LAG [MONSTER] (createLagWithGrabLine ИЗ ПЕРВОГО ФАЙЛА)
-local function createMonsterLag()
-    local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
-    if not CreateGrabLine then return end
+-- ============================================================
+-- КНОПКА SEND PACKET (ТОГГЛ)
+-- ============================================================
+local plSendBox = Instance.new("Frame")
+plSendBox.Size = UDim2.new(1, -gap * 2, 0, 32)
+plSendBox.Position = UDim2.new(0, gap, 0, plStartY + plItemHeight + 4)
+plSendBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+plSendBox.BackgroundTransparency = 0.25
+plSendBox.ClipsDescendants = true
+plSendBox.Parent = packetLagBox
+
+local plSendCorner = Instance.new("UICorner")
+plSendCorner.CornerRadius = UDim.new(0, 12)
+plSendCorner.Parent = plSendBox
+
+local plSendStroke = Instance.new("UIStroke")
+plSendStroke.Color = Color3.fromRGB(180, 180, 180)
+plSendStroke.Transparency = 0.2
+plSendStroke.Thickness = 1.0
+plSendStroke.Parent = plSendBox
+
+local plSendBtn = Instance.new("TextButton")
+plSendBtn.Size = UDim2.new(1, -24, 1, -6)
+plSendBtn.Position = UDim2.new(0, 12, 0, 3)
+plSendBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+plSendBtn.BackgroundTransparency = 0.2
+plSendBtn.Text = "Send Packet"
+plSendBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+plSendBtn.TextSize = 12
+plSendBtn.Font = Enum.Font.GothamBold
+plSendBtn.AutoButtonColor = false
+plSendBtn.Parent = plSendBox
+
+local plSendCorner2 = Instance.new("UICorner")
+plSendCorner2.CornerRadius = UDim.new(0, 10)
+plSendCorner2.Parent = plSendBtn
+
+local plSendStroke2 = Instance.new("UIStroke")
+plSendStroke2.Color = Color3.fromRGB(180, 180, 180)
+plSendStroke2.Transparency = 0.2
+plSendStroke2.Thickness = 0.8
+plSendStroke2.Parent = plSendBtn
+
+local plSendCheck = Instance.new("TextLabel")
+plSendCheck.Size = UDim2.new(0, 20, 1, 0)
+plSendCheck.AnchorPoint = Vector2.new(1, 0.5)
+plSendCheck.Position = UDim2.new(1, -8, 0.5, 0)
+plSendCheck.BackgroundTransparency = 1
+plSendCheck.Text = ""
+plSendCheck.TextColor3 = Color3.fromRGB(0, 255, 0)
+plSendCheck.TextSize = 16
+plSendCheck.Font = Enum.Font.GothamBold
+plSendCheck.Visible = false
+plSendCheck.Parent = plSendBtn
+
+-- ============================================================
+-- ЛОГИКА ОТПРАВКИ ПАКЕТОВ
+-- ============================================================
+local packetLagRunning = false
+local packetLagTask = nil
+local ExtendGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("ExtendGrabLine")
+local PACKET_STRING = "metaballs metaballs metaballs metaballs metaballs metaballs metaballs metaballs"
+local PACKET_STRING_LEN = #PACKET_STRING
+
+local function calculateRepeats(mb)
+    local targetBytes = mb * 1024 * 1024
+    return math.max(1, math.floor(targetBytes / PACKET_STRING_LEN))
+end
+
+plSendBtn.MouseButton1Click:Connect(function()
+    packetLagRunning = not packetLagRunning
+    plSendCheck.Visible = packetLagRunning
+    plSendBtn.Text = packetLagRunning and "Stop Sending" or "Send Packet"
     
-    local intensity = monsterIntensity or 100
-    local count = 0
-    local maxIterations = 500
-    
-    for _, object in ipairs(Workspace:GetDescendants()) do
-        if not monsterLagRunning then break end
-        if count >= maxIterations then break end
+    if packetLagRunning then
+        if packetLagTask then
+            task.cancel(packetLagTask)
+            packetLagTask = nil
+        end
         
-        if object:IsA("BasePart") and object.Parent ~= LocalPlayer.Character then
-            local cf = object.CFrame * CFrame.new(
-                math.random(-intensity, intensity),
-                1e9,
-                math.random(-intensity, intensity)
-            ) * CFrame.Angles(
-                math.rad(math.random(0, 360)),
-                math.rad(math.random(0, 360)),
-                math.rad(math.random(0, 360))
-            )
-            pcall(function()
-                CreateGrabLine:FireServer(object, cf)
-            end)
-            count = count + 1
-        end
-    end
-end
-
-local function startMonsterLag()
-    if monsterLagRunning then return end
-    monsterLagRunning = true
-    mCheckmark.Visible = true
-    
-    monsterLagTask = task.spawn(function()
-        while monsterLagRunning do
-            createMonsterLag()
-            
-            -- ДОПОЛНИТЕЛЬНЫЙ СПАМ ДЛЯ УСИЛЕНИЯ (как в первом файле)
-            if monsterLagRunning then
-                local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
-                if CreateGrabLine then
-                    for i = 1, 20 do
-                        if not monsterLagRunning then break end
-                        pcall(function()
-                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 9e9, 0))
-                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 8e9, 0))
-                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 7e9, 0))
-                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 6e9, 0))
-                        end)
-                        RunService.RenderStepped:Wait()
-                    end
+        packetLagTask = task.spawn(function()
+            while packetLagRunning do
+                if ExtendGrabLine then
+                    local repeats = calculateRepeats(packetSizeMB)
+                    local data = string.rep(PACKET_STRING, repeats)
+                    pcall(function()
+                        ExtendGrabLine:FireServer(data)
+                    end)
                 end
+                task.wait(0.1)
             end
-            
-            task.wait(0.05)
-        end
-    end)
-end
-
-local function stopMonsterLag()
-    monsterLagRunning = false
-    if monsterLagTask then
-        task.cancel(monsterLagTask)
-        monsterLagTask = nil
-    end
-    mCheckmark.Visible = false
-end
-
-mToggleBtn.MouseButton1Click:Connect(function()
-    if monsterLagRunning then
-        stopMonsterLag()
+        end)
     else
-        startMonsterLag()
+        if packetLagTask then
+            task.cancel(packetLagTask)
+            packetLagTask = nil
+        end
     end
 end)
 
--- ============================================================
--- ВЫСОТА ФРЕЙМА
--- ============================================================
-local slHeight = slStartY + (slItemHeight + gap) * 2 + gap
-serverLagBox.Size = UDim2.new(0, 300, 0, slHeight)
-
--- ============================================================
 -- ОБНОВЛЯЕМ CANVAS
--- ============================================================
 local finalCanvas = miscContentArea.CanvasSize.Y.Offset
-miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + slHeight + gap + 20)
+local plHeight = 52 + plItemHeight + 4 + 32 + 8
+miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + plHeight + gap + 20)
 end
 
 -- ============================================================================
