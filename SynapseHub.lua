@@ -8278,7 +8278,7 @@ local slStartY = 52
 local slItemHeight = 48
 
 -- ============================================================
--- SHURIKEN LAG (ПЕРВЫЙ)
+-- SHURIKEN LAG
 -- ============================================================
 local slBox = Instance.new("Frame")
 slBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
@@ -8358,7 +8358,7 @@ slCheckmark.Visible = false
 slCheckmark.Parent = slCheckboxBox
 
 -- ============================================================
--- LINE LAG [MONSTER]
+-- LINE LAG MONSTER (С ТОГЛОМ)
 -- ============================================================
 local slMonsterBox = Instance.new("Frame")
 slMonsterBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
@@ -8378,68 +8378,130 @@ slMonsterStroke.Transparency = 0.2
 slMonsterStroke.Thickness = 1.0
 slMonsterStroke.Parent = slMonsterBox
 
-local slMonsterBtn = Instance.new("TextButton")
-slMonsterBtn.Size = UDim2.new(1, -24, 1, -12)
-slMonsterBtn.Position = UDim2.new(0, 12, 0, 6)
-slMonsterBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-slMonsterBtn.BackgroundTransparency = 0.2
-slMonsterBtn.Text = "Line Lag [MONSTER]"
-slMonsterBtn.TextColor3 = Color3.fromRGB(255, 100, 0)
-slMonsterBtn.TextSize = 13
-slMonsterBtn.Font = Enum.Font.GothamBold
-slMonsterBtn.AutoButtonColor = false
-slMonsterBtn.Parent = slMonsterBox
+local slMonsterToggleBtn = Instance.new("TextButton")
+slMonsterToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+slMonsterToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+slMonsterToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+slMonsterToggleBtn.BackgroundTransparency = 0.2
+slMonsterToggleBtn.Text = ""
+slMonsterToggleBtn.AutoButtonColor = false
+slMonsterToggleBtn.Parent = slMonsterBox
 
-local slMonsterBtnCorner = Instance.new("UICorner")
-slMonsterBtnCorner.CornerRadius = UDim.new(0, 14)
-slMonsterBtnCorner.Parent = slMonsterBtn
+local slMonsterToggleCorner = Instance.new("UICorner")
+slMonsterToggleCorner.CornerRadius = UDim.new(0, 14)
+slMonsterToggleCorner.Parent = slMonsterToggleBtn
 
-local slMonsterBtnStroke = Instance.new("UIStroke")
-slMonsterBtnStroke.Color = Color3.fromRGB(180, 180, 180)
-slMonsterBtnStroke.Transparency = 0.2
-slMonsterBtnStroke.Thickness = 0.8
-slMonsterBtnStroke.Parent = slMonsterBtn
+local slMonsterToggleStroke = Instance.new("UIStroke")
+slMonsterToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+slMonsterToggleStroke.Transparency = 0.2
+slMonsterToggleStroke.Thickness = 0.8
+slMonsterToggleStroke.Parent = slMonsterToggleBtn
 
--- МОНСТР ЛАГ - УСТАНАВЛИВАЕТ 30000
-slMonsterBtn.MouseButton1Click:Connect(function()
-    -- Ищем слайдер LineAmount
-    local sliderFound = false
+local slMonsterToggleLabel = Instance.new("TextLabel")
+slMonsterToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+slMonsterToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+slMonsterToggleLabel.BackgroundTransparency = 1
+slMonsterToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+slMonsterToggleLabel.Text = "Line Lag MONSTER!"
+slMonsterToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+slMonsterToggleLabel.TextSize = 12
+slMonsterToggleLabel.Font = Enum.Font.GothamBold
+slMonsterToggleLabel.Parent = slMonsterToggleBtn
+
+local slMonsterCheckboxBox = Instance.new("Frame")
+slMonsterCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+slMonsterCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+slMonsterCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+slMonsterCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+slMonsterCheckboxBox.BackgroundTransparency = 0.2
+slMonsterCheckboxBox.BorderSizePixel = 0
+slMonsterCheckboxBox.Parent = slMonsterToggleBtn
+
+local slMonsterCbCorner = Instance.new("UICorner")
+slMonsterCbCorner.CornerRadius = UDim.new(0, 6)
+slMonsterCbCorner.Parent = slMonsterCheckboxBox
+
+local slMonsterCbStroke = Instance.new("UIStroke")
+slMonsterCbStroke.Color = Color3.fromRGB(150, 150, 150)
+slMonsterCbStroke.Transparency = 0.2
+slMonsterCbStroke.Thickness = 1
+slMonsterCbStroke.Parent = slMonsterCheckboxBox
+
+local slMonsterCheckmark = Instance.new("TextLabel")
+slMonsterCheckmark.Size = UDim2.new(1, 0, 1, 0)
+slMonsterCheckmark.BackgroundTransparency = 1
+slMonsterCheckmark.Text = "✓"
+slMonsterCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+slMonsterCheckmark.TextSize = 14
+slMonsterCheckmark.Font = Enum.Font.GothamBold
+slMonsterCheckmark.Visible = false
+slMonsterCheckmark.Parent = slMonsterCheckboxBox
+
+-- МОНСТР ЛАГ - ТОГГЛ
+local monsterLagEnabled = false
+local monsterLagTask = nil
+
+slMonsterToggleBtn.MouseButton1Click:Connect(function()
+    monsterLagEnabled = not monsterLagEnabled
+    slMonsterCheckmark.Visible = monsterLagEnabled
     
-    -- Пытаемся найти через глобальные переменные
-    if _G.LineAmountSlider then
-        pcall(function()
-            _G.LineAmountSlider:SetValue(30000)
-        end)
-        sliderFound = true
-    end
-    
-    -- Если не нашли, ищем по флагу в Toggles
-    if not sliderFound and Toggles and Toggles["LineAmount"] then
-        pcall(function()
-            Toggles["LineAmount"]:Set(30000)
-        end)
-        sliderFound = true
-    end
-    
-    -- Если всё ещё не нашли, ищем через OrionLib
-    if not sliderFound then
-        local flags = OrionLib and OrionLib.Flags
-        if flags and flags.LineAmount then
-            pcall(function()
-                flags.LineAmount.Value = 30000
-            end)
+    if monsterLagEnabled then
+        -- Устанавливаем 30000
+        local sliderFound = false
+        if _G.LineAmountSlider then
+            pcall(function() _G.LineAmountSlider:SetValue(30000) end)
             sliderFound = true
         end
-    end
-    
-    -- Уведомление
-    if OrionLib then
-        OrionLib:MakeNotification({
-            Name = "<font color=\"rgb(255, 100, 0)\"><b>⚡ MONSTER LAG ACTIVATED!</b></font>",
-            Content = "Lag amount set to 30000",
-            Image = "zap",
-            Time = 3
-        })
+        if not sliderFound and Toggles and Toggles["LineAmount"] then
+            pcall(function() Toggles["LineAmount"]:Set(30000) end)
+            sliderFound = true
+        end
+        if not sliderFound then
+            local flags = OrionLib and OrionLib.Flags
+            if flags and flags.LineAmount then
+                pcall(function() flags.LineAmount.Value = 30000 end)
+                sliderFound = true
+            end
+        end
+        
+        -- Запускаем бесконечный спам лайн лага
+        monsterLagTask = task.spawn(function()
+            local RunService = game:GetService("RunService")
+            local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
+            local spawnLocation = Workspace:FindFirstChild("SpawnLocation")
+            
+            while monsterLagEnabled and CreateGrabLine do
+                pcall(function()
+                    CreateGrabLine:FireServer(
+                        spawnLocation,
+                        CFrame.new(spawnLocation.Position.X, 1e9, spawnLocation.Position.Z) * CFrame.Angles(math.rad(1e9), math.rad(1e9), math.rad(1e9))
+                    )
+                end)
+                task.wait(0.01)
+            end
+        end)
+        
+        if OrionLib then
+            OrionLib:MakeNotification({
+                Name = "<font color=\"rgb(255, 100, 0)\"><b>⚡ MONSTER LAG ACTIVATED!</b></font>",
+                Content = "Lag amount set to 30000",
+                Image = "zap",
+                Time = 3
+            })
+        end
+    else
+        if monsterLagTask then
+            task.cancel(monsterLagTask)
+            monsterLagTask = nil
+        end
+        if OrionLib then
+            OrionLib:MakeNotification({
+                Name = "<font color=\"rgb(255, 100, 0)\"><b>⚡ MONSTER LAG DEACTIVATED!</b></font>",
+                Content = "Lag stopped",
+                Image = "zap-off",
+                Time = 2
+            })
+        end
     end
 end)
 
