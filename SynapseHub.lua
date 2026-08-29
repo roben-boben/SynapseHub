@@ -8730,676 +8730,755 @@ miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + bbHeight + gap +
     miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
 
 -- ============================================================
--- PACKET LAG - ПОЛНАЯ ВЕРСИЯ С UI ОПОВЕЩЕНИЯМИ (ИСПРАВЛЕННАЯ)
+-- ГРУППА 5: SERVER LAG (ПОД DEFENSE FOR FRIENDS) - ОБНОВЛЕННАЯ
 -- ============================================================
+local dffPosY = defenseForFriendsBox.Position.Y.Offset
+local dffHeight = defenseForFriendsBox.Size.Y.Offset
 
--- ============================================================
--- ГРУППА 5: PACKET LAG (ВСТАВЬ В MISC TAB ПОСЛЕ SERVER LAG)
--- ============================================================
+local serverLagBox = Instance.new("Frame")
+serverLagBox.Size = UDim2.new(0, 300, 0, 0)
+serverLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap)
+serverLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+serverLagBox.BackgroundTransparency = 0.25
+serverLagBox.ClipsDescendants = true
+serverLagBox.Parent = miscContentArea
 
-local packetLagBox = Instance.new("Frame")
-packetLagBox.Size = UDim2.new(0, 300, 0, 0)
-packetLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap + 170)
-packetLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-packetLagBox.BackgroundTransparency = 0.25
-packetLagBox.ClipsDescendants = true
-packetLagBox.Parent = miscContentArea
+local slBoxCorner = Instance.new("UICorner")
+slBoxCorner.CornerRadius = UDim.new(0, 18)
+slBoxCorner.Parent = serverLagBox
 
-local plBoxCorner = Instance.new("UICorner")
-plBoxCorner.CornerRadius = UDim.new(0, 18)
-plBoxCorner.Parent = packetLagBox
+local slBoxStroke = Instance.new("UIStroke")
+slBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+slBoxStroke.Transparency = 0.2
+slBoxStroke.Thickness = 1.0
+slBoxStroke.Parent = serverLagBox
 
-local plBoxStroke = Instance.new("UIStroke")
-plBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-plBoxStroke.Transparency = 0.2
-plBoxStroke.Thickness = 1.0
-plBoxStroke.Parent = packetLagBox
+local slTitle = Instance.new("TextLabel")
+slTitle.Size = UDim2.new(1, -30, 0, 30)
+slTitle.Position = UDim2.new(0, 15, 0, 8)
+slTitle.BackgroundTransparency = 1
+slTitle.TextXAlignment = Enum.TextXAlignment.Left
+slTitle.Text = "Server Lag"
+slTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+slTitle.TextTransparency = 0.05
+slTitle.TextSize = 16
+slTitle.Font = Enum.Font.GothamBold
+slTitle.Parent = serverLagBox
 
-local plTitle = Instance.new("TextLabel")
-plTitle.Size = UDim2.new(1, -30, 0, 30)
-plTitle.Position = UDim2.new(0, 15, 0, 8)
-plTitle.BackgroundTransparency = 1
-plTitle.TextXAlignment = Enum.TextXAlignment.Left
-plTitle.Text = "Packet Lag"
-plTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-plTitle.TextTransparency = 0.05
-plTitle.TextSize = 16
-plTitle.Font = Enum.Font.GothamBold
-plTitle.Parent = packetLagBox
+local slLine = Instance.new("Frame")
+slLine.Size = UDim2.new(1, -30, 0, 1.5)
+slLine.Position = UDim2.new(0, 15, 0, 42)
+slLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+slLine.BackgroundTransparency = 0.3
+slLine.BorderSizePixel = 0
+slLine.Parent = serverLagBox
 
-local plLine = Instance.new("Frame")
-plLine.Size = UDim2.new(1, -30, 0, 1.5)
-plLine.Position = UDim2.new(0, 15, 0, 42)
-plLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
-plLine.BackgroundTransparency = 0.3
-plLine.BorderSizePixel = 0
-plLine.Parent = packetLagBox
-
-local plStartY = 52
-local plItemHeight = 48
-local plGap = 10
+local slStartY = 52
+local slItemHeight = 80
 
 -- ============================================================
--- ПОЛЗУНОК РАЗМЕРА ПАКЕТА
+-- SHURIKEN LAG (ОРИГИНАЛ)
 -- ============================================================
-local sizeBox = Instance.new("Frame")
-sizeBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
-sizeBox.Position = UDim2.new(0, plGap, 0, plStartY)
-sizeBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-sizeBox.BackgroundTransparency = 0.25
-sizeBox.ClipsDescendants = true
-sizeBox.Parent = packetLagBox
+local shurikenBox = Instance.new("Frame")
+shurikenBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
+shurikenBox.Position = UDim2.new(0, gap, 0, slStartY)
+shurikenBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+shurikenBox.BackgroundTransparency = 0.25
+shurikenBox.ClipsDescendants = true
+shurikenBox.Parent = serverLagBox
 
-local sizeBoxCorner = Instance.new("UICorner")
-sizeBoxCorner.CornerRadius = UDim.new(0, 18)
-sizeBoxCorner.Parent = sizeBox
+local shBoxCorner = Instance.new("UICorner")
+shBoxCorner.CornerRadius = UDim.new(0, 18)
+shBoxCorner.Parent = shurikenBox
 
-local sizeBoxStroke = Instance.new("UIStroke")
-sizeBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-sizeBoxStroke.Transparency = 0.2
-sizeBoxStroke.Thickness = 1.0
-sizeBoxStroke.Parent = sizeBox
+local shBoxStroke = Instance.new("UIStroke")
+shBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+shBoxStroke.Transparency = 0.2
+shBoxStroke.Thickness = 1.0
+shBoxStroke.Parent = shurikenBox
 
-local sizeLabel = Instance.new("TextLabel")
-sizeLabel.Size = UDim2.new(1, -40, 0, 20)
-sizeLabel.Position = UDim2.new(0, 12, 0, 4)
-sizeLabel.BackgroundTransparency = 1
-sizeLabel.TextXAlignment = Enum.TextXAlignment.Left
-sizeLabel.Text = "Packet Size: 0.10 MB"
-sizeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-sizeLabel.TextTransparency = 0.05
-sizeLabel.TextSize = 12
-sizeLabel.Font = Enum.Font.GothamBold
-sizeLabel.Parent = sizeBox
+local shToggleBtn = Instance.new("TextButton")
+shToggleBtn.Size = UDim2.new(1, -24, 0, 28)
+shToggleBtn.Position = UDim2.new(0, 12, 0, 8)
+shToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+shToggleBtn.BackgroundTransparency = 0.2
+shToggleBtn.Text = ""
+shToggleBtn.AutoButtonColor = false
+shToggleBtn.Parent = shurikenBox
 
-local sizeSliderBar = Instance.new("Frame")
-sizeSliderBar.Size = UDim2.new(0, 220, 0, 10)
-sizeSliderBar.Position = UDim2.new(0, 15, 0, 28)
-sizeSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
-sizeSliderBar.BackgroundTransparency = 0.2
-sizeSliderBar.BorderSizePixel = 0
-sizeSliderBar.Parent = sizeBox
+local shToggleCorner = Instance.new("UICorner")
+shToggleCorner.CornerRadius = UDim.new(0, 14)
+shToggleCorner.Parent = shToggleBtn
 
-local sizeBarCorner = Instance.new("UICorner")
-sizeBarCorner.CornerRadius = UDim.new(1, 0)
-sizeBarCorner.Parent = sizeSliderBar
+local shToggleStroke = Instance.new("UIStroke")
+shToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+shToggleStroke.Transparency = 0.2
+shToggleStroke.Thickness = 0.8
+shToggleStroke.Parent = shToggleBtn
 
-local initialScale = (0.1 - 0.01) / (20 - 0.01)
-local sizeSliderFill = Instance.new("Frame")
-sizeSliderFill.Size = UDim2.new(initialScale, 0, 1, 0)
-sizeSliderFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-sizeSliderFill.BackgroundTransparency = 0.05
-sizeSliderFill.BorderSizePixel = 0
-sizeSliderFill.Parent = sizeSliderBar
+local shToggleLabel = Instance.new("TextLabel")
+shToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+shToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+shToggleLabel.BackgroundTransparency = 1
+shToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+shToggleLabel.Text = "Shuriken Lag"
+shToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+shToggleLabel.TextSize = 12
+shToggleLabel.Font = Enum.Font.GothamBold
+shToggleLabel.Parent = shToggleBtn
 
-local sizeFillCorner = Instance.new("UICorner")
-sizeFillCorner.CornerRadius = UDim.new(1, 0)
-sizeFillCorner.Parent = sizeSliderFill
+local shCheckboxBox = Instance.new("Frame")
+shCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+shCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+shCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+shCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+shCheckboxBox.BackgroundTransparency = 0.2
+shCheckboxBox.BorderSizePixel = 0
+shCheckboxBox.Parent = shToggleBtn
 
-local sizeSliderButton = Instance.new("TextButton")
-sizeSliderButton.Size = UDim2.new(0, 18, 0, 18)
-sizeSliderButton.Position = UDim2.new(initialScale, -9, 0.5, -9)
-sizeSliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-sizeSliderButton.BackgroundTransparency = 0
-sizeSliderButton.Text = ""
-sizeSliderButton.Parent = sizeSliderBar
+local shCbCorner = Instance.new("UICorner")
+shCbCorner.CornerRadius = UDim.new(0, 6)
+shCbCorner.Parent = shCheckboxBox
 
-local sizeButtonCorner = Instance.new("UICorner")
-sizeButtonCorner.CornerRadius = UDim.new(1, 0)
-sizeButtonCorner.Parent = sizeSliderButton
+local shCbStroke = Instance.new("UIStroke")
+shCbStroke.Color = Color3.fromRGB(150, 150, 150)
+shCbStroke.Transparency = 0.2
+shCbStroke.Thickness = 1
+shCbStroke.Parent = shCheckboxBox
 
-local sizeButtonStroke = Instance.new("UIStroke")
-sizeButtonStroke.Color = Color3.fromRGB(140, 140, 140)
-sizeButtonStroke.Thickness = 1
-sizeButtonStroke.Parent = sizeSliderButton
+local shCheckmark = Instance.new("TextLabel")
+shCheckmark.Size = UDim2.new(1, 0, 1, 0)
+shCheckmark.BackgroundTransparency = 1
+shCheckmark.Text = "✓"
+shCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+shCheckmark.TextSize = 14
+shCheckmark.Font = Enum.Font.GothamBold
+shCheckmark.Visible = false
+shCheckmark.Parent = shCheckboxBox
 
-local packetSizeMB = 0.1
-local sizeSliding = false
+-- ============================================================
+-- LINE LAG [MONSTER] (ИЗ ПЕРВОГО ФАЙЛА - createLagWithGrabLine)
+-- ============================================================
+local monsterBox = Instance.new("Frame")
+monsterBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
+monsterBox.Position = UDim2.new(0, gap, 0, slStartY + slItemHeight + gap)
+monsterBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+monsterBox.BackgroundTransparency = 0.25
+monsterBox.ClipsDescendants = true
+monsterBox.Parent = serverLagBox
 
-local function updateSizeSlider(input)
+local mBoxCorner = Instance.new("UICorner")
+mBoxCorner.CornerRadius = UDim.new(0, 18)
+mBoxCorner.Parent = monsterBox
+
+local mBoxStroke = Instance.new("UIStroke")
+mBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+mBoxStroke.Transparency = 0.2
+mBoxStroke.Thickness = 1.0
+mBoxStroke.Parent = monsterBox
+
+local mToggleBtn = Instance.new("TextButton")
+mToggleBtn.Size = UDim2.new(1, -24, 0, 28)
+mToggleBtn.Position = UDim2.new(0, 12, 0, 8)
+mToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+mToggleBtn.BackgroundTransparency = 0.2
+mToggleBtn.Text = ""
+mToggleBtn.AutoButtonColor = false
+mToggleBtn.Parent = monsterBox
+
+local mToggleCorner = Instance.new("UICorner")
+mToggleCorner.CornerRadius = UDim.new(0, 14)
+mToggleCorner.Parent = mToggleBtn
+
+local mToggleStroke = Instance.new("UIStroke")
+mToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+mToggleStroke.Transparency = 0.2
+mToggleStroke.Thickness = 0.8
+mToggleStroke.Parent = mToggleBtn
+
+local mToggleLabel = Instance.new("TextLabel")
+mToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+mToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+mToggleLabel.BackgroundTransparency = 1
+mToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+mToggleLabel.Text = "Line Lag [Monster]"
+mToggleLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+mToggleLabel.TextSize = 12
+mToggleLabel.Font = Enum.Font.GothamBold
+mToggleLabel.Parent = mToggleBtn
+
+local mCheckboxBox = Instance.new("Frame")
+mCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+mCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+mCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+mCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+mCheckboxBox.BackgroundTransparency = 0.2
+mCheckboxBox.BorderSizePixel = 0
+mCheckboxBox.Parent = mToggleBtn
+
+local mCbCorner = Instance.new("UICorner")
+mCbCorner.CornerRadius = UDim.new(0, 6)
+mCbCorner.Parent = mCheckboxBox
+
+local mCbStroke = Instance.new("UIStroke")
+mCbStroke.Color = Color3.fromRGB(150, 150, 150)
+mCbStroke.Transparency = 0.2
+mCbStroke.Thickness = 1
+mCbStroke.Parent = mCheckboxBox
+
+local mCheckmark = Instance.new("TextLabel")
+mCheckmark.Size = UDim2.new(1, 0, 1, 0)
+mCheckmark.BackgroundTransparency = 1
+mCheckmark.Text = "✓"
+mCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+mCheckmark.TextSize = 14
+mCheckmark.Font = Enum.Font.GothamBold
+mCheckmark.Visible = false
+mCheckmark.Parent = mCheckboxBox
+
+-- ПОЛЗУНОК ДЛЯ MONSTER LAG (как в первом файле)
+local mSliderFrame = Instance.new("Frame")
+mSliderFrame.Size = UDim2.new(1, -24, 0, 22)
+mSliderFrame.Position = UDim2.new(0, 12, 0, 45)
+mSliderFrame.BackgroundTransparency = 1
+mSliderFrame.Parent = monsterBox
+
+local mSliderLabel = Instance.new("TextLabel")
+mSliderLabel.Size = UDim2.new(0.4, 0, 1, 0)
+mSliderLabel.Position = UDim2.new(0, 0, 0, 0)
+mSliderLabel.BackgroundTransparency = 1
+mSliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+mSliderLabel.Text = "Intensity: 100"
+mSliderLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+mSliderLabel.TextSize = 11
+mSliderLabel.Font = Enum.Font.Gotham
+mSliderLabel.Parent = mSliderFrame
+
+local mSliderBar = Instance.new("Frame")
+mSliderBar.Size = UDim2.new(0.55, 0, 0.6, 0)
+mSliderBar.Position = UDim2.new(0.4, 5, 0.5, -4)
+mSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+mSliderBar.BackgroundTransparency = 0.2
+mSliderBar.BorderSizePixel = 0
+mSliderBar.Parent = mSliderFrame
+
+local mSliderBarCorner = Instance.new("UICorner")
+mSliderBarCorner.CornerRadius = UDim.new(1, 0)
+mSliderBarCorner.Parent = mSliderBar
+
+local mSliderFill = Instance.new("Frame")
+mSliderFill.Size = UDim2.new(0.5, 0, 1, 0)
+mSliderFill.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+mSliderFill.BackgroundTransparency = 0.15
+mSliderFill.BorderSizePixel = 0
+mSliderFill.Parent = mSliderBar
+
+local mSliderFillCorner = Instance.new("UICorner")
+mSliderFillCorner.CornerRadius = UDim.new(1, 0)
+mSliderFillCorner.Parent = mSliderFill
+
+local mSliderButton = Instance.new("TextButton")
+mSliderButton.Size = UDim2.new(0, 16, 0, 16)
+mSliderButton.Position = UDim2.new(0.5, -8, 0.5, -8)
+mSliderButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+mSliderButton.BackgroundTransparency = 0
+mSliderButton.Text = ""
+mSliderButton.Parent = mSliderBar
+
+local mSliderButtonCorner = Instance.new("UICorner")
+mSliderButtonCorner.CornerRadius = UDim.new(1, 0)
+mSliderButtonCorner.Parent = mSliderButton
+
+local mSliderButtonStroke = Instance.new("UIStroke")
+mSliderButtonStroke.Color = Color3.fromRGB(140, 140, 140)
+mSliderButtonStroke.Thickness = 1
+mSliderButtonStroke.Parent = mSliderButton
+
+-- ============================================================
+-- ЛОГИКА SHURIKEN LAG (ОРИГИНАЛ)
+-- ============================================================
+local shurikenLagRunning = false
+local shurikenLagTask = nil
+
+local function getHRP2()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        return char.HumanoidRootPart
+    end
+    return nil
+end
+
+local function getInv2()
+    return Workspace:FindFirstChild(LocalPlayer.Name .. "SpawnedInToys")
+end
+
+local function sno2(part)
+    local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
+    if GE then
+        local SetNetworkOwner = GE:FindFirstChild("SetNetworkOwner")
+        if SetNetworkOwner then
+            SetNetworkOwner:FireServer(part, part.CFrame)
+        end
+    end
+end
+
+local function CheckForHome2()
+    local playersInPlots = Workspace:FindFirstChild("PlotItems") and Workspace.PlotItems:FindFirstChild("PlayersInPlots")
+    if playersInPlots and playersInPlots:FindFirstChild(LocalPlayer.Name) then
+        for _, plot in pairs(Workspace.Plots:GetChildren()) do
+            local sign = plot:FindFirstChild("PlotSign")
+            local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
+            if owners then
+                for _, owner in pairs(owners:GetChildren()) do
+                    if owner.Value == LocalPlayer.Name then
+                        local folder = Workspace.PlotItems:FindFirstChild(plot.Name)
+                        if folder then
+                            return true, folder
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return false, nil
+end
+
+local function SpawnToy2(ToyName)
+    local SpawnToyRemote = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("SpawnToyRemoteFunction")
+    local inv = getInv2()
+    local InPlot = LocalPlayer:FindFirstChild("InPlot")
+    local InOwnedPlot = LocalPlayer:FindFirstChild("InOwnedPlot")
+    local CanSpawnToy = LocalPlayer:FindFirstChild("CanSpawnToy")
+    local hrp = getHRP2()
+    
+    if InPlot and InPlot.Value and not (InOwnedPlot and InOwnedPlot.Value) then 
+        InPlot:GetPropertyChangedSignal("Value"):Wait()
+    end 
+    if CanSpawnToy and not CanSpawnToy.Value then 
+        local t = tick()
+        while CanSpawnToy and not CanSpawnToy.Value and (tick() - t < 3) do
+            task.wait(0.1)
+        end
+    end
+
+    local SpawnCF = hrp and hrp.CFrame * CFrame.new(0, 14, 20) or CFrame.new(0, 10, 0)
+    
+    local inOwned, house = CheckForHome2()
+    local Container = inOwned and house or inv
+    if not Container then return nil end
+
+    local spawnedObject = nil
+    local connection
+    connection = Container.ChildAdded:Connect(function(child)
+        if child.Name == ToyName then
+            spawnedObject = child
+        end
+    end)
+
+    task.spawn(function()
+        pcall(function()
+            SpawnToyRemote:InvokeServer(ToyName, SpawnCF, Vector3.zero)
+        end)
+    end)
+
+    local start = tick()
+    repeat task.wait() until spawnedObject or (tick() - start) > 2.5
+    connection:Disconnect()
+    return spawnedObject
+end
+
+local function ClearLagToys2()
+    local inv = getInv2()
+    local DestroyToy = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
+    if inv and DestroyToy then
+        for _, v in pairs(inv:GetChildren()) do
+            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
+                pcall(function()
+                    DestroyToy:FireServer(v)
+                end)
+            end
+        end
+    end
+    local inOwned, house = CheckForHome2()
+    if inOwned and house and DestroyToy then
+        for _, v in pairs(house:GetChildren()) do
+            if v.Name == "LagDecoy" or v.Name == "LagShuriken" or v.Name == "NinjaShuriken" or v.Name == "YouDecoy" then
+                pcall(function()
+                    DestroyToy:FireServer(v)
+                end)
+            end
+        end
+    end
+end
+
+local function startShurikenLag()
+    if shurikenLagRunning then return end
+    shurikenLagRunning = true
+    shCheckmark.Visible = true
+
+    ClearLagToys2()
+    task.wait(0.3)
+
+    shurikenLagTask = task.spawn(function()
+        local oldCF = getHRP2() and getHRP2().CFrame
+        local charCF = oldCF
+        
+        local decoys = {}
+        local shurikens = {}
+        
+        local decoy = SpawnToy2("YouDecoy")
+        if decoy then
+            decoy.Name = "LagDecoy"
+            table.insert(decoys, decoy)
+        end
+        task.wait(0.3)
+        
+        for i = 1, 9 do
+            local shur = SpawnToy2("NinjaShuriken")
+            if shur then
+                shur.Name = "LagShuriken"
+                table.insert(shurikens, shur)
+            end
+            task.wait(0.1)
+        end
+
+        if #decoys == 0 or #shurikens == 0 then
+            shurikenLagRunning = false
+            shCheckmark.Visible = false
+            return
+        end
+
+        for _, decoyObj in pairs(decoys) do
+            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
+            if decoyHRP then
+                for _, part in pairs(decoyObj:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                        part.CanQuery = false
+                    end
+                end
+                
+                repeat
+                    decoyHRP.Anchored = true
+                    sno2(decoyHRP)
+                    task.wait(0.01)
+                until decoyObj:FindFirstChild("Head") and decoyObj.Head:FindFirstChild("PartOwner") or not shurikenLagRunning
+            end
+        end
+
+        for _, shuriken in pairs(shurikens) do
+            if not shurikenLagRunning then break end
+            
+            local StickyPart = shuriken:FindFirstChild("StickyPart")
+            if StickyPart then
+                for _, part in pairs(shuriken:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                        part.CanQuery = false
+                        if part.Transparency ~= 1 then
+                            part.Transparency = 0
+                        end
+                    end
+                end
+                
+                repeat
+                    sno2(StickyPart)
+                    task.wait(0.01)
+                until StickyPart:FindFirstChild("PartOwner") or not shurikenLagRunning
+                
+                if #decoys > 0 then
+                    local decoyHRP = decoys[1]:FindFirstChild("HumanoidRootPart")
+                    if decoyHRP then
+                        pcall(function()
+                            ReplicatedStorage.PlayerEvents.StickyPartEvent:FireServer(
+                                StickyPart,
+                                decoyHRP,
+                                CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(90), math.rad(90))
+                            )
+                        end)
+                    end
+                end
+            end
+            task.wait(0.03)
+        end
+
+        for decoyindex, decoyObj in ipairs(decoys) do
+            if not shurikenLagRunning then break end
+            
+            local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
+            if decoyHRP then
+                decoyHRP.Anchored = true
+                
+                local startindex = (decoyindex - 1) * 9 + 1
+                local endindex = math.min(startindex + 8, #shurikens)
+                
+                for shurikenindex = startindex, endindex do
+                    if not shurikenLagRunning then break end
+                    
+                    local shuriken = shurikens[shurikenindex]
+                    if not shuriken then break end
+                    
+                    local StickyPart = shuriken:FindFirstChild("StickyPart")
+                    if StickyPart then
+                        local BodyPosition1 = Instance.new("BodyPosition")
+                        BodyPosition1.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        BodyPosition1.P = 100000
+                        BodyPosition1.D = 1000
+                        BodyPosition1.Parent = StickyPart
+                        
+                        local BodyPosition2 = Instance.new("BodyPosition")
+                        BodyPosition2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        BodyPosition2.P = 100000
+                        BodyPosition2.D = 1000
+                        BodyPosition2.Parent = StickyPart
+                        
+                        StickyPart.AssemblyAngularVelocity = Vector3.new(
+                            math.random(-1000, 1000) * 100,
+                            math.random(-1000, 1000) * 100,
+                            math.random(-1000, 1000) * 100
+                        )
+                        
+                        task.defer(function()
+                            local posOffset = 0
+                            local direction = 1
+                            local angle = 0
+                            
+                            while shurikenLagRunning and shuriken.Parent and decoyObj.Parent do
+                                posOffset = posOffset + (1 * direction)
+                                if posOffset > 15 then
+                                    posOffset = 15
+                                    direction = -1
+                                elseif posOffset < -15 then
+                                    posOffset = -15
+                                    direction = 1
+                                end
+                                
+                                angle = angle + 0.5
+                                if angle > math.pi * 2 then angle = 0 end
+                                
+                                BodyPosition1.Position = Vector3.new(
+                                    decoyHRP.Position.X + math.cos(angle) * 5 + math.random(-2, 2),
+                                    decoyHRP.Position.Y + posOffset + math.random(-2, 2),
+                                    decoyHRP.Position.Z + math.sin(angle) * 5 + math.random(-2, 2)
+                                )
+                                
+                                BodyPosition2.Position = Vector3.new(
+                                    decoyHRP.Position.X + math.cos(angle + math.pi) * 5 + math.random(-2, 2),
+                                    decoyHRP.Position.Y - posOffset + math.random(-2, 2),
+                                    decoyHRP.Position.Z + math.sin(angle + math.pi) * 5 + math.random(-2, 2)
+                                )
+                                
+                                StickyPart.AssemblyAngularVelocity = Vector3.new(
+                                    math.random(-9999, 9999) * 10,
+                                    math.random(-9999, 9999) * 10,
+                                    math.random(-9999, 9999) * 10
+                                )
+                                
+                                sno2(StickyPart)
+                                
+                                RunService.RenderStepped:Wait()
+                            end
+                            
+                            if BodyPosition1 and BodyPosition1.Parent then BodyPosition1:Destroy() end
+                            if BodyPosition2 and BodyPosition2.Parent then BodyPosition2:Destroy() end
+                        end)
+                    end
+                end
+                task.wait(0.05)
+            end
+        end
+        
+        while shurikenLagRunning do
+            for _, shuriken in pairs(shurikens) do
+                if shuriken and shuriken.Parent then
+                    local StickyPart = shuriken:FindFirstChild("StickyPart")
+                    if StickyPart then
+                        sno2(StickyPart)
+                        StickyPart.AssemblyAngularVelocity = Vector3.new(
+                            math.random(-9999, 9999) * 10,
+                            math.random(-9999, 9999) * 10,
+                            math.random(-9999, 9999) * 10
+                        )
+                    end
+                end
+            end
+            RunService.RenderStepped:Wait()
+        end
+        
+        ClearLagToys2()
+        
+        local hrp = getHRP2()
+        if hrp and charCF then
+            pcall(function()
+                hrp.CFrame = charCF
+                hrp.AssemblyLinearVelocity = Vector3.zero
+                hrp.AssemblyAngularVelocity = Vector3.zero
+            end)
+        end
+        
+        shurikenLagRunning = false
+        shCheckmark.Visible = false
+    end)
+end
+
+local function stopShurikenLag()
+    shurikenLagRunning = false
+    if shurikenLagTask then
+        task.cancel(shurikenLagTask)
+        shurikenLagTask = nil
+    end
+    shCheckmark.Visible = false
+    ClearLagToys2()
+end
+
+shToggleBtn.MouseButton1Click:Connect(function()
+    if shurikenLagRunning then
+        stopShurikenLag()
+    else
+        startShurikenLag()
+    end
+end)
+
+-- ============================================================
+-- ЛОГИКА LINE LAG [MONSTER] (ИЗ ПЕРВОГО ФАЙЛА)
+-- ============================================================
+local monsterLagRunning = false
+local monsterLagTask = nil
+local monsterIntensity = 100
+
+-- ЛОГИКА ПОЛЗУНКА
+local mSliding = false
+local function updateMSlider(input)
     local mousePos = input.Position.X
-    local barAbsolutePos = sizeSliderBar.AbsolutePosition.X
-    local barAbsoluteSize = sizeSliderBar.AbsoluteSize.X
+    local barAbsolutePos = mSliderBar.AbsolutePosition.X
+    local barAbsoluteSize = mSliderBar.AbsoluteSize.X
     
     local relativeX = math.clamp(mousePos - barAbsolutePos, 0, barAbsoluteSize)
     local scale = math.clamp(relativeX / barAbsoluteSize, 0, 1)
     
-    sizeSliderButton.Position = UDim2.new(scale, -9, 0.5, -9)
-    sizeSliderFill.Size = UDim2.new(scale, 0, 1, 0)
+    mSliderButton.Position = UDim2.new(scale, -8, 0.5, -8)
+    mSliderFill.Size = UDim2.new(scale, 0, 1, 0)
     
-    packetSizeMB = math.floor((0.01 + (scale * (20 - 0.01))) * 100 + 0.5) / 100
-    sizeLabel.Text = "Packet Size: " .. string.format("%.2f", packetSizeMB) .. " MB"
+    monsterIntensity = math.floor(1 + (scale * 29999) + 0.5)
+    mSliderLabel.Text = "Intensity: " .. tostring(monsterIntensity)
 end
 
-sizeSliderButton.InputBegan:Connect(function(input)
+mSliderButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        sizeSliding = true
-        updateSizeSlider(input)
+        mSliding = true
+        updateMSlider(input)
     end
 end)
 
-sizeSliderBar.InputBegan:Connect(function(input)
+mSliderBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        sizeSliding = true
-        updateSizeSlider(input)
+        mSliding = true
+        updateMSlider(input)
     end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        sizeSliding = false
+        mSliding = false
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if sizeSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        updateSizeSlider(input)
+    if mSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        updateMSlider(input)
     end
 end)
 
--- ============================================================
--- SEND PACKET (КНОПКА)
--- ============================================================
-local sendBox = Instance.new("Frame")
-sendBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
-sendBox.Position = UDim2.new(0, plGap, 0, plStartY + plItemHeight + plGap)
-sendBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-sendBox.BackgroundTransparency = 0.25
-sendBox.ClipsDescendants = true
-sendBox.Parent = packetLagBox
-
-local sendBoxCorner = Instance.new("UICorner")
-sendBoxCorner.CornerRadius = UDim.new(0, 18)
-sendBoxCorner.Parent = sendBox
-
-local sendBoxStroke = Instance.new("UIStroke")
-sendBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-sendBoxStroke.Transparency = 0.2
-sendBoxStroke.Thickness = 1.0
-sendBoxStroke.Parent = sendBox
-
-local sendToggleBtn = Instance.new("TextButton")
-sendToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-sendToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-sendToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-sendToggleBtn.BackgroundTransparency = 0.2
-sendToggleBtn.Text = ""
-sendToggleBtn.AutoButtonColor = false
-sendToggleBtn.Parent = sendBox
-
-local sendToggleCorner = Instance.new("UICorner")
-sendToggleCorner.CornerRadius = UDim.new(0, 14)
-sendToggleCorner.Parent = sendToggleBtn
-
-local sendToggleStroke = Instance.new("UIStroke")
-sendToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-sendToggleStroke.Transparency = 0.2
-sendToggleStroke.Thickness = 0.8
-sendToggleStroke.Parent = sendToggleBtn
-
-local sendToggleLabel = Instance.new("TextLabel")
-sendToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-sendToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-sendToggleLabel.BackgroundTransparency = 1
-sendToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-sendToggleLabel.Text = "Send Packets"
-sendToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-sendToggleLabel.TextSize = 12
-sendToggleLabel.Font = Enum.Font.GothamBold
-sendToggleLabel.Parent = sendToggleBtn
-
-local sendCheckboxBox = Instance.new("Frame")
-sendCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-sendCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-sendCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-sendCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-sendCheckboxBox.BackgroundTransparency = 0.2
-sendCheckboxBox.BorderSizePixel = 0
-sendCheckboxBox.Parent = sendToggleBtn
-
-local sendCbCorner = Instance.new("UICorner")
-sendCbCorner.CornerRadius = UDim.new(0, 6)
-sendCbCorner.Parent = sendCheckboxBox
-
-local sendCbStroke = Instance.new("UIStroke")
-sendCbStroke.Color = Color3.fromRGB(150, 150, 150)
-sendCbStroke.Transparency = 0.2
-sendCbStroke.Thickness = 1
-sendCbStroke.Parent = sendCheckboxBox
-
-local sendCheckmark = Instance.new("TextLabel")
-sendCheckmark.Size = UDim2.new(1, 0, 1, 0)
-sendCheckmark.BackgroundTransparency = 1
-sendCheckmark.Text = "✓"
-sendCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-sendCheckmark.TextSize = 14
-sendCheckmark.Font = Enum.Font.GothamBold
-sendCheckmark.Visible = false
-sendCheckmark.Parent = sendCheckboxBox
-
--- ============================================================
--- DETECT PACKET (КНОПКА)
--- ============================================================
-local detectBox = Instance.new("Frame")
-detectBox.Size = UDim2.new(1, -plGap * 2, 0, plItemHeight)
-detectBox.Position = UDim2.new(0, plGap, 0, plStartY + (plItemHeight + plGap) * 2)
-detectBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-detectBox.BackgroundTransparency = 0.25
-detectBox.ClipsDescendants = true
-detectBox.Parent = packetLagBox
-
-local detectBoxCorner = Instance.new("UICorner")
-detectBoxCorner.CornerRadius = UDim.new(0, 18)
-detectBoxCorner.Parent = detectBox
-
-local detectBoxStroke = Instance.new("UIStroke")
-detectBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-detectBoxStroke.Transparency = 0.2
-detectBoxStroke.Thickness = 1.0
-detectBoxStroke.Parent = detectBox
-
-local detectToggleBtn = Instance.new("TextButton")
-detectToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-detectToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-detectToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-detectToggleBtn.BackgroundTransparency = 0.2
-detectToggleBtn.Text = ""
-detectToggleBtn.AutoButtonColor = false
-detectToggleBtn.Parent = detectBox
-
-local detectToggleCorner = Instance.new("UICorner")
-detectToggleCorner.CornerRadius = UDim.new(0, 14)
-detectToggleCorner.Parent = detectToggleBtn
-
-local detectToggleStroke = Instance.new("UIStroke")
-detectToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-detectToggleStroke.Transparency = 0.2
-detectToggleStroke.Thickness = 0.8
-detectToggleStroke.Parent = detectToggleBtn
-
-local detectToggleLabel = Instance.new("TextLabel")
-detectToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-detectToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-detectToggleLabel.BackgroundTransparency = 1
-detectToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-detectToggleLabel.Text = "Detect Packets"
-detectToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-detectToggleLabel.TextSize = 12
-detectToggleLabel.Font = Enum.Font.GothamBold
-detectToggleLabel.Parent = detectToggleBtn
-
-local detectCheckboxBox = Instance.new("Frame")
-detectCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-detectCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-detectCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-detectCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-detectCheckboxBox.BackgroundTransparency = 0.2
-detectCheckboxBox.BorderSizePixel = 0
-detectCheckboxBox.Parent = detectToggleBtn
-
-local detectCbCorner = Instance.new("UICorner")
-detectCbCorner.CornerRadius = UDim.new(0, 6)
-detectCbCorner.Parent = detectCheckboxBox
-
-local detectCbStroke = Instance.new("UIStroke")
-detectCbStroke.Color = Color3.fromRGB(150, 150, 150)
-detectCbStroke.Transparency = 0.2
-detectCbStroke.Thickness = 1
-detectCbStroke.Parent = detectCheckboxBox
-
-local detectCheckmark = Instance.new("TextLabel")
-detectCheckmark.Size = UDim2.new(1, 0, 1, 0)
-detectCheckmark.BackgroundTransparency = 1
-detectCheckmark.Text = "✓"
-detectCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-detectCheckmark.TextSize = 14
-detectCheckmark.Font = Enum.Font.GothamBold
-detectCheckmark.Visible = false
-detectCheckmark.Parent = detectCheckboxBox
-
--- ============================================================
--- ВЫСОТА ФРЕЙМА
--- ============================================================
-local plHeight = plStartY + 3 * (plItemHeight + plGap) + plGap
-packetLagBox.Size = UDim2.new(0, 300, 0, plHeight)
-
--- ============================================================
--- ЛОГИКА ОТПРАВКИ ПАКЕТОВ
--- ============================================================
-local sendPacketsActive = false
-local sendPacketsTask = nil
-local sentMBTotal = 0  -- СУММАРНО ОТПРАВЛЕНО МБ
-
-local function calculateRepeats(sizeMB)
-    local targetBytes = sizeMB * 1024 * 1024
-    local repeats = math.floor(targetBytes / 143)
-    return math.max(1, repeats)
+-- ФУНКЦИЯ LINE LAG [MONSTER] (createLagWithGrabLine ИЗ ПЕРВОГО ФАЙЛА)
+local function createMonsterLag()
+    local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
+    if not CreateGrabLine then return end
+    
+    local intensity = monsterIntensity or 100
+    local count = 0
+    local maxIterations = 500
+    
+    for _, object in ipairs(Workspace:GetDescendants()) do
+        if not monsterLagRunning then break end
+        if count >= maxIterations then break end
+        
+        if object:IsA("BasePart") and object.Parent ~= LocalPlayer.Character then
+            local cf = object.CFrame * CFrame.new(
+                math.random(-intensity, intensity),
+                1e9,
+                math.random(-intensity, intensity)
+            ) * CFrame.Angles(
+                math.rad(math.random(0, 360)),
+                math.rad(math.random(0, 360)),
+                math.rad(math.random(0, 360))
+            )
+            pcall(function()
+                CreateGrabLine:FireServer(object, cf)
+            end)
+            count = count + 1
+        end
+    end
 end
 
-local function startSendPackets()
-    if sendPacketsActive then return end
-    sendPacketsActive = true
-    sendCheckmark.Visible = true
-    sentMBTotal = 0
+local function startMonsterLag()
+    if monsterLagRunning then return end
+    monsterLagRunning = true
+    mCheckmark.Visible = true
     
-    sendPacketsTask = task.spawn(function()
-        local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
-        if not GE then
-            sendPacketsActive = false
-            sendCheckmark.Visible = false
-            return
-        end
-        
-        local extendGrabLine = GE:FindFirstChild("ExtendGrabLine")
-        if not extendGrabLine then
-            sendPacketsActive = false
-            sendCheckmark.Visible = false
-            return
-        end
-        
-        while sendPacketsActive do
-            local repeats = calculateRepeats(packetSizeMB)
-            local packet = string.rep("metaballs metaballs metaballs metaballs metaballs metaballs metaballs metaballs", repeats)
+    monsterLagTask = task.spawn(function()
+        while monsterLagRunning do
+            createMonsterLag()
             
-            pcall(function()
-                extendGrabLine:FireServer(packet)
-            end)
-            
-            -- СУММИРУЕМ ОТПРАВЛЕННЫЕ МБ
-            sentMBTotal = sentMBTotal + packetSizeMB
-            
-            -- ПОКАЗЫВАЕМ ОПОВЕЩЕНИЕ (Packet Amount = сколько МБ отправил)
-            showSendNotification(sentMBTotal)
+            -- ДОПОЛНИТЕЛЬНЫЙ СПАМ ДЛЯ УСИЛЕНИЯ (как в первом файле)
+            if monsterLagRunning then
+                local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
+                if CreateGrabLine then
+                    for i = 1, 20 do
+                        if not monsterLagRunning then break end
+                        pcall(function()
+                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 9e9, 0))
+                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 8e9, 0))
+                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 7e9, 0))
+                            CreateGrabLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 6e9, 0))
+                        end)
+                        RunService.RenderStepped:Wait()
+                    end
+                end
+            end
             
             task.wait(0.05)
         end
     end)
 end
 
-local function stopSendPackets()
-    sendPacketsActive = false
-    if sendPacketsTask then
-        task.cancel(sendPacketsTask)
-        sendPacketsTask = nil
+local function stopMonsterLag()
+    monsterLagRunning = false
+    if monsterLagTask then
+        task.cancel(monsterLagTask)
+        monsterLagTask = nil
     end
-    sendCheckmark.Visible = false
+    mCheckmark.Visible = false
 end
 
--- ============================================================
--- ЛОГИКА ДЕТЕКТА ПАКЕТОВ
--- ============================================================
-local detectPacketsActive = false
-local detectPacketsTask = nil
-local playerPacketMB = {}  -- ХРАНИМ СКОЛЬКО МБ ОТПРАВИЛ КАЖДЫЙ ИГРОК
-
-local function startDetectPackets()
-    if detectPacketsActive then return end
-    detectPacketsActive = true
-    detectCheckmark.Visible = true
-    
-    detectPacketsTask = task.spawn(function()
-        local GE = ReplicatedStorage:FindFirstChild("GrabEvents")
-        if not GE then
-            detectPacketsActive = false
-            detectCheckmark.Visible = false
-            return
-        end
-        
-        local extendGrabLine = GE:FindFirstChild("ExtendGrabLine")
-        if not extendGrabLine then
-            detectPacketsActive = false
-            detectCheckmark.Visible = false
-            return
-        end
-        
-        -- ПЕРЕХВАТЫВАЕМ OnClientEvent
-        local oldEvent = extendGrabLine.OnClientEvent
-        extendGrabLine.OnClientEvent = function(arg1, data)
-            if typeof(data) == "string" and string.len(data) > 300 then
-                local sender = arg1
-                if type(sender) == "string" then
-                    sender = sender
-                elseif type(sender) == "Instance" then
-                    sender = sender.Name
-                else
-                    sender = "Unknown"
-                end
-                
-                -- ИГНОРИРУЕМ СВОИ ПАКЕТЫ
-                if sender == LocalPlayer.Name then
-                    return
-                end
-                
-                local sizeMB = string.len(data) / (1024 * 1024)
-                
-                if not playerPacketMB[sender] then
-                    playerPacketMB[sender] = 0
-                end
-                playerPacketMB[sender] = playerPacketMB[sender] + sizeMB
-                
-                -- ПОКАЗЫВАЕМ ОПОВЕЩЕНИЕ (Packet Amount = сколько МБ отправил)
-                showDetectNotification(sender, playerPacketMB[sender], sizeMB)
-            end
-            
-            -- ВЫЗЫВАЕМ ОРИГИНАЛЬНЫЙ ОБРАБОТЧИК
-            if oldEvent then
-                oldEvent(arg1, data)
-            end
-        end
-        
-        while detectPacketsActive do
-            task.wait(0.1)
-        end
-        
-        -- ВОССТАНАВЛИВАЕМ
-        extendGrabLine.OnClientEvent = oldEvent
-    end)
-end
-
-local function stopDetectPackets()
-    detectPacketsActive = false
-    if detectPacketsTask then
-        task.cancel(detectPacketsTask)
-        detectPacketsTask = nil
-    end
-    detectCheckmark.Visible = false
-    playerPacketMB = {}
-end
-
--- ============================================================
--- UI ОПОВЕЩЕНИЯ
--- ============================================================
-local notificationContainer = Instance.new("Frame")
-notificationContainer.Size = UDim2.new(0, 310, 0, 0)
-notificationContainer.Position = UDim2.new(1, -320, 0, 50)
-notificationContainer.BackgroundTransparency = 1
-notificationContainer.ClipsDescendants = true
-notificationContainer.ZIndex = 100
-notificationContainer.Parent = playerGui
-
-local notifications = {}
-local MAX_NOTIFICATIONS = 5
-
-local function createNotificationFrame(titleText, playerName, packetMB, isDetect, sizeMB)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 144)
-    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-    frame.BackgroundTransparency = 0.15
-    frame.ClipsDescendants = true
-    frame.ZIndex = 101
-    frame.Parent = notificationContainer
-    
-    frame.Position = UDim2.new(1, 0, 0, 0)
-    
-    local frameCorner = Instance.new("UICorner")
-    frameCorner.CornerRadius = UDim.new(0, 18)
-    frameCorner.Parent = frame
-    
-    local frameStroke = Instance.new("UIStroke")
-    frameStroke.Color = isDetect and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 255, 0)
-    frameStroke.Transparency = 0.3
-    frameStroke.Thickness = 1.5
-    frameStroke.Parent = frame
-    
-    -- ЗАГОЛОВОК
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -20, 0, 35)
-    titleLabel.Position = UDim2.new(0, 10, 0, 8)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Text = titleText
-    titleLabel.TextColor3 = isDetect and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(100, 255, 100)
-    titleLabel.TextTransparency = 0.05
-    titleLabel.TextSize = 16
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.Parent = frame
-    
-    -- РАЗДЕЛИТЕЛЬ
-    local line = Instance.new("Frame")
-    line.Size = UDim2.new(1, -20, 0, 1.5)
-    line.Position = UDim2.new(0, 10, 0, 45)
-    line.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
-    line.BackgroundTransparency = 0.3
-    line.BorderSizePixel = 0
-    line.Parent = frame
-    
-    -- ИГРОК
-    local playerLabel = Instance.new("TextLabel")
-    playerLabel.Size = UDim2.new(1, -20, 0, 30)
-    playerLabel.Position = UDim2.new(0, 10, 0, 50)
-    playerLabel.BackgroundTransparency = 1
-    playerLabel.TextXAlignment = Enum.TextXAlignment.Left
-    playerLabel.Text = "Player: " .. playerName
-    playerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    playerLabel.TextTransparency = 0.05
-    playerLabel.TextSize = 14
-    playerLabel.Font = Enum.Font.GothamBold
-    playerLabel.Parent = frame
-    
-    -- КОЛИЧЕСТВО МБ (СУММАРНО)
-    local packetLabel = Instance.new("TextLabel")
-    packetLabel.Size = UDim2.new(1, -20, 0, 30)
-    packetLabel.Position = UDim2.new(0, 10, 0, 82)
-    packetLabel.BackgroundTransparency = 1
-    packetLabel.TextXAlignment = Enum.TextXAlignment.Left
-    packetLabel.Text = "Packet Amount: " .. string.format("%.2f", packetMB) .. " MB"
-    packetLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    packetLabel.TextTransparency = 0.05
-    packetLabel.TextSize = 14
-    packetLabel.Font = Enum.Font.Gotham
-    packetLabel.Parent = frame
-    
-    -- РАЗМЕР ПОСЛЕДНЕГО ПАКЕТА (ТОЛЬКО ДЛЯ ДЕТЕКТА)
-    if isDetect and sizeMB then
-        local sizeLabel = Instance.new("TextLabel")
-        sizeLabel.Size = UDim2.new(1, -20, 0, 30)
-        sizeLabel.Position = UDim2.new(0, 10, 0, 114)
-        sizeLabel.BackgroundTransparency = 1
-        sizeLabel.TextXAlignment = Enum.TextXAlignment.Left
-        sizeLabel.Text = "Last Packet: " .. string.format("%.2f", sizeMB) .. " MB"
-        sizeLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-        sizeLabel.TextTransparency = 0.05
-        sizeLabel.TextSize = 12
-        sizeLabel.Font = Enum.Font.Gotham
-        sizeLabel.Parent = frame
-    end
-    
-    return frame
-end
-
-local function showSendNotification(sentMB)
-    local frame = createNotificationFrame("📤 Send Packets!", LocalPlayer.Name, sentMB, false)
-    
-    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0, 0, 0, 0)
-    })
-    
-    table.insert(notifications, {frame = frame, time = tick()})
-    updateNotificationPositions()
-    tweenIn:Play()
-    
-    task.delay(5, function()
-        removeNotification(frame)
-    end)
-end
-
-local function showDetectNotification(playerName, totalMB, lastPacketMB)
-    local frame = createNotificationFrame("⚠️ Packet Lag Detected!", playerName, totalMB, true, lastPacketMB)
-    
-    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0, 0, 0, 0)
-    })
-    
-    table.insert(notifications, {frame = frame, time = tick()})
-    updateNotificationPositions()
-    tweenIn:Play()
-    
-    task.delay(5, function()
-        removeNotification(frame)
-    end)
-end
-
-local function updateNotificationPositions()
-    local spacing = 154
-    local totalHeight = #notifications * spacing
-    
-    notificationContainer.Size = UDim2.new(0, 310, 0, math.min(totalHeight, MAX_NOTIFICATIONS * spacing))
-    
-    for i, data in ipairs(notifications) do
-        local position = (i - 1) * spacing
-        local tween = TweenService:Create(data.frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0, 0, 0, position)
-        })
-        tween:Play()
-    end
-end
-
-local function removeNotification(frame)
-    local tweenOut = TweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Position = UDim2.new(1, 0, 0, frame.Position.Y.Offset)
-    })
-    
-    tweenOut:Play()
-    tweenOut.Completed:Connect(function()
-        frame:Destroy()
-        
-        for i, data in ipairs(notifications) do
-            if data.frame == frame then
-                table.remove(notifications, i)
-                break
-            end
-        end
-        
-        updateNotificationPositions()
-    end)
-end
-
--- ============================================================
--- ПОДКЛЮЧАЕМ КНОПКИ
--- ============================================================
-sendToggleBtn.MouseButton1Click:Connect(function()
-    if sendPacketsActive then
-        stopSendPackets()
+mToggleBtn.MouseButton1Click:Connect(function()
+    if monsterLagRunning then
+        stopMonsterLag()
     else
-        startSendPackets()
+        startMonsterLag()
     end
 end)
 
-detectToggleBtn.MouseButton1Click:Connect(function()
-    if detectPacketsActive then
-        stopDetectPackets()
-    else
-        startDetectPackets()
-    end
-end)
+-- ============================================================
+-- ВЫСОТА ФРЕЙМА
+-- ============================================================
+local slHeight = slStartY + (slItemHeight + gap) * 2 + gap
+serverLagBox.Size = UDim2.new(0, 300, 0, slHeight)
 
 -- ============================================================
 -- ОБНОВЛЯЕМ CANVAS
 -- ============================================================
 local finalCanvas = miscContentArea.CanvasSize.Y.Offset
-miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + plHeight + gap + 20)
-
-print("[Packet Lag] Загружен!")
+miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + slHeight + gap + 20)
 end
 
 -- ============================================================================
