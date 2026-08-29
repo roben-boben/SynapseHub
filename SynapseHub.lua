@@ -666,6 +666,7 @@ local function setupFunTab(funContentArea)
         checkmark.BackgroundTransparency = 1
         checkmark.Text = "✓"
         checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+        checkmark.TextSize = 14
         checkmark.Font = Enum.Font.GothamBold
         checkmark.Visible = false
         checkmark.Parent = checkboxBox
@@ -8728,6 +8729,7 @@ miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + bbHeight + gap +
     local finalCanvas = miscContentArea.CanvasSize.Y.Offset
     miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
 end
+
 -- ============================================================================
 -- VISUALS TAB
 -- ============================================================================
