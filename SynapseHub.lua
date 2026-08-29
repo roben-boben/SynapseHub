@@ -8237,7 +8237,7 @@ local dffPosY = defenseForFriendsBox.Position.Y.Offset
 local dffHeight = defenseForFriendsBox.Size.Y.Offset
 
 local serverLagBox = Instance.new("Frame")
-serverLagBox.Size = UDim2.new(0, 300, 0, 200)
+serverLagBox.Size = UDim2.new(0, 300, 0, 150)
 serverLagBox.Position = UDim2.new(0, 20, 0, dffPosY + dffHeight + gap)
 serverLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 serverLagBox.BackgroundTransparency = 0.25
@@ -8278,237 +8278,167 @@ local slStartY = 52
 local slItemHeight = 48
 
 -- ============================================================
--- SHURIKEN LAG
+-- 1. SHURIKEN LAG
 -- ============================================================
-local slBox = Instance.new("Frame")
-slBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
-slBox.Position = UDim2.new(0, gap, 0, slStartY)
-slBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-slBox.BackgroundTransparency = 0.25
-slBox.ClipsDescendants = true
-slBox.Parent = serverLagBox
+local slBox1 = Instance.new("Frame")
+slBox1.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
+slBox1.Position = UDim2.new(0, gap, 0, slStartY)
+slBox1.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+slBox1.BackgroundTransparency = 0.25
+slBox1.ClipsDescendants = true
+slBox1.Parent = serverLagBox
+
+local slBoxCorner1 = Instance.new("UICorner")
+slBoxCorner1.CornerRadius = UDim.new(0, 18)
+slBoxCorner1.Parent = slBox1
+
+local slBoxStroke1 = Instance.new("UIStroke")
+slBoxStroke1.Color = Color3.fromRGB(180, 180, 180)
+slBoxStroke1.Transparency = 0.2
+slBoxStroke1.Thickness = 1.0
+slBoxStroke1.Parent = slBox1
+
+local slToggleBtn1 = Instance.new("TextButton")
+slToggleBtn1.Size = UDim2.new(1, -24, 1, -12)
+slToggleBtn1.Position = UDim2.new(0, 12, 0, 6)
+slToggleBtn1.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+slToggleBtn1.BackgroundTransparency = 0.2
+slToggleBtn1.Text = ""
+slToggleBtn1.AutoButtonColor = false
+slToggleBtn1.Parent = slBox1
+
+local slToggleCorner1 = Instance.new("UICorner")
+slToggleCorner1.CornerRadius = UDim.new(0, 14)
+slToggleCorner1.Parent = slToggleBtn1
+
+local slToggleStroke1 = Instance.new("UIStroke")
+slToggleStroke1.Color = Color3.fromRGB(180, 180, 180)
+slToggleStroke1.Transparency = 0.2
+slToggleStroke1.Thickness = 0.8
+slToggleStroke1.Parent = slToggleBtn1
+
+local slToggleLabel1 = Instance.new("TextLabel")
+slToggleLabel1.Size = UDim2.new(1, -40, 1, 0)
+slToggleLabel1.Position = UDim2.new(0, 12, 0, 0)
+slToggleLabel1.BackgroundTransparency = 1
+slToggleLabel1.TextXAlignment = Enum.TextXAlignment.Left
+slToggleLabel1.Text = "Shuriken Lag"
+slToggleLabel1.TextColor3 = Color3.fromRGB(200, 200, 200)
+slToggleLabel1.TextSize = 12
+slToggleLabel1.Font = Enum.Font.GothamBold
+slToggleLabel1.Parent = slToggleBtn1
+
+local slCheckboxBox1 = Instance.new("Frame")
+slCheckboxBox1.Size = UDim2.new(0, 20, 0, 20)
+slCheckboxBox1.AnchorPoint = Vector2.new(1, 0.5)
+slCheckboxBox1.Position = UDim2.new(1, -12, 0.5, 0)
+slCheckboxBox1.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+slCheckboxBox1.BackgroundTransparency = 0.2
+slCheckboxBox1.BorderSizePixel = 0
+slCheckboxBox1.Parent = slToggleBtn1
+
+local slCbCorner1 = Instance.new("UICorner")
+slCbCorner1.CornerRadius = UDim.new(0, 6)
+slCbCorner1.Parent = slCheckboxBox1
+
+local slCbStroke1 = Instance.new("UIStroke")
+slCbStroke1.Color = Color3.fromRGB(150, 150, 150)
+slCbStroke1.Transparency = 0.2
+slCbStroke1.Thickness = 1
+slCbStroke1.Parent = slCheckboxBox1
+
+local slCheckmark1 = Instance.new("TextLabel")
+slCheckmark1.Size = UDim2.new(1, 0, 1, 0)
+slCheckmark1.BackgroundTransparency = 1
+slCheckmark1.Text = "✓"
+slCheckmark1.TextColor3 = Color3.fromRGB(255, 255, 255)
+slCheckmark1.TextSize = 14
+slCheckmark1.Font = Enum.Font.GothamBold
+slCheckmark1.Visible = false
+slCheckmark1.Parent = slCheckboxBox1
+
+-- ============================================================
+-- 2. LINE LAG [MONSTER] (30000 ЛИНИЙ)
+-- ============================================================
+local slBox2 = Instance.new("Frame")
+slBox2.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
+slBox2.Position = UDim2.new(0, gap, 0, slStartY + slItemHeight + gap)
+slBox2.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+slBox2.BackgroundTransparency = 0.25
+slBox2.ClipsDescendants = true
+slBox2.Parent = serverLagBox
 
 local slBoxCorner2 = Instance.new("UICorner")
 slBoxCorner2.CornerRadius = UDim.new(0, 18)
-slBoxCorner2.Parent = slBox
+slBoxCorner2.Parent = slBox2
 
 local slBoxStroke2 = Instance.new("UIStroke")
 slBoxStroke2.Color = Color3.fromRGB(180, 180, 180)
 slBoxStroke2.Transparency = 0.2
 slBoxStroke2.Thickness = 1.0
-slBoxStroke2.Parent = slBox
+slBoxStroke2.Parent = slBox2
 
-local slToggleBtn = Instance.new("TextButton")
-slToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-slToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-slToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-slToggleBtn.BackgroundTransparency = 0.2
-slToggleBtn.Text = ""
-slToggleBtn.AutoButtonColor = false
-slToggleBtn.Parent = slBox
+local slToggleBtn2 = Instance.new("TextButton")
+slToggleBtn2.Size = UDim2.new(1, -24, 1, -12)
+slToggleBtn2.Position = UDim2.new(0, 12, 0, 6)
+slToggleBtn2.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+slToggleBtn2.BackgroundTransparency = 0.2
+slToggleBtn2.Text = ""
+slToggleBtn2.AutoButtonColor = false
+slToggleBtn2.Parent = slBox2
 
-local slToggleCorner = Instance.new("UICorner")
-slToggleCorner.CornerRadius = UDim.new(0, 14)
-slToggleCorner.Parent = slToggleBtn
+local slToggleCorner2 = Instance.new("UICorner")
+slToggleCorner2.CornerRadius = UDim.new(0, 14)
+slToggleCorner2.Parent = slToggleBtn2
 
-local slToggleStroke = Instance.new("UIStroke")
-slToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-slToggleStroke.Transparency = 0.2
-slToggleStroke.Thickness = 0.8
-slToggleStroke.Parent = slToggleBtn
+local slToggleStroke2 = Instance.new("UIStroke")
+slToggleStroke2.Color = Color3.fromRGB(180, 180, 180)
+slToggleStroke2.Transparency = 0.2
+slToggleStroke2.Thickness = 0.8
+slToggleStroke2.Parent = slToggleBtn2
 
-local slToggleLabel = Instance.new("TextLabel")
-slToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-slToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-slToggleLabel.BackgroundTransparency = 1
-slToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-slToggleLabel.Text = "Shuriken Lag"
-slToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-slToggleLabel.TextSize = 12
-slToggleLabel.Font = Enum.Font.GothamBold
-slToggleLabel.Parent = slToggleBtn
+local slToggleLabel2 = Instance.new("TextLabel")
+slToggleLabel2.Size = UDim2.new(1, -40, 1, 0)
+slToggleLabel2.Position = UDim2.new(0, 12, 0, 0)
+slToggleLabel2.BackgroundTransparency = 1
+slToggleLabel2.TextXAlignment = Enum.TextXAlignment.Left
+slToggleLabel2.Text = "Line Lag [Monster]"
+slToggleLabel2.TextColor3 = Color3.fromRGB(200, 200, 200)
+slToggleLabel2.TextSize = 12
+slToggleLabel2.Font = Enum.Font.GothamBold
+slToggleLabel2.Parent = slToggleBtn2
 
-local slCheckboxBox = Instance.new("Frame")
-slCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-slCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-slCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-slCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-slCheckboxBox.BackgroundTransparency = 0.2
-slCheckboxBox.BorderSizePixel = 0
-slCheckboxBox.Parent = slToggleBtn
+local slCheckboxBox2 = Instance.new("Frame")
+slCheckboxBox2.Size = UDim2.new(0, 20, 0, 20)
+slCheckboxBox2.AnchorPoint = Vector2.new(1, 0.5)
+slCheckboxBox2.Position = UDim2.new(1, -12, 0.5, 0)
+slCheckboxBox2.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+slCheckboxBox2.BackgroundTransparency = 0.2
+slCheckboxBox2.BorderSizePixel = 0
+slCheckboxBox2.Parent = slToggleBtn2
 
-local slCbCorner = Instance.new("UICorner")
-slCbCorner.CornerRadius = UDim.new(0, 6)
-slCbCorner.Parent = slCheckboxBox
+local slCbCorner2 = Instance.new("UICorner")
+slCbCorner2.CornerRadius = UDim.new(0, 6)
+slCbCorner2.Parent = slCheckboxBox2
 
-local slCbStroke = Instance.new("UIStroke")
-slCbStroke.Color = Color3.fromRGB(150, 150, 150)
-slCbStroke.Transparency = 0.2
-slCbStroke.Thickness = 1
-slCbStroke.Parent = slCheckboxBox
+local slCbStroke2 = Instance.new("UIStroke")
+slCbStroke2.Color = Color3.fromRGB(150, 150, 150)
+slCbStroke2.Transparency = 0.2
+slCbStroke2.Thickness = 1
+slCbStroke2.Parent = slCheckboxBox2
 
-local slCheckmark = Instance.new("TextLabel")
-slCheckmark.Size = UDim2.new(1, 0, 1, 0)
-slCheckmark.BackgroundTransparency = 1
-slCheckmark.Text = "✓"
-slCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-slCheckmark.TextSize = 14
-slCheckmark.Font = Enum.Font.GothamBold
-slCheckmark.Visible = false
-slCheckmark.Parent = slCheckboxBox
-
--- ============================================================
--- LINE LAG MONSTER! (С ТОГЛОМ КАК В SHURIKEN LAG)
--- ============================================================
-local slMonsterBox = Instance.new("Frame")
-slMonsterBox.Size = UDim2.new(1, -gap * 2, 0, slItemHeight)
-slMonsterBox.Position = UDim2.new(0, gap, 0, slStartY + slItemHeight + gap)
-slMonsterBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-slMonsterBox.BackgroundTransparency = 0.25
-slMonsterBox.ClipsDescendants = true
-slMonsterBox.Parent = serverLagBox
-
-local slMonsterCorner = Instance.new("UICorner")
-slMonsterCorner.CornerRadius = UDim.new(0, 18)
-slMonsterCorner.Parent = slMonsterBox
-
-local slMonsterStroke = Instance.new("UIStroke")
-slMonsterStroke.Color = Color3.fromRGB(180, 180, 180)
-slMonsterStroke.Transparency = 0.2
-slMonsterStroke.Thickness = 1.0
-slMonsterStroke.Parent = slMonsterBox
-
-local slMonsterToggleBtn = Instance.new("TextButton")
-slMonsterToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-slMonsterToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-slMonsterToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-slMonsterToggleBtn.BackgroundTransparency = 0.2
-slMonsterToggleBtn.Text = ""
-slMonsterToggleBtn.AutoButtonColor = false
-slMonsterToggleBtn.Parent = slMonsterBox
-
-local slMonsterToggleCorner = Instance.new("UICorner")
-slMonsterToggleCorner.CornerRadius = UDim.new(0, 14)
-slMonsterToggleCorner.Parent = slMonsterToggleBtn
-
-local slMonsterToggleStroke = Instance.new("UIStroke")
-slMonsterToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-slMonsterToggleStroke.Transparency = 0.2
-slMonsterToggleStroke.Thickness = 0.8
-slMonsterToggleStroke.Parent = slMonsterToggleBtn
-
-local slMonsterToggleLabel = Instance.new("TextLabel")
-slMonsterToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-slMonsterToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-slMonsterToggleLabel.BackgroundTransparency = 1
-slMonsterToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-slMonsterToggleLabel.Text = "Line Lag MONSTER!"
-slMonsterToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-slMonsterToggleLabel.TextSize = 12
-slMonsterToggleLabel.Font = Enum.Font.GothamBold
-slMonsterToggleLabel.Parent = slMonsterToggleBtn
-
-local slMonsterCheckboxBox = Instance.new("Frame")
-slMonsterCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-slMonsterCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-slMonsterCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-slMonsterCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-slMonsterCheckboxBox.BackgroundTransparency = 0.2
-slMonsterCheckboxBox.BorderSizePixel = 0
-slMonsterCheckboxBox.Parent = slMonsterToggleBtn
-
-local slMonsterCbCorner = Instance.new("UICorner")
-slMonsterCbCorner.CornerRadius = UDim.new(0, 6)
-slMonsterCbCorner.Parent = slMonsterCheckboxBox
-
-local slMonsterCbStroke = Instance.new("UIStroke")
-slMonsterCbStroke.Color = Color3.fromRGB(150, 150, 150)
-slMonsterCbStroke.Transparency = 0.2
-slMonsterCbStroke.Thickness = 1
-slMonsterCbStroke.Parent = slMonsterCheckboxBox
-
-local slMonsterCheckmark = Instance.new("TextLabel")
-slMonsterCheckmark.Size = UDim2.new(1, 0, 1, 0)
-slMonsterCheckmark.BackgroundTransparency = 1
-slMonsterCheckmark.Text = "✓"
-slMonsterCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-slMonsterCheckmark.TextSize = 14
-slMonsterCheckmark.Font = Enum.Font.GothamBold
-slMonsterCheckmark.Visible = false
-slMonsterCheckmark.Parent = slMonsterCheckboxBox
+local slCheckmark2 = Instance.new("TextLabel")
+slCheckmark2.Size = UDim2.new(1, 0, 1, 0)
+slCheckmark2.BackgroundTransparency = 1
+slCheckmark2.Text = "✓"
+slCheckmark2.TextColor3 = Color3.fromRGB(255, 255, 255)
+slCheckmark2.TextSize = 14
+slCheckmark2.Font = Enum.Font.GothamBold
+slCheckmark2.Visible = false
+slCheckmark2.Parent = slCheckboxBox2
 
 -- ============================================================
--- ТОГГЛ LINE LAG MONSTER!
--- ============================================================
-local monsterLagEnabled = false
-local monsterLagTask = nil
-
-slMonsterToggleBtn.MouseButton1Click:Connect(function()
-    monsterLagEnabled = not monsterLagEnabled
-    slMonsterCheckmark.Visible = monsterLagEnabled
-    
-    if monsterLagEnabled then
-        -- Устанавливаем 30000
-        local sliderFound = false
-        if _G.LineAmountSlider then
-            pcall(function() _G.LineAmountSlider:SetValue(30000) end)
-            sliderFound = true
-        end
-        if not sliderFound and Toggles and Toggles["LineAmount"] then
-            pcall(function() Toggles["LineAmount"]:Set(30000) end)
-            sliderFound = true
-        end
-        if not sliderFound then
-            local flags = OrionLib and OrionLib.Flags
-            if flags and flags.LineAmount then
-                pcall(function() flags.LineAmount.Value = 30000 end)
-                sliderFound = true
-            end
-        end
-        
-        -- Запускаем бесконечный спам лайн лага
-        monsterLagTask = task.spawn(function()
-            local RunService = game:GetService("RunService")
-            local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
-            local spawnLocation = Workspace:FindFirstChild("SpawnLocation")
-            
-            while monsterLagEnabled and CreateGrabLine do
-                pcall(function()
-                    CreateGrabLine:FireServer(
-                        spawnLocation,
-                        CFrame.new(spawnLocation.Position.X, 1e9, spawnLocation.Position.Z) * CFrame.Angles(math.rad(1e9), math.rad(1e9), math.rad(1e9))
-                    )
-                end)
-                task.wait(0.01)
-            end
-        end)
-        
-        if OrionLib then
-            OrionLib:MakeNotification({
-                Name = "<font color=\"rgb(255, 100, 0)\"><b>⚡ MONSTER LAG ACTIVATED!</b></font>",
-                Content = "Lag amount set to 30000",
-                Image = "zap",
-                Time = 3
-            })
-        end
-    else
-        if monsterLagTask then
-            task.cancel(monsterLagTask)
-            monsterLagTask = nil
-        end
-        if OrionLib then
-            OrionLib:MakeNotification({
-                Name = "<font color=\"rgb(255, 100, 0)\"><b>⚡ MONSTER LAG DEACTIVATED!</b></font>",
-                Content = "Lag stopped",
-                Image = "zap-off",
-                Time = 2
-            })
-        end
-    end
-end)
-
--- ============================================================
--- ЛОГИКА SHURIKEN LAG
+-- ЛОГИКА SHURIKEN LAG (1 ДЕКОЙ + 9 ШИРИКЕНОВ)
 -- ============================================================
 local shurikenLagRunning = false
 local shurikenLagTask = nil
@@ -8627,7 +8557,7 @@ end
 local function startShurikenLag()
     if shurikenLagRunning then return end
     shurikenLagRunning = true
-    slCheckmark.Visible = true
+    slCheckmark1.Visible = true
 
     ClearLagToys2()
     task.wait(0.3)
@@ -8636,6 +8566,7 @@ local function startShurikenLag()
         local oldCF = getHRP2() and getHRP2().CFrame
         local charCF = oldCF
         
+        -- 1. СОЗДАЁМ 1 ДЕКОЙ И 9 ШИРИКЕНОВ
         local decoys = {}
         local shurikens = {}
         
@@ -8657,10 +8588,11 @@ local function startShurikenLag()
 
         if #decoys == 0 or #shurikens == 0 then
             shurikenLagRunning = false
-            slCheckmark.Visible = false
+            slCheckmark1.Visible = false
             return
         end
 
+        -- 2. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ДЕКОЯ
         for _, decoyObj in pairs(decoys) do
             local decoyHRP = decoyObj:FindFirstChild("HumanoidRootPart")
             if decoyHRP then
@@ -8679,6 +8611,7 @@ local function startShurikenLag()
             end
         end
 
+        -- 3. ЗАХВАТЫВАЕМ ВЛАДЕЛЬЦА ШИРИКЕНОВ И КРЕПИМ ИХ К ДЕКОЮ
         for _, shuriken in pairs(shurikens) do
             if not shurikenLagRunning then break end
             
@@ -8715,6 +8648,7 @@ local function startShurikenLag()
             task.wait(0.03)
         end
 
+        -- 4. ГЛАВНЫЙ ЦИКЛ ЛАГА
         for decoyindex, decoyObj in ipairs(decoys) do
             if not shurikenLagRunning then break end
             
@@ -8801,6 +8735,7 @@ local function startShurikenLag()
             end
         end
         
+        -- 5. ПОДДЕРЖИВАЕМ ЛАГ
         while shurikenLagRunning do
             for _, shuriken in pairs(shurikens) do
                 if shuriken and shuriken.Parent then
@@ -8818,6 +8753,7 @@ local function startShurikenLag()
             RunService.RenderStepped:Wait()
         end
         
+        -- 6. ОЧИСТКА
         ClearLagToys2()
         
         local hrp = getHRP2()
@@ -8830,7 +8766,7 @@ local function startShurikenLag()
         end
         
         shurikenLagRunning = false
-        slCheckmark.Visible = false
+        slCheckmark1.Visible = false
     end)
 end
 
@@ -8840,11 +8776,11 @@ local function stopShurikenLag()
         task.cancel(shurikenLagTask)
         shurikenLagTask = nil
     end
-    slCheckmark.Visible = false
+    slCheckmark1.Visible = false
     ClearLagToys2()
 end
 
-slToggleBtn.MouseButton1Click:Connect(function()
+slToggleBtn1.MouseButton1Click:Connect(function()
     if shurikenLagRunning then
         stopShurikenLag()
     else
@@ -8852,10 +8788,104 @@ slToggleBtn.MouseButton1Click:Connect(function()
     end
 end)
 
-serverLagBox.Size = UDim2.new(0, 300, 0, slStartY + 2.9 * (slItemHeight + gap) + gap)
+-- ============================================================
+-- ЛОГИКА LINE LAG [MONSTER] (30000 ЛИНИЙ)
+-- ============================================================
+local monsterLagRunning = false
+local monsterLagTask = nil
+local CreateGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("CreateGrabLine")
 
-local finalCanvas = miscContentArea.CanvasSize.Y.Offset
-miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
+local function startMonsterLag()
+    if monsterLagRunning then return end
+    if not CreateGrabLine then return end
+    
+    monsterLagRunning = true
+    slCheckmark2.Visible = true
+    
+    monsterLagTask = task.spawn(function()
+        local LINE_COUNT = 30000
+        local spawnedLines = 0
+        local totalSpawned = 0
+        
+        local spawnLocation = Workspace:FindFirstChild("SpawnLocation") or Workspace:FindFirstChild("Spawn")
+
+        while monsterLagRunning do
+            if not CreateGrabLine then break end
+            
+            local batchSize = 100
+            local batches = math.ceil(LINE_COUNT / batchSize)
+            
+            for batch = 1, batches do
+                if not monsterLagRunning then break end
+                
+                local startIdx = (batch - 1) * batchSize + 1
+                local endIdx = math.min(batch * batchSize, LINE_COUNT)
+                
+                for i = startIdx, endIdx do
+                    if not monsterLagRunning then break end
+                    
+                    local randomPos = Vector3.new(
+                        math.random(-999999, 999999),
+                        math.random(-999999, 999999),
+                        math.random(-999999, 999999)
+                    )
+                    
+                    local randomAngle = CFrame.Angles(
+                        math.rad(math.random(0, 360)),
+                        math.rad(math.random(0, 360)),
+                        math.rad(math.random(0, 360))
+                    )
+                    
+                    local targetCF = CFrame.new(randomPos) * randomAngle
+                    
+                    pcall(function()
+                        CreateGrabLine:FireServer(
+                            spawnLocation or Workspace.Terrain,
+                            targetCF
+                        )
+                    end)
+                    
+                    spawnedLines = spawnedLines + 1
+                    totalSpawned = totalSpawned + 1
+                end
+                
+                task.wait(0.01)
+            end
+            
+            task.wait(0.1)
+        end
+        
+        monsterLagRunning = false
+        slCheckmark2.Visible = false
+    end)
+end
+
+local function stopMonsterLag()
+    monsterLagRunning = false
+    if monsterLagTask then
+        task.cancel(monsterLagTask)
+        monsterLagTask = nil
+    end
+    slCheckmark2.Visible = false
+end
+
+slToggleBtn2.MouseButton1Click:Connect(function()
+    if monsterLagRunning then
+        stopMonsterLag()
+    else
+        startMonsterLag()
+    end
+end)
+
+-- ============================================================
+-- ВЫСОТА ГРУППЫ SERVER LAG
+-- ============================================================
+local slHeight = slStartY + (slItemHeight + gap) * 2 + gap
+serverLagBox.Size = UDim2.new(0, 300, 0, slHeight)
+
+-- ОБНОВЛЯЕМ CANVAS
+local finalCanvas2 = miscContentArea.CanvasSize.Y.Offset
+miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas2 + slHeight + gap + 20)
 end
 
 -- ============================================================================
