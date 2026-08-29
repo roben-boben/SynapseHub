@@ -8728,6 +8728,273 @@ miscContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + bbHeight + gap +
     -- ОБНОВЛЯЕМ CANVAS
     local finalCanvas = miscContentArea.CanvasSize.Y.Offset
     miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + 200)
+-- ============================================================
+-- ГРУППА 6: PACKET LAG (ПОД SHURIKEN LAG)
+-- ============================================================
+local slPosY = serverLagBox.Position.Y.Offset
+local slHeight = serverLagBox.Size.Y.Offset
+
+local packetLagBox = Instance.new("Frame")
+packetLagBox.Size = UDim2.new(0, 300, 0, 96)
+packetLagBox.Position = UDim2.new(0, 20, 0, slPosY + slHeight + gap)
+packetLagBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+packetLagBox.BackgroundTransparency = 0.25
+packetLagBox.ClipsDescendants = true
+packetLagBox.Parent = miscContentArea
+
+local plBoxCorner = Instance.new("UICorner")
+plBoxCorner.CornerRadius = UDim.new(0, 18)
+plBoxCorner.Parent = packetLagBox
+
+local plBoxStroke = Instance.new("UIStroke")
+plBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+plBoxStroke.Transparency = 0.2
+plBoxStroke.Thickness = 1.0
+plBoxStroke.Parent = packetLagBox
+
+local plTitle = Instance.new("TextLabel")
+plTitle.Size = UDim2.new(1, -30, 0, 30)
+plTitle.Position = UDim2.new(0, 15, 0, 8)
+plTitle.BackgroundTransparency = 1
+plTitle.TextXAlignment = Enum.TextXAlignment.Left
+plTitle.Text = "Packet Lag"
+plTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+plTitle.TextTransparency = 0.05
+plTitle.TextSize = 16
+plTitle.Font = Enum.Font.GothamBold
+plTitle.Parent = packetLagBox
+
+local plLine = Instance.new("Frame")
+plLine.Size = UDim2.new(1, -30, 0, 1.5)
+plLine.Position = UDim2.new(0, 15, 0, 42)
+plLine.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+plLine.BackgroundTransparency = 0.3
+plLine.BorderSizePixel = 0
+plLine.Parent = packetLagBox
+
+local plStartY = 52
+local plItemHeight = 36
+
+-- ============================================================
+-- ПОЛЗУНОК РАЗМЕРА ПАКЕТА (0.1 - 1.6 МБ)
+-- ============================================================
+local plSliderBox = Instance.new("Frame")
+plSliderBox.Size = UDim2.new(1, -gap * 2, 0, plItemHeight)
+plSliderBox.Position = UDim2.new(0, gap, 0, plStartY)
+plSliderBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+plSliderBox.BackgroundTransparency = 0.25
+plSliderBox.ClipsDescendants = true
+plSliderBox.Parent = packetLagBox
+
+local plSBoxCorner = Instance.new("UICorner")
+plSBoxCorner.CornerRadius = UDim.new(0, 12)
+plSBoxCorner.Parent = plSliderBox
+
+local plSBoxStroke = Instance.new("UIStroke")
+plSBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+plSBoxStroke.Transparency = 0.2
+plSBoxStroke.Thickness = 1.0
+plSBoxStroke.Parent = plSliderBox
+
+local plSliderLabel = Instance.new("TextLabel")
+plSliderLabel.Size = UDim2.new(0.35, -5, 1, 0)
+plSliderLabel.Position = UDim2.new(0, 8, 0, 0)
+plSliderLabel.BackgroundTransparency = 1
+plSliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+plSliderLabel.Text = "Size: 0.10 MB"
+plSliderLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+plSliderLabel.TextSize = 11
+plSliderLabel.Font = Enum.Font.Gotham
+plSliderLabel.Parent = plSliderBox
+
+local plSliderBar = Instance.new("Frame")
+plSliderBar.Size = UDim2.new(0.55, -5, 0.6, 0)
+plSliderBar.Position = UDim2.new(0.38, 0, 0.5, -4)
+plSliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+plSliderBar.BackgroundTransparency = 0.2
+plSliderBar.BorderSizePixel = 0
+plSliderBar.Parent = plSliderBox
+
+local plBarCorner = Instance.new("UICorner")
+plBarCorner.CornerRadius = UDim.new(1, 0)
+plBarCorner.Parent = plSliderBar
+
+local plSliderFill = Instance.new("Frame")
+plSliderFill.Size = UDim2.new(0.1, 0, 1, 0)
+plSliderFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+plSliderFill.BackgroundTransparency = 0.05
+plSliderFill.BorderSizePixel = 0
+plSliderFill.Parent = plSliderBar
+
+local plFillCorner = Instance.new("UICorner")
+plFillCorner.CornerRadius = UDim.new(1, 0)
+plFillCorner.Parent = plSliderFill
+
+local plSliderButton = Instance.new("TextButton")
+plSliderButton.Size = UDim2.new(0, 14, 0, 14)
+plSliderButton.Position = UDim2.new(0.1, -7, 0.5, -7)
+plSliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+plSliderButton.BackgroundTransparency = 0
+plSliderButton.Text = ""
+plSliderButton.Parent = plSliderBar
+
+local plBtnCorner = Instance.new("UICorner")
+plBtnCorner.CornerRadius = UDim.new(1, 0)
+plBtnCorner.Parent = plSliderButton
+
+local plBtnStroke = Instance.new("UIStroke")
+plBtnStroke.Color = Color3.fromRGB(140, 140, 140)
+plBtnStroke.Thickness = 1
+plBtnStroke.Parent = plSliderButton
+
+local packetSizeMB = 0.1
+local plSliding = false
+
+local function updatePlSlider(input)
+    local mousePos = input.Position.X
+    local barAbsPos = plSliderBar.AbsolutePosition.X
+    local barAbsSize = plSliderBar.AbsoluteSize.X
+    
+    local relativeX = math.clamp(mousePos - barAbsPos, 0, barAbsSize)
+    local scale = math.clamp(relativeX / barAbsSize, 0, 1)
+    
+    plSliderButton.Position = UDim2.new(scale, -7, 0.5, -7)
+    plSliderFill.Size = UDim2.new(scale, 0, 1, 0)
+    
+    packetSizeMB = math.round((0.1 + (scale * 1.5)) * 100) / 100
+    plSliderLabel.Text = "Size: " .. string.format("%.2f", packetSizeMB) .. " MB"
+end
+
+plSliderButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        plSliding = true
+        updatePlSlider(input)
+    end
+end)
+
+plSliderBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        plSliding = true
+        updatePlSlider(input)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        plSliding = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if plSliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        updatePlSlider(input)
+    end
+end)
+
+-- ============================================================
+-- КНОПКА SEND PACKET (ТОГГЛ)
+-- ============================================================
+local plSendBox = Instance.new("Frame")
+plSendBox.Size = UDim2.new(1, -gap * 2, 0, 32)
+plSendBox.Position = UDim2.new(0, gap, 0, plStartY + plItemHeight + 4)
+plSendBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+plSendBox.BackgroundTransparency = 0.25
+plSendBox.ClipsDescendants = true
+plSendBox.Parent = packetLagBox
+
+local plSendCorner = Instance.new("UICorner")
+plSendCorner.CornerRadius = UDim.new(0, 12)
+plSendCorner.Parent = plSendBox
+
+local plSendStroke = Instance.new("UIStroke")
+plSendStroke.Color = Color3.fromRGB(180, 180, 180)
+plSendStroke.Transparency = 0.2
+plSendStroke.Thickness = 1.0
+plSendStroke.Parent = plSendBox
+
+local plSendBtn = Instance.new("TextButton")
+plSendBtn.Size = UDim2.new(1, -24, 1, -6)
+plSendBtn.Position = UDim2.new(0, 12, 0, 3)
+plSendBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+plSendBtn.BackgroundTransparency = 0.2
+plSendBtn.Text = "Send Packet"
+plSendBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+plSendBtn.TextSize = 12
+plSendBtn.Font = Enum.Font.GothamBold
+plSendBtn.AutoButtonColor = false
+plSendBtn.Parent = plSendBox
+
+local plSendCorner2 = Instance.new("UICorner")
+plSendCorner2.CornerRadius = UDim.new(0, 10)
+plSendCorner2.Parent = plSendBtn
+
+local plSendStroke2 = Instance.new("UIStroke")
+plSendStroke2.Color = Color3.fromRGB(180, 180, 180)
+plSendStroke2.Transparency = 0.2
+plSendStroke2.Thickness = 0.8
+plSendStroke2.Parent = plSendBtn
+
+local plSendCheck = Instance.new("TextLabel")
+plSendCheck.Size = UDim2.new(0, 20, 1, 0)
+plSendCheck.AnchorPoint = Vector2.new(1, 0.5)
+plSendCheck.Position = UDim2.new(1, -8, 0.5, 0)
+plSendCheck.BackgroundTransparency = 1
+plSendCheck.Text = ""
+plSendCheck.TextColor3 = Color3.fromRGB(0, 255, 0)
+plSendCheck.TextSize = 16
+plSendCheck.Font = Enum.Font.GothamBold
+plSendCheck.Visible = false
+plSendCheck.Parent = plSendBtn
+
+-- ============================================================
+-- ЛОГИКА ОТПРАВКИ ПАКЕТОВ
+-- ============================================================
+local packetLagRunning = false
+local packetLagTask = nil
+local ExtendGrabLine = ReplicatedStorage:FindFirstChild("GrabEvents") and ReplicatedStorage.GrabEvents:FindFirstChild("ExtendGrabLine")
+local PACKET_STRING = "metaballs metaballs metaballs metaballs metaballs metaballs metaballs metaballs"
+local PACKET_STRING_LEN = #PACKET_STRING
+
+local function calculateRepeats(mb)
+    local targetBytes = mb * 1024 * 1024
+    return math.max(1, math.floor(targetBytes / PACKET_STRING_LEN))
+end
+
+plSendBtn.MouseButton1Click:Connect(function()
+    packetLagRunning = not packetLagRunning
+    plSendCheck.Visible = packetLagRunning
+    plSendBtn.Text = packetLagRunning and "Stop Sending" or "Send Packet"
+    
+    if packetLagRunning then
+        if packetLagTask then
+            task.cancel(packetLagTask)
+            packetLagTask = nil
+        end
+        
+        packetLagTask = task.spawn(function()
+            while packetLagRunning do
+                if ExtendGrabLine then
+                    local repeats = calculateRepeats(packetSizeMB)
+                    local data = string.rep(PACKET_STRING, repeats)
+                    pcall(function()
+                        ExtendGrabLine:FireServer(data)
+                    end)
+                end
+                task.wait(0.1)
+            end
+        end)
+    else
+        if packetLagTask then
+            task.cancel(packetLagTask)
+            packetLagTask = nil
+        end
+    end
+end)
+
+-- ОБНОВЛЯЕМ CANVAS
+local finalCanvas = miscContentArea.CanvasSize.Y.Offset
+local plHeight = 52 + plItemHeight + 4 + 32 + 8
+miscContentArea.CanvasSize = UDim2.new(0, 0, 0, finalCanvas + plHeight + gap + 20)
 end
 
 -- ============================================================================
