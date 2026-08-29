@@ -9885,7 +9885,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION (РАБОТАЕТ 1 РАЗ НА СМЕРТЬ)
+-- 3. SPAWN SAVE POSITION (СОХРАНЯЕТ ПОЗИЦИЮ СМЕРТИ КАЖДЫЙ РАЗ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,21 +9966,18 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА: РАБОТАЕТ 1 РАЗ НА СМЕРТЬ
+-- ЛОГИКА: СОХРАНЯЕТ ПОЗИЦИЮ КАЖДЫЙ РАЗ ПРИ СМЕРТИ
 do
     local spawnSaveEnabled = false
     local spawnSaveConn = nil
     local savedPos = nil
-    local used = false
 
     ssToggleBtn.MouseButton1Click:Connect(function()
         spawnSaveEnabled = not spawnSaveEnabled
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            used = false
-            savedPos = nil
-            
+            -- СОХРАНЯЕМ ТЕКУЩУЮ ПОЗИЦИЮ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -9989,14 +9986,20 @@ do
             
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled and savedPos and not used then
+                if spawnSaveEnabled then
+                    -- СОХРАНЯЕМ ПОЗИЦИЮ СТАРОГО ПЕРСОНАЖА (МЕСТО СМЕРТИ)
+                    local oldChar = LocalPlayer.Character
+                    local oldHrp = oldChar and oldChar:FindFirstChild("HumanoidRootPart")
+                    if oldHrp then
+                        savedPos = oldHrp.CFrame
+                    end
+                    
                     task.wait(0.5)
                     local newHrp = newChar:FindFirstChild("HumanoidRootPart")
-                    if newHrp then
+                    if newHrp and savedPos then
                         newHrp.CFrame = savedPos
                         newHrp.AssemblyLinearVelocity = Vector3.zero
                         newHrp.AssemblyAngularVelocity = Vector3.zero
-                        used = true
                         savedPos = nil
                     end
                 end
@@ -10007,7 +10010,6 @@ do
                 spawnSaveConn = nil
             end
             savedPos = nil
-            used = false
         end
     end)
 end
@@ -10099,7 +10101,7 @@ do
     local backTrailEnabled = false
     local trailTask = nil
     local trailParts = {}
-    local MAX_TRAIL = 80
+    local MAX_TRAIL = 120
 
     local function clearTrail()
         for _, part in pairs(trailParts) do
@@ -10115,7 +10117,6 @@ do
         clearTrail()
         
         trailTask = task.spawn(function()
-            local lastPositions = {}
             local isMoving = false
             local stopTimer = 0
             
@@ -10140,17 +10141,17 @@ do
                     end
                     
                     if isMoving then
-                        -- ПОЗИЦИЯ НА СПИНЕ (на 0.3 студа назад)
+                        -- ПОЗИЦИЯ НА СПИНЕ
                         local backPos = hrp.CFrame * CFrame.new(0, 0, -0.4)
                         local backPosWorld = backPos.Position
                         
-                        -- ВЕРТИКАЛЬНАЯ ЛИНИЯ: ОТ НОГ (низ) ДО ГОЛОВЫ (верх)
+                        -- ОТ НОГ ДО ГОЛОВЫ
                         local footY = hrp.Position.Y - 1.5
                         local headY = head.Position.Y + 0.3
                         local midY = (footY + headY) / 2
                         local height = headY - footY
                         
-                        -- СОЗДАЕМ ВЕРТИКАЛЬНУЮ ЛИНИЮ
+                        -- ВЕРТИКАЛЬНАЯ ЛИНИЯ
                         local verticalPart = Instance.new("Part")
                         verticalPart.Size = Vector3.new(0.05, height, 0.05)
                         verticalPart.CFrame = CFrame.new(backPosWorld.X, midY, backPosWorld.Z)
@@ -10161,13 +10162,13 @@ do
                         verticalPart.Material = Enum.Material.Neon
                         verticalPart.Parent = workspace
                         
-                        -- ЦВЕТА: БЕЛЫЙ -> ЧЕРНЫЙ (НАОБОРОТ)
+                        -- БЕЛЫЙ -> ЧЕРНЫЙ (НАОБОРОТ ОТ ПРОШЛОГО)
                         local progress = #trailParts / MAX_TRAIL
                         local colorValue = 255 - (255 * progress)
                         verticalPart.Color = Color3.fromRGB(colorValue, colorValue, colorValue)
                         
                         -- ПЛАВНОЕ ПОЯВЛЕНИЕ (alpha от 0 к 0.5)
-                        local alpha = math.min(#trailParts / 10, 0.5)
+                        local alpha = math.min(#trailParts / 15, 0.5)
                         verticalPart.Transparency = 0.5 - alpha
                         
                         table.insert(trailParts, verticalPart)
@@ -10179,18 +10180,18 @@ do
                             end
                         end
                         
-                        -- ОБНОВЛЯЕМ ЦВЕТА И ПРОЗРАЧНОСТЬ
+                        -- ОБНОВЛЯЕМ ВСЕ ЛИНИИ
                         for i, p in ipairs(trailParts) do
                             local prog = i / #trailParts
                             local val = 255 - (255 * prog)
                             p.Color = Color3.fromRGB(val, val, val)
                             
-                            -- ПЛАВНОЕ ИСЧЕЗНОВЕНИЕ
+                            -- ПЛАВНОЕ ИСЧЕЗНОВЕНИЕ К КОНЦУ
                             local alpha2 = 0.5 * (i / #trailParts)
                             p.Transparency = 0.5 - alpha2
                         end
                     else
-                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ ВСЁ
+                        -- ЕСЛИ СТОИТ - УДАЛЯЕМ
                         if #trailParts > 0 then
                             for _, p in pairs(trailParts) do
                                 if p and p.Parent then
@@ -10233,10 +10234,6 @@ do
         end
     end)
 end
-
--- ВЫСОТА ФРЕЙМА (уменьшена на 10 пикселей)
-local pvHeight = pvStartY + (4 * itemHeight) + (4 * gap) + gap - 10
-playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
 -- ============================================================
