@@ -9484,7 +9484,7 @@ pvLine2.BackgroundTransparency = 0.3
 pvLine2.BorderSizePixel = 0
 pvLine2.Parent = playerVisualsBox
 
-local gap = 10
+local gap = 10 -- 0.1 см = 10 пикселей
 local pvStartY = 52
 local itemHeight = 48
 
@@ -9885,7 +9885,7 @@ do
 end
 
 -- ============================================================
--- 3. SPAWN SAVE POSITION
+-- 3. SPAWN SAVE POSITION (РАБОТАЕТ КАЖДЫЙ РАЗ)
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
@@ -9966,11 +9966,10 @@ ssCheckmark.Font = Enum.Font.GothamBold
 ssCheckmark.Visible = false
 ssCheckmark.Parent = ssCheckboxBox
 
--- ЛОГИКА SPAWN SAVE POSITION
+-- ЛОГИКА SPAWN SAVE POSITION (РАБОТАЕТ КАЖДЫЙ РАЗ)
 do
     local spawnSaveEnabled = false
     local savedSpawnCF = nil
-    local teleportedOnce = false
     local spawnSaveConn = nil
 
     ssToggleBtn.MouseButton1Click:Connect(function()
@@ -9978,8 +9977,7 @@ do
         ssCheckmark.Visible = spawnSaveEnabled
         
         if spawnSaveEnabled then
-            teleportedOnce = false
-            
+            -- СОХРАНЯЕМ ПОЗИЦИЮ ПРИ ВКЛЮЧЕНИИ
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -9988,16 +9986,16 @@ do
                 savedSpawnCF = CFrame.new(0, 10, 0)
             end
             
+            -- ПОДПИСЫВАЕМСЯ НА ВОЗРОЖДЕНИЕ (РАБОТАЕТ КАЖДЫЙ РАЗ)
             if spawnSaveConn then spawnSaveConn:Disconnect() end
             spawnSaveConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
-                if spawnSaveEnabled and not teleportedOnce and savedSpawnCF then
+                if spawnSaveEnabled and savedSpawnCF then
                     task.wait(0.5)
                     local newHrp = newChar:FindFirstChild("HumanoidRootPart")
                     if newHrp then
                         newHrp.CFrame = savedSpawnCF
                         newHrp.AssemblyLinearVelocity = Vector3.zero
                         newHrp.AssemblyAngularVelocity = Vector3.zero
-                        teleportedOnce = true
                     end
                 end
             end)
@@ -10007,13 +10005,12 @@ do
                 spawnSaveConn = nil
             end
             savedSpawnCF = nil
-            teleportedOnce = false
         end
     end)
 end
 
 -- ============================================================
--- 4. BACK TRAIL (СЛЕД ЗА ИГРОКОМ)
+-- 4. BACK TRAIL (СЛЕД ЗА ИГРОКОМ) - СНИЗУ ОТ SPAWN SAVE
 -- ============================================================
 pvY = pvY + itemHeight + gap
 
