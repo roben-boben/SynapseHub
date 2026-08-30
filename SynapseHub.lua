@@ -10341,10 +10341,91 @@ skyCheckmark.Visible = false
 skyCheckmark.Parent = skyCheckboxBox
 
 -- ============================================================
--- ЛОГИКА GRAY SKY - ОБЛАКА ЧЕРЕЗ workspace.Terrain.Clouds
+-- ТОГГЛ SUNSHINE
+-- ============================================================
+local sunshineBox = Instance.new("Frame")
+sunshineBox.Size = UDim2.new(1, -gap * 2, 0, 48)
+sunshineBox.Position = UDim2.new(0, gap, 0, shStartY + 48 + gap)
+sunshineBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+sunshineBox.BackgroundTransparency = 0.25
+sunshineBox.ClipsDescendants = true
+sunshineBox.Parent = shadersBox
+
+local sunshineBoxCorner = Instance.new("UICorner")
+sunshineBoxCorner.CornerRadius = UDim.new(0, 18)
+sunshineBoxCorner.Parent = sunshineBox
+
+local sunshineBoxStroke = Instance.new("UIStroke")
+sunshineBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+sunshineBoxStroke.Transparency = 0.2
+sunshineBoxStroke.Thickness = 1.0
+sunshineBoxStroke.Parent = sunshineBox
+
+local sunshineToggleBtn = Instance.new("TextButton")
+sunshineToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+sunshineToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+sunshineToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+sunshineToggleBtn.BackgroundTransparency = 0.2
+sunshineToggleBtn.Text = ""
+sunshineToggleBtn.AutoButtonColor = false
+sunshineToggleBtn.Parent = sunshineBox
+
+local sunshineToggleCorner = Instance.new("UICorner")
+sunshineToggleCorner.CornerRadius = UDim.new(0, 14)
+sunshineToggleCorner.Parent = sunshineToggleBtn
+
+local sunshineToggleStroke = Instance.new("UIStroke")
+sunshineToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+sunshineToggleStroke.Transparency = 0.2
+sunshineToggleStroke.Thickness = 0.8
+sunshineToggleStroke.Parent = sunshineToggleBtn
+
+local sunshineToggleLabel = Instance.new("TextLabel")
+sunshineToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+sunshineToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+sunshineToggleLabel.BackgroundTransparency = 1
+sunshineToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+sunshineToggleLabel.Text = "Sunshine"
+sunshineToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+sunshineToggleLabel.TextSize = 11
+sunshineToggleLabel.Font = Enum.Font.GothamBold
+sunshineToggleLabel.Parent = sunshineToggleBtn
+
+local sunshineCheckboxBox = Instance.new("Frame")
+sunshineCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+sunshineCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+sunshineCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+sunshineCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+sunshineCheckboxBox.BackgroundTransparency = 0.2
+sunshineCheckboxBox.BorderSizePixel = 0
+sunshineCheckboxBox.Parent = sunshineToggleBtn
+
+local sunshineCbCorner = Instance.new("UICorner")
+sunshineCbCorner.CornerRadius = UDim.new(0, 6)
+sunshineCbCorner.Parent = sunshineCheckboxBox
+
+local sunshineCbStroke = Instance.new("UIStroke")
+sunshineCbStroke.Color = Color3.fromRGB(150, 150, 150)
+sunshineCbStroke.Transparency = 0.2
+sunshineCbStroke.Thickness = 1
+sunshineCbStroke.Parent = sunshineCheckboxBox
+
+local sunshineCheckmark = Instance.new("TextLabel")
+sunshineCheckmark.Size = UDim2.new(1, 0, 1, 0)
+sunshineCheckmark.BackgroundTransparency = 1
+sunshineCheckmark.Text = "✓"
+sunshineCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+sunshineCheckmark.TextSize = 14
+sunshineCheckmark.Font = Enum.Font.GothamBold
+sunshineCheckmark.Visible = false
+sunshineCheckmark.Parent = sunshineCheckboxBox
+
+-- ============================================================
+-- ЛОГИКА GRAY SKY
 -- ============================================================
 local graySkyEnabled = false
 local GRAY_TEXTURE = "rbxassetid://119829605564975"
+local SUNSHINE_TEXTURE = "rbxassetid://96744289535338"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
@@ -10370,7 +10451,6 @@ if sky then
     originalSkyUp = sky.SkyboxUp
 end
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ СОЛНЦА
 local originalSunTexture = "rbxasset://sky/sun.png"
 local originalMoonTexture = "rbxasset://sky/moon.png"
 local originalStarCount = 3000
@@ -10393,7 +10473,6 @@ if atm then
     originalAtmEnabled = atm.Enabled
 end
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ОБЛАКОВ ИЗ Clouds
 local originalCloudColor = Color3.fromRGB(255, 255, 255)
 local originalCloudCover = 0.5
 local originalCloudDensity = 1
@@ -10405,6 +10484,11 @@ if Clouds then
         originalCloudDensity = Clouds.Density
     end)
 end
+
+local originalBloomSize = BloomEffect.Size
+local originalBloomThreshold = BloomEffect.Threshold
+local originalDOFIntensity = DepthOfField.FarIntensity
+local originalDOFFocus = DepthOfField.FocusDistance
 
 -- ============================================================
 -- ФУНКЦИЯ ПРИМЕНЕНИЯ ТЕКУЩИХ НАСТРОЕК
@@ -10420,24 +10504,106 @@ local function applyCurrentSettings()
 end
 
 -- ============================================================
--- ФУНКЦИЯ ПРИМЕНЕНИЯ СЕРЫХ ОБЛАКОВ
+-- ФУНКЦИИ ДЛЯ ОКЕАНА (ИСПРАВЛЕНЫ)
+-- ============================================================
+local function findOcean()
+    -- Ищем океан в разных местах
+    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+    if not ocean then
+        ocean = workspace:FindFirstChild("Ocean")
+    end
+    if not ocean then
+        -- Поиск по всем частям, которые содержат "Ocean" в названии
+        for _, child in pairs(workspace:GetDescendants()) do
+            if child:IsA("BasePart") and string.match(child.Name, "Ocean") then
+                return child
+            end
+        end
+    end
+    return ocean
+end
+
+local originalOceanTransparency = 0
+local originalOceanCanCollide = true
+local oceanParts = {} -- для хранения всех частей океана
+
+local function saveOceanState()
+    local ocean = findOcean()
+    if ocean then
+        if ocean:IsA("Model") then
+            for _, part in pairs(ocean:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    table.insert(oceanParts, {
+                        part = part,
+                        transparency = part.Transparency,
+                        canCollide = part.CanCollide,
+                        canTouch = part.CanTouch,
+                        canQuery = part.CanQuery
+                    })
+                end
+            end
+        else
+            table.insert(oceanParts, {
+                part = ocean,
+                transparency = ocean.Transparency,
+                canCollide = ocean.CanCollide,
+                canTouch = ocean.CanTouch,
+                canQuery = ocean.CanQuery
+            })
+        end
+    end
+end
+
+local function setOceanInvisible()
+    local ocean = findOcean()
+    if ocean then
+        pcall(function()
+            if ocean:IsA("Model") then
+                for _, part in pairs(ocean:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.Transparency = 1
+                        part.CanCollide = false
+                        part.CanTouch = false
+                        part.CanQuery = false
+                    end
+                end
+            else
+                ocean.Transparency = 1
+                ocean.CanCollide = false
+                ocean.CanTouch = false
+                ocean.CanQuery = false
+            end
+        end)
+    end
+end
+
+local function restoreOcean()
+    for _, data in pairs(oceanParts) do
+        pcall(function()
+            data.part.Transparency = data.transparency
+            data.part.CanCollide = data.canCollide
+            data.part.CanTouch = data.canTouch
+            data.part.CanQuery = data.canQuery
+        end)
+    end
+end
+
+saveOceanState()
+
+-- ============================================================
+-- ЛОГИКА GRAY SKY
 -- ============================================================
 local function applyGrayClouds()
     if not Clouds then return end
-    
     pcall(function()
-        Clouds.Color = Color3.fromRGB(95, 95, 95) -- #5f5f5f
+        Clouds.Color = Color3.fromRGB(95, 95, 95)
         Clouds.Cover = 0.759
         Clouds.Density = 0.631
     end)
 end
 
--- ============================================================
--- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ОБЛАКОВ
--- ============================================================
 local function restoreClouds()
     if not Clouds then return end
-    
     pcall(function()
         Clouds.Color = originalCloudColor
         Clouds.Cover = originalCloudCover
@@ -10445,9 +10611,6 @@ local function restoreClouds()
     end)
 end
 
--- ============================================================
--- ФУНКЦИЯ УДАЛЕНИЯ СОЛНЦА ИЗ SKY
--- ============================================================
 local function removeSunFromSky()
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
@@ -10457,9 +10620,6 @@ local function removeSunFromSky()
     end
 end
 
--- ============================================================
--- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ СОЛНЦА
--- ============================================================
 local function restoreSunInSky()
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
@@ -10469,11 +10629,13 @@ local function restoreSunInSky()
     end
 end
 
--- ============================================================
--- ПРИМЕНЕНИЕ GRAY SKY
--- ============================================================
 local function applyGraySky()
-    -- SKY
+    if sunshineEnabled then
+        sunshineEnabled = false
+        sunshineCheckmark.Visible = false
+        restoreSunshine()
+    end
+    
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
@@ -10487,13 +10649,9 @@ local function applyGraySky()
     sky.SkyboxRt = GRAY_TEXTURE
     sky.SkyboxUp = GRAY_TEXTURE
     
-    -- УДАЛЯЕМ СОЛНЦЕ ИЗ SKY
     removeSunFromSky()
-    
-    -- ОБЛАКА (ЧЕРЕЗ Clouds В Terrain!)
     applyGrayClouds()
     
-    -- LIGHTING
     Lighting.FogColor = Color3.fromRGB(180, 180, 180)
     Lighting.Ambient = Color3.fromRGB(180, 180, 180)
     Lighting.OutdoorAmbient = Color3.fromRGB(180, 180, 180)
@@ -10501,7 +10659,6 @@ local function applyGraySky()
     Lighting.FogStart = 0
     Lighting.ExposureCompensation = 0
     
-    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = 0.4
@@ -10513,15 +10670,10 @@ local function applyGraySky()
         atm.Enabled = true
     end
     
-    -- ВОССТАНАВЛИВАЕМ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ
     applyCurrentSettings()
 end
 
--- ============================================================
--- ВОССТАНОВЛЕНИЕ
--- ============================================================
 local function restoreSky()
-    -- LIGHTING
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
     Lighting.OutdoorAmbient = originalOutdoorAmbient
@@ -10529,7 +10681,6 @@ local function restoreSky()
     Lighting.FogStart = originalFogStart
     Lighting.ExposureCompensation = originalExposure
     
-    -- SKY
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
         sky.SkyboxBk = originalSkyBk
@@ -10540,10 +10691,9 @@ local function restoreSky()
         sky.SkyboxUp = originalSkyUp
     end
     
-    -- ВОССТАНАВЛИВАЕМ СОЛНЦЕ
     restoreSunInSky()
+    restoreClouds()
     
-    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = originalAtmDensity
@@ -10555,15 +10705,133 @@ local function restoreSky()
         atm.Enabled = originalAtmEnabled
     end
     
-    -- ВОССТАНАВЛИВАЕМ ОБЛАКА
-    restoreClouds()
-    
-    -- ВОССТАНАВЛИВАЕМ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ
     applyCurrentSettings()
 end
 
 -- ============================================================
--- ТОГГЛ
+-- ИСПРАВЛЕННАЯ ЛОГИКА SUNSHINE
+-- ============================================================
+local function applySunshine()
+    Lighting.ClockTime = 17
+    
+    Lighting.FogColor = Color3.fromRGB(210, 150, 90)
+    Lighting.FogStart = 0
+    Lighting.FogEnd = 2000
+    
+    Lighting.Ambient = Color3.fromRGB(180, 130, 90)
+    Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
+    Lighting.Brightness = 1.0
+    Lighting.ExposureCompensation = 0.1
+    
+    ColorCorrection.Saturation = 0.15
+    ColorCorrection.Brightness = 0
+    ColorCorrection.Contrast = 0.08
+    
+    BloomEffect.Intensity = 0
+    
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Density = 0.35
+        atm.Offset = 0.25
+        atm.Color = Color3.fromRGB(210, 170, 130)
+        atm.Decay = Color3.fromRGB(190, 140, 80)
+        atm.Glare = 0.35
+        atm.Haze = 2.5
+        atm.Enabled = true
+    end
+    
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
+    local sunRays = Instance.new("SunRays")
+    sunRays.Parent = Lighting
+    sunRays.Enabled = true
+    sunRays.Intensity = 0.5
+    sunRays.Spread = 0.3
+    
+    -- ПРИМЕНЕНИЕ СКАЙБОКСА (ИСПРАВЛЕНО)
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if not sky then
+        sky = Instance.new("Sky")
+        sky.Parent = Lighting
+    end
+    
+    -- Используем ID с правильным форматом
+    local textureId = "rbxassetid://96744289535338"
+    sky.SkyboxBk = textureId
+    sky.SkyboxDn = textureId
+    sky.SkyboxFt = textureId
+    sky.SkyboxLf = textureId
+    sky.SkyboxRt = textureId
+    sky.SkyboxUp = textureId
+    
+    -- Убираем солнце и луну
+    sky.SunTextureId = ""
+    sky.MoonTextureId = ""
+    sky.StarCount = 0
+    
+    -- ДЕЛАЕМ ОКЕАН НЕВИДИМЫМ
+    setOceanInvisible()
+end
+
+local function restoreSunshine()
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
+    
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if sky then
+        sky.SkyboxBk = originalSkyBk
+        sky.SkyboxDn = originalSkyDn
+        sky.SkyboxFt = originalSkyFt
+        sky.SkyboxLf = originalSkyLf
+        sky.SkyboxRt = originalSkyRt
+        sky.SkyboxUp = originalSkyUp
+        sky.SunTextureId = originalSunTexture
+        sky.MoonTextureId = originalMoonTexture
+        sky.StarCount = originalStarCount
+    end
+    
+    restoreOcean()
+    
+    Lighting.ClockTime = currentSettings.clockTime
+    Lighting.FogColor = originalFogColor
+    Lighting.Ambient = originalAmbient
+    Lighting.OutdoorAmbient = originalOutdoorAmbient
+    Lighting.Brightness = originalBrightness
+    Lighting.FogStart = originalFogStart
+    Lighting.FogEnd = originalFogEnd
+    Lighting.ExposureCompensation = originalExposure
+    
+    ColorCorrection.Brightness = currentSettings.brightness
+    ColorCorrection.Contrast = currentSettings.contrast
+    ColorCorrection.Saturation = currentSettings.saturation
+    
+    BloomEffect.Intensity = currentSettings.bloom
+    BloomEffect.Size = originalBloomSize
+    BloomEffect.Threshold = originalBloomThreshold
+    
+    DepthOfField.FarIntensity = currentSettings.dofIntensity
+    DepthOfField.FocusDistance = originalDOFFocus
+    
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Density = originalAtmDensity
+        atm.Offset = originalAtmOffset
+        atm.Color = originalAtmColor
+        atm.Decay = originalAtmDecay
+        atm.Glare = originalAtmGlare
+        atm.Haze = originalAtmHaze
+        atm.Enabled = originalAtmEnabled
+    end
+end
+
+-- ============================================================
+-- ТОГГЛЫ С ВЗАИМОИСКЛЮЧЕНИЕМ
 -- ============================================================
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
@@ -10576,10 +10844,26 @@ skyToggleBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+sunshineToggleBtn.MouseButton1Click:Connect(function()
+    sunshineEnabled = not sunshineEnabled
+    sunshineCheckmark.Visible = sunshineEnabled
+    
+    if sunshineEnabled then
+        if graySkyEnabled then
+            graySkyEnabled = false
+            skyCheckmark.Visible = false
+            restoreSky()
+        end
+        applySunshine()
+    else
+        restoreSunshine()
+    end
+end)
+
 -- ============================================================
--- ПОЛЗУНКИ (С СОХРАНЕНИЕМ В currentSettings)
+-- ПОЛЗУНКИ
 -- ============================================================
-local shCurrentY = shStartY + 48 + gap
+local shCurrentY = shStartY + 48 + gap + 48 + gap
 
 createSlider(shadersBox, "Time", shCurrentY, 0, 24, 14, function(v)
     currentSettings.clockTime = v
@@ -10613,8 +10897,7 @@ shCurrentY = shCurrentY + itemHeight + gap
 
 createSlider(shadersBox, "Saturation", shCurrentY, -100, 100, 0, function(v)
     currentSettings.saturation = v * 0.01
-    ColorCorrection.Saturation = v * 0.01
-end)
+    ColorCorrection.Saturation = v * 0.01end)
 shCurrentY = shCurrentY + itemHeight + gap
 
 createSlider(shadersBox, "Bloom Intensity", shCurrentY, 0, 100, 0, function(v)
