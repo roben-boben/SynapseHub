@@ -10428,10 +10428,6 @@ local SUNSHINE_TEXTURE = "rbxassetid://96744289535338"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
-local Ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
-if not Ocean then
-    Ocean = workspace:FindFirstChild("Ocean")
-end
 
 -- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ LIGHTING
 local originalFogColor = Lighting.FogColor
@@ -10485,16 +10481,6 @@ if Clouds then
         originalCloudColor = Clouds.Color
         originalCloudCover = Clouds.Cover
         originalCloudDensity = Clouds.Density
-    end)
-end
-
-local originalOceanTransparency = 0
-local originalOceanCanCollide = true
-if Ocean then
-    local hitbox = Ocean:FindFirstChild("Hitbox") or Ocean
-    pcall(function()
-        originalOceanTransparency = hitbox.Transparency
-        originalOceanCanCollide = hitbox.CanCollide
     end)
 end
 
@@ -10556,13 +10542,34 @@ end
 -- ============================================================
 -- OCEAN
 -- ============================================================
-local function setOceanInvisible()
-    local ocean = Workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+local function findOcean()
+    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
     if not ocean then
         ocean = workspace:FindFirstChild("Ocean")
     end
     if ocean then
         local hitbox = ocean:FindFirstChild("Hitbox") or ocean
+        return hitbox
+    end
+    return nil
+end
+
+local originalOceanTransparency = 0
+local originalOceanCanCollide = true
+
+local function saveOceanState()
+    local hitbox = findOcean()
+    if hitbox then
+        pcall(function()
+            originalOceanTransparency = hitbox.Transparency
+            originalOceanCanCollide = hitbox.CanCollide
+        end)
+    end
+end
+
+local function setOceanInvisible()
+    local hitbox = findOcean()
+    if hitbox then
         pcall(function()
             hitbox.Transparency = 1
             hitbox.CanCollide = false
@@ -10573,12 +10580,8 @@ local function setOceanInvisible()
 end
 
 local function restoreOcean()
-    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
-    if not ocean then
-        ocean = workspace:FindFirstChild("Ocean")
-    end
-    if ocean then
-        local hitbox = ocean:FindFirstChild("Hitbox") or ocean
+    local hitbox = findOcean()
+    if hitbox then
         pcall(function()
             hitbox.Transparency = originalOceanTransparency
             hitbox.CanCollide = originalOceanCanCollide
@@ -10587,6 +10590,8 @@ local function restoreOcean()
         end)
     end
 end
+
+saveOceanState()
 
 -- ============================================================
 -- SUNSHINE
@@ -10622,7 +10627,6 @@ local function applySunshine()
         atm.Enabled = true
     end
     
-    -- SUNRAYS
     for _, v in pairs(Lighting:GetChildren()) do
         if v:IsA("SunRays") then
             v:Destroy()
@@ -10634,19 +10638,18 @@ local function applySunshine()
     sunRays.Intensity = 0.5
     sunRays.Spread = 0.3
     
-    -- СКАЙБОКС С НОВЫМ АЙДИ
+    -- СКАЙБОКС С НОВЫМ АЙДИ (КАК В GRAY SKY)
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
         sky.Parent = Lighting
     end
-    local texture = SUNSHINE_TEXTURE
-    sky.SkyboxBk = texture
-    sky.SkyboxDn = texture
-    sky.SkyboxFt = texture
-    sky.SkyboxLf = texture
-    sky.SkyboxRt = texture
-    sky.SkyboxUp = texture
+    sky.SkyboxBk = SUNSHINE_TEXTURE
+    sky.SkyboxDn = SUNSHINE_TEXTURE
+    sky.SkyboxFt = SUNSHINE_TEXTURE
+    sky.SkyboxLf = SUNSHINE_TEXTURE
+    sky.SkyboxRt = SUNSHINE_TEXTURE
+    sky.SkyboxUp = SUNSHINE_TEXTURE
     
     -- OCEAN НЕВИДИМЫЙ
     setOceanInvisible()
