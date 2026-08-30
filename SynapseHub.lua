@@ -10420,17 +10420,20 @@ sunshineCheckmark.Visible = false
 sunshineCheckmark.Parent = sunshineCheckboxBox
 
 -- ============================================================
--- ЛОГИКА
+-- ЛОГИКА GRAY SKY
 -- ============================================================
 local graySkyEnabled = false
 local GRAY_TEXTURE = "rbxassetid://119829605564975"
-local SUNSHINE_TEXTURE = "rbxassetid://132976098812793"
+local SUNSHINE_TEXTURE = "rbxassetid://96744289535338"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
-local Ocean = workspace:FindFirstChild("Ocean")
+local Ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+if not Ocean then
+    Ocean = workspace:FindFirstChild("Ocean")
+end
 
--- СОХРАНЯЕМ ОРИГИНАЛЫ
+-- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ LIGHTING
 local originalFogColor = Lighting.FogColor
 local originalAmbient = Lighting.Ambient
 local originalOutdoorAmbient = Lighting.OutdoorAmbient
@@ -10454,6 +10457,7 @@ end
 local originalSunTexture = "rbxasset://sky/sun.png"
 local originalMoonTexture = "rbxasset://sky/moon.png"
 local originalStarCount = 3000
+
 if sky then
     originalSunTexture = sky.SunTextureId
     originalMoonTexture = sky.MoonTextureId
@@ -10475,6 +10479,7 @@ end
 local originalCloudColor = Color3.fromRGB(255, 255, 255)
 local originalCloudCover = 0.5
 local originalCloudDensity = 1
+
 if Clouds then
     pcall(function()
         originalCloudColor = Clouds.Color
@@ -10484,9 +10489,12 @@ if Clouds then
 end
 
 local originalOceanTransparency = 0
+local originalOceanCanCollide = true
 if Ocean then
+    local hitbox = Ocean:FindFirstChild("Hitbox") or Ocean
     pcall(function()
-        originalOceanTransparency = Ocean.Transparency
+        originalOceanTransparency = hitbox.Transparency
+        originalOceanCanCollide = hitbox.CanCollide
     end)
 end
 
@@ -10495,6 +10503,8 @@ local originalBloomThreshold = BloomEffect.Threshold
 local originalDOFIntensity = DepthOfField.FarIntensity
 local originalDOFFocus = DepthOfField.FocusDistance
 
+-- ============================================================
+-- ФУНКЦИЯ ПРИМЕНЕНИЯ ТЕКУЩИХ НАСТРОЕК
 -- ============================================================
 local function applyCurrentSettings()
     Lighting.ClockTime = currentSettings.clockTime
@@ -10506,6 +10516,7 @@ local function applyCurrentSettings()
     BloomEffect.Intensity = currentSettings.bloom
 end
 
+-- ============================================================
 local function applyGrayClouds()
     if not Clouds then return end
     pcall(function()
@@ -10539,6 +10550,41 @@ local function restoreSunInSky()
         sky.SunTextureId = originalSunTexture
         sky.MoonTextureId = originalMoonTexture
         sky.StarCount = originalStarCount
+    end
+end
+
+-- ============================================================
+-- OCEAN
+-- ============================================================
+local function setOceanInvisible()
+    local ocean = Workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+    if not ocean then
+        ocean = workspace:FindFirstChild("Ocean")
+    end
+    if ocean then
+        local hitbox = ocean:FindFirstChild("Hitbox") or ocean
+        pcall(function()
+            hitbox.Transparency = 1
+            hitbox.CanCollide = false
+            hitbox.CanTouch = false
+            hitbox.CanQuery = false
+        end)
+    end
+end
+
+local function restoreOcean()
+    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+    if not ocean then
+        ocean = workspace:FindFirstChild("Ocean")
+    end
+    if ocean then
+        local hitbox = ocean:FindFirstChild("Hitbox") or ocean
+        pcall(function()
+            hitbox.Transparency = originalOceanTransparency
+            hitbox.CanCollide = originalOceanCanCollide
+            hitbox.CanTouch = true
+            hitbox.CanQuery = true
+        end)
     end
 end
 
@@ -10588,25 +10634,22 @@ local function applySunshine()
     sunRays.Intensity = 0.5
     sunRays.Spread = 0.3
     
-    -- СКАЙБОКС С ТЕКСТУРОЙ НА ВСЕ 6 СТОРОН
+    -- СКАЙБОКС С НОВЫМ АЙДИ
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
         sky.Parent = Lighting
     end
-    sky.SkyboxBk = SUNSHINE_TEXTURE
-    sky.SkyboxDn = SUNSHINE_TEXTURE
-    sky.SkyboxFt = SUNSHINE_TEXTURE
-    sky.SkyboxLf = SUNSHINE_TEXTURE
-    sky.SkyboxRt = SUNSHINE_TEXTURE
-    sky.SkyboxUp = SUNSHINE_TEXTURE
+    local texture = SUNSHINE_TEXTURE
+    sky.SkyboxBk = texture
+    sky.SkyboxDn = texture
+    sky.SkyboxFt = texture
+    sky.SkyboxLf = texture
+    sky.SkyboxRt = texture
+    sky.SkyboxUp = texture
     
-    -- OCEAN НЕВИДИМЫЙ ЧЕРЕЗ TRANSPARENCY = 1
-    if Ocean then
-        pcall(function()
-            Ocean.Transparency = 1
-        end)
-    end
+    -- OCEAN НЕВИДИМЫЙ
+    setOceanInvisible()
 end
 
 local function restoreSunshine()
@@ -10626,12 +10669,7 @@ local function restoreSunshine()
         sky.SkyboxUp = originalSkyUp
     end
     
-    -- ВОССТАНАВЛИВАЕМ OCEAN
-    if Ocean then
-        pcall(function()
-            Ocean.Transparency = originalOceanTransparency
-        end)
-    end
+    restoreOcean()
     
     Lighting.ClockTime = currentSettings.clockTime
     Lighting.FogColor = originalFogColor
@@ -10746,7 +10784,7 @@ local function restoreSky()
 end
 
 -- ============================================================
--- ТОГГЛЫ
+-- ТОГГЛЫ С ВЗАИМОИСКЛЮЧЕНИЕМ
 -- ============================================================
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
