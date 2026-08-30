@@ -10424,6 +10424,7 @@ sunshineCheckmark.Parent = sunshineCheckboxBox
 -- ============================================================
 local graySkyEnabled = false
 local GRAY_TEXTURE = "rbxassetid://119829605564975"
+local SUNSHINE_SKY_TEXTURE = "rbxassetid://132976098812793"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
@@ -10485,9 +10486,11 @@ if Clouds then
 end
 
 local originalOceanTransparency = 0
+local originalOceanVisible = true
 if Ocean then
     pcall(function()
         originalOceanTransparency = Ocean.Transparency
+        originalOceanVisible = Ocean.Visible
     end)
 end
 
@@ -10547,10 +10550,13 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
-local function applyOceanInvisible()
+-- OCEAN
+-- ============================================================
+local function setOceanInvisible()
     if Ocean then
         pcall(function()
             Ocean.Transparency = 1
+            Ocean.Visible = false
         end)
     end
 end
@@ -10559,6 +10565,7 @@ local function restoreOcean()
     if Ocean then
         pcall(function()
             Ocean.Transparency = originalOceanTransparency
+            Ocean.Visible = originalOceanVisible
         end)
     end
 end
@@ -10604,14 +10611,32 @@ local function applySunshine()
     end
     
     -- ДОБАВЛЯЕМ SUNRAYS
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
     local sunRays = Instance.new("SunRays")
     sunRays.Parent = Lighting
     sunRays.Enabled = true
     sunRays.Intensity = 0.5
     sunRays.Spread = 0.3
     
+    -- МЕНЯЕМ СКАЙБОКС НА САНШАЙН
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if not sky then
+        sky = Instance.new("Sky")
+        sky.Parent = Lighting
+    end
+    sky.SkyboxBk = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxDn = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxFt = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxLf = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxRt = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxUp = SUNSHINE_SKY_TEXTURE
+    
     -- ДЕЛАЕМ OCEAN НЕВИДИМЫМ
-    applyOceanInvisible()
+    setOceanInvisible()
 end
 
 local function restoreSunshine()
@@ -10620,6 +10645,17 @@ local function restoreSunshine()
         if v:IsA("SunRays") then
             v:Destroy()
         end
+    end
+    
+    -- ВОССТАНАВЛИВАЕМ ОРИГИНАЛЬНЫЙ СКАЙБОКС
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if sky then
+        sky.SkyboxBk = originalSkyBk
+        sky.SkyboxDn = originalSkyDn
+        sky.SkyboxFt = originalSkyFt
+        sky.SkyboxLf = originalSkyLf
+        sky.SkyboxRt = originalSkyRt
+        sky.SkyboxUp = originalSkyUp
     end
     
     -- ВОССТАНАВЛИВАЕМ OCEAN
@@ -10758,7 +10794,6 @@ sunshineToggleBtn.MouseButton1Click:Connect(function()
     sunshineCheckmark.Visible = sunshineEnabled
     
     if sunshineEnabled then
-        -- ЕСЛИ ВКЛЮЧЕН GRAY SKY - ВЫКЛЮЧАЕМ ЕГО
         if graySkyEnabled then
             graySkyEnabled = false
             skyCheckmark.Visible = false
