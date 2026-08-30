@@ -10504,95 +10504,6 @@ local function applyCurrentSettings()
 end
 
 -- ============================================================
--- ФУНКЦИИ ДЛЯ ОКЕАНА (ИСПРАВЛЕНЫ)
--- ============================================================
-local function findOcean()
-    -- Ищем океан в разных местах
-    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
-    if not ocean then
-        ocean = workspace:FindFirstChild("Ocean")
-    end
-    if not ocean then
-        -- Поиск по всем частям, которые содержат "Ocean" в названии
-        for _, child in pairs(workspace:GetDescendants()) do
-            if child:IsA("BasePart") and string.match(child.Name, "Ocean") then
-                return child
-            end
-        end
-    end
-    return ocean
-end
-
-local originalOceanTransparency = 0
-local originalOceanCanCollide = true
-local oceanParts = {} -- для хранения всех частей океана
-
-local function saveOceanState()
-    local ocean = findOcean()
-    if ocean then
-        if ocean:IsA("Model") then
-            for _, part in pairs(ocean:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    table.insert(oceanParts, {
-                        part = part,
-                        transparency = part.Transparency,
-                        canCollide = part.CanCollide,
-                        canTouch = part.CanTouch,
-                        canQuery = part.CanQuery
-                    })
-                end
-            end
-        else
-            table.insert(oceanParts, {
-                part = ocean,
-                transparency = ocean.Transparency,
-                canCollide = ocean.CanCollide,
-                canTouch = ocean.CanTouch,
-                canQuery = ocean.CanQuery
-            })
-        end
-    end
-end
-
-local function setOceanInvisible()
-    local ocean = findOcean()
-    if ocean then
-        pcall(function()
-            if ocean:IsA("Model") then
-                for _, part in pairs(ocean:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.Transparency = 1
-                        part.CanCollide = false
-                        part.CanTouch = false
-                        part.CanQuery = false
-                    end
-                end
-            else
-                ocean.Transparency = 1
-                ocean.CanCollide = false
-                ocean.CanTouch = false
-                ocean.CanQuery = false
-            end
-        end)
-    end
-end
-
-local function restoreOcean()
-    for _, data in pairs(oceanParts) do
-        pcall(function()
-            data.part.Transparency = data.transparency
-            data.part.CanCollide = data.canCollide
-            data.part.CanTouch = data.canTouch
-            data.part.CanQuery = data.canQuery
-        end)
-    end
-end
-
-saveOceanState()
-
--- ============================================================
--- ЛОГИКА GRAY SKY
--- ============================================================
 local function applyGrayClouds()
     if not Clouds then return end
     pcall(function()
@@ -10629,6 +10540,174 @@ local function restoreSunInSky()
     end
 end
 
+-- ============================================================
+-- OCEAN
+-- ============================================================
+local function findOcean()
+    local ocean = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Map") and workspace.Map.Map:FindFirstChild("Ocean")
+    if not ocean then
+        ocean = workspace:FindFirstChild("Ocean")
+    end
+    if ocean then
+        local hitbox = ocean:FindFirstChild("Hitbox") or ocean
+        return hitbox
+    end
+    return nil
+end
+
+local originalOceanTransparency = 0
+local originalOceanCanCollide = true
+
+local function saveOceanState()
+    local hitbox = findOcean()
+    if hitbox then
+        pcall(function()
+            originalOceanTransparency = hitbox.Transparency
+            originalOceanCanCollide = hitbox.CanCollide
+        end)
+    end
+end
+
+local function setOceanInvisible()
+    local hitbox = findOcean()
+    if hitbox then
+        pcall(function()
+            hitbox.Transparency = 1
+            hitbox.CanCollide = false
+            hitbox.CanTouch = false
+            hitbox.CanQuery = false
+        end)
+    end
+end
+
+local function restoreOcean()
+    local hitbox = findOcean()
+    if hitbox then
+        pcall(function()
+            hitbox.Transparency = originalOceanTransparency
+            hitbox.CanCollide = originalOceanCanCollide
+            hitbox.CanTouch = true
+            hitbox.CanQuery = true
+        end)
+    end
+end
+
+saveOceanState()
+
+-- ============================================================
+-- SUNSHINE
+-- ============================================================
+local sunshineEnabled = false
+
+local function applySunshine()
+    Lighting.ClockTime = 17
+    
+    Lighting.FogColor = Color3.fromRGB(210, 150, 90)
+    Lighting.FogStart = 0
+    Lighting.FogEnd = 2000
+    
+    Lighting.Ambient = Color3.fromRGB(180, 130, 90)
+    Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
+    Lighting.Brightness = 1.0
+    Lighting.ExposureCompensation = 0.1
+    
+    ColorCorrection.Saturation = 0.15
+    ColorCorrection.Brightness = 0
+    ColorCorrection.Contrast = 0.08
+    
+    BloomEffect.Intensity = 0
+    
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Density = 0.35
+        atm.Offset = 0.25
+        atm.Color = Color3.fromRGB(210, 170, 130)
+        atm.Decay = Color3.fromRGB(190, 140, 80)
+        atm.Glare = 0.35
+        atm.Haze = 2.5
+        atm.Enabled = true
+    end
+    
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
+    local sunRays = Instance.new("SunRays")
+    sunRays.Parent = Lighting
+    sunRays.Enabled = true
+    sunRays.Intensity = 0.5
+    sunRays.Spread = 0.3
+    
+    -- СКАЙБОКС С НОВЫМ АЙДИ (КАК В GRAY SKY)
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if not sky then
+        sky = Instance.new("Sky")
+        sky.Parent = Lighting
+    end
+    sky.SkyboxBk = SUNSHINE_TEXTURE
+    sky.SkyboxDn = SUNSHINE_TEXTURE
+    sky.SkyboxFt = SUNSHINE_TEXTURE
+    sky.SkyboxLf = SUNSHINE_TEXTURE
+    sky.SkyboxRt = SUNSHINE_TEXTURE
+    sky.SkyboxUp = SUNSHINE_TEXTURE
+    
+    -- OCEAN НЕВИДИМЫЙ
+    setOceanInvisible()
+end
+
+local function restoreSunshine()
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
+    
+    local sky = Lighting:FindFirstChildOfClass("Sky")
+    if sky then
+        sky.SkyboxBk = originalSkyBk
+        sky.SkyboxDn = originalSkyDn
+        sky.SkyboxFt = originalSkyFt
+        sky.SkyboxLf = originalSkyLf
+        sky.SkyboxRt = originalSkyRt
+        sky.SkyboxUp = originalSkyUp
+    end
+    
+    restoreOcean()
+    
+    Lighting.ClockTime = currentSettings.clockTime
+    Lighting.FogColor = originalFogColor
+    Lighting.Ambient = originalAmbient
+    Lighting.OutdoorAmbient = originalOutdoorAmbient
+    Lighting.Brightness = originalBrightness
+    Lighting.FogStart = originalFogStart
+    Lighting.FogEnd = originalFogEnd
+    Lighting.ExposureCompensation = originalExposure
+    
+    ColorCorrection.Brightness = currentSettings.brightness
+    ColorCorrection.Contrast = currentSettings.contrast
+    ColorCorrection.Saturation = currentSettings.saturation
+    
+    BloomEffect.Intensity = currentSettings.bloom
+    BloomEffect.Size = originalBloomSize
+    BloomEffect.Threshold = originalBloomThreshold
+    
+    DepthOfField.FarIntensity = currentSettings.dofIntensity
+    DepthOfField.FocusDistance = originalDOFFocus
+    
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Density = originalAtmDensity
+        atm.Offset = originalAtmOffset
+        atm.Color = originalAtmColor
+        atm.Decay = originalAtmDecay
+        atm.Glare = originalAtmGlare
+        atm.Haze = originalAtmHaze
+        atm.Enabled = originalAtmEnabled
+    end
+end
+
+-- ============================================================
 local function applyGraySky()
     if sunshineEnabled then
         sunshineEnabled = false
@@ -10692,142 +10771,20 @@ local function restoreSky()
     end
     
     restoreSunInSky()
+    
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Density = originalAtmDensity
+        atm.Offset = originalAtmOffset
+        atm.Color = originalAtmColor
+        atm.Decay = originalAtmDecay
+        atm.Glare = originalAtmGlare
+        atm.Haze = originalAtmHaze
+        atm.Enabled = originalAtmEnabled
+    end
+    
     restoreClouds()
-    
-    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
-    if atm then
-        atm.Density = originalAtmDensity
-        atm.Offset = originalAtmOffset
-        atm.Color = originalAtmColor
-        atm.Decay = originalAtmDecay
-        atm.Glare = originalAtmGlare
-        atm.Haze = originalAtmHaze
-        atm.Enabled = originalAtmEnabled
-    end
-    
     applyCurrentSettings()
-end
-
--- ============================================================
--- ИСПРАВЛЕННАЯ ЛОГИКА SUNSHINE
--- ============================================================
-local function applySunshine()
-    Lighting.ClockTime = 17
-    
-    Lighting.FogColor = Color3.fromRGB(210, 150, 90)
-    Lighting.FogStart = 0
-    Lighting.FogEnd = 2000
-    
-    Lighting.Ambient = Color3.fromRGB(180, 130, 90)
-    Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
-    Lighting.Brightness = 1.0
-    Lighting.ExposureCompensation = 0.1
-    
-    ColorCorrection.Saturation = 0.15
-    ColorCorrection.Brightness = 0
-    ColorCorrection.Contrast = 0.08
-    
-    BloomEffect.Intensity = 0
-    
-    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
-    if atm then
-        atm.Density = 0.35
-        atm.Offset = 0.25
-        atm.Color = Color3.fromRGB(210, 170, 130)
-        atm.Decay = Color3.fromRGB(190, 140, 80)
-        atm.Glare = 0.35
-        atm.Haze = 2.5
-        atm.Enabled = true
-    end
-    
-    for _, v in pairs(Lighting:GetChildren()) do
-        if v:IsA("SunRays") then
-            v:Destroy()
-        end
-    end
-    local sunRays = Instance.new("SunRays")
-    sunRays.Parent = Lighting
-    sunRays.Enabled = true
-    sunRays.Intensity = 0.5
-    sunRays.Spread = 0.3
-    
-    -- ПРИМЕНЕНИЕ СКАЙБОКСА (ИСПРАВЛЕНО)
-    local sky = Lighting:FindFirstChildOfClass("Sky")
-    if not sky then
-        sky = Instance.new("Sky")
-        sky.Parent = Lighting
-    end
-    
-    -- Используем ID с правильным форматом
-    local textureId = "rbxassetid://96744289535338"
-    sky.SkyboxBk = textureId
-    sky.SkyboxDn = textureId
-    sky.SkyboxFt = textureId
-    sky.SkyboxLf = textureId
-    sky.SkyboxRt = textureId
-    sky.SkyboxUp = textureId
-    
-    -- Убираем солнце и луну
-    sky.SunTextureId = ""
-    sky.MoonTextureId = ""
-    sky.StarCount = 0
-    
-    -- ДЕЛАЕМ ОКЕАН НЕВИДИМЫМ
-    setOceanInvisible()
-end
-
-local function restoreSunshine()
-    for _, v in pairs(Lighting:GetChildren()) do
-        if v:IsA("SunRays") then
-            v:Destroy()
-        end
-    end
-    
-    local sky = Lighting:FindFirstChildOfClass("Sky")
-    if sky then
-        sky.SkyboxBk = originalSkyBk
-        sky.SkyboxDn = originalSkyDn
-        sky.SkyboxFt = originalSkyFt
-        sky.SkyboxLf = originalSkyLf
-        sky.SkyboxRt = originalSkyRt
-        sky.SkyboxUp = originalSkyUp
-        sky.SunTextureId = originalSunTexture
-        sky.MoonTextureId = originalMoonTexture
-        sky.StarCount = originalStarCount
-    end
-    
-    restoreOcean()
-    
-    Lighting.ClockTime = currentSettings.clockTime
-    Lighting.FogColor = originalFogColor
-    Lighting.Ambient = originalAmbient
-    Lighting.OutdoorAmbient = originalOutdoorAmbient
-    Lighting.Brightness = originalBrightness
-    Lighting.FogStart = originalFogStart
-    Lighting.FogEnd = originalFogEnd
-    Lighting.ExposureCompensation = originalExposure
-    
-    ColorCorrection.Brightness = currentSettings.brightness
-    ColorCorrection.Contrast = currentSettings.contrast
-    ColorCorrection.Saturation = currentSettings.saturation
-    
-    BloomEffect.Intensity = currentSettings.bloom
-    BloomEffect.Size = originalBloomSize
-    BloomEffect.Threshold = originalBloomThreshold
-    
-    DepthOfField.FarIntensity = currentSettings.dofIntensity
-    DepthOfField.FocusDistance = originalDOFFocus
-    
-    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
-    if atm then
-        atm.Density = originalAtmDensity
-        atm.Offset = originalAtmOffset
-        atm.Color = originalAtmColor
-        atm.Decay = originalAtmDecay
-        atm.Glare = originalAtmGlare
-        atm.Haze = originalAtmHaze
-        atm.Enabled = originalAtmEnabled
-    end
 end
 
 -- ============================================================
@@ -10897,7 +10854,8 @@ shCurrentY = shCurrentY + itemHeight + gap
 
 createSlider(shadersBox, "Saturation", shCurrentY, -100, 100, 0, function(v)
     currentSettings.saturation = v * 0.01
-    ColorCorrection.Saturation = v * 0.01end)
+    ColorCorrection.Saturation = v * 0.01
+end)
 shCurrentY = shCurrentY + itemHeight + gap
 
 createSlider(shadersBox, "Bloom Intensity", shCurrentY, 0, 100, 0, function(v)
