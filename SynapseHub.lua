@@ -10449,7 +10449,6 @@ if sky then
     originalSkyUp = sky.SkyboxUp
 end
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ СОЛНЦА
 local originalSunTexture = "rbxasset://sky/sun.png"
 local originalMoonTexture = "rbxasset://sky/moon.png"
 local originalStarCount = 3000
@@ -10472,7 +10471,6 @@ if atm then
     originalAtmEnabled = atm.Enabled
 end
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ОБЛАКОВ
 local originalCloudColor = Color3.fromRGB(255, 255, 255)
 local originalCloudCover = 0.5
 local originalCloudDensity = 1
@@ -10485,9 +10483,6 @@ if Clouds then
     end)
 end
 
--- ============================================================
--- СОХРАНЯЕМ ОРИГИНАЛЫ ДЛЯ SUNSHINE
--- ============================================================
 local originalBloomSize = BloomEffect.Size
 local originalBloomThreshold = BloomEffect.Threshold
 local originalDOFIntensity = DepthOfField.FarIntensity
@@ -10507,11 +10502,8 @@ local function applyCurrentSettings()
 end
 
 -- ============================================================
--- ФУНКЦИЯ ПРИМЕНЕНИЯ СЕРЫХ ОБЛАКОВ
--- ============================================================
 local function applyGrayClouds()
     if not Clouds then return end
-    
     pcall(function()
         Clouds.Color = Color3.fromRGB(95, 95, 95)
         Clouds.Cover = 0.759
@@ -10519,12 +10511,8 @@ local function applyGrayClouds()
     end)
 end
 
--- ============================================================
--- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ОБЛАКОВ
--- ============================================================
 local function restoreClouds()
     if not Clouds then return end
-    
     pcall(function()
         Clouds.Color = originalCloudColor
         Clouds.Cover = originalCloudCover
@@ -10532,9 +10520,6 @@ local function restoreClouds()
     end)
 end
 
--- ============================================================
--- ФУНКЦИЯ УДАЛЕНИЯ СОЛНЦА ИЗ SKY
--- ============================================================
 local function removeSunFromSky()
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
@@ -10544,9 +10529,6 @@ local function removeSunFromSky()
     end
 end
 
--- ============================================================
--- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ СОЛНЦА
--- ============================================================
 local function restoreSunInSky()
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
@@ -10557,10 +10539,9 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- ФУНКЦИЯ ПРИМЕНЕНИЯ SUNSHINE
+-- SUNSHINE
 -- ============================================================
 local function applySunshine()
-    -- ТЕПЛЫЕ ЦВЕТА КАК НА ЗАКАТЕ
     Lighting.FogColor = Color3.fromRGB(255, 200, 150)
     Lighting.Ambient = Color3.fromRGB(255, 180, 150)
     Lighting.OutdoorAmbient = Color3.fromRGB(255, 190, 160)
@@ -10569,21 +10550,17 @@ local function applySunshine()
     Lighting.FogEnd = 8000
     Lighting.ExposureCompensation = 0.5
     
-    -- COLOR CORRECTION
     ColorCorrection.Brightness = 0.2
     ColorCorrection.Contrast = 0.25
     ColorCorrection.Saturation = 0.4
     
-    -- BLOOM - солнечные лучи
     BloomEffect.Intensity = 0.5
     BloomEffect.Size = 20
     BloomEffect.Threshold = 0.5
     
-    -- DEPTH OF FIELD
     DepthOfField.FarIntensity = 0.1
     DepthOfField.FocusDistance = 0.5
     
-    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = 0.2
@@ -10596,9 +10573,6 @@ local function applySunshine()
     end
 end
 
--- ============================================================
--- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ПОСЛЕ SUNSHINE
--- ============================================================
 local function restoreSunshine()
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
@@ -10631,10 +10605,7 @@ local function restoreSunshine()
 end
 
 -- ============================================================
--- ПРИМЕНЕНИЕ GRAY SKY
--- ============================================================
 local function applyGraySky()
-    -- SKY
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
@@ -10672,9 +10643,6 @@ local function applyGraySky()
     applyCurrentSettings()
 end
 
--- ============================================================
--- ВОССТАНОВЛЕНИЕ GRAY SKY
--- ============================================================
 local function restoreSky()
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
@@ -10713,6 +10681,8 @@ end
 -- ============================================================
 -- ТОГГЛЫ
 -- ============================================================
+local sunshineEnabled = false
+
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
     skyCheckmark.Visible = graySkyEnabled
@@ -10789,7 +10759,7 @@ local shHeight = shCurrentY + gap
 shadersBox.Size = UDim2.new(0, 280, 0, shHeight)
 
 local currentCanvas = mainContentArea.CanvasSize.Y.Offset
-mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 20)
+mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 10)
 end
 
 -- ============================================================================
