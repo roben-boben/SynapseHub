@@ -10539,42 +10539,40 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- SUNSHINE - ТЕПЛАЯ АТМОСФЕРА С ЛУЧАМИ КАК НА СКРИНЕ
+-- SUNSHINE - ТОЛЬКО АТМОСФЕРА, БЕЗ BLOOM
 -- ============================================================
 local function applySunshine()
     -- ВРЕМЯ ЗАКАТА
     Lighting.ClockTime = 17
     
-    -- ТЕПЛЫЙ ОРАНЖЕВЫЙ ТУМАН
-    Lighting.FogColor = Color3.fromRGB(200, 140, 80)
+    -- ОРАНЖЕВЫЙ ТУМАН
+    Lighting.FogColor = Color3.fromRGB(210, 150, 90)
     Lighting.FogStart = 0
-    Lighting.FogEnd = 4000
+    Lighting.FogEnd = 3000
     
     -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ
     Lighting.Ambient = Color3.fromRGB(180, 130, 90)
-    Lighting.OutdoorAmbient = Color3.fromRGB(200, 160, 120)
+    Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
     Lighting.Brightness = 1.2
     Lighting.ExposureCompensation = 0.15
     
     -- НАСЫЩЕННОСТЬ
-    ColorCorrection.Saturation = 0.12
+    ColorCorrection.Saturation = 0.15
     ColorCorrection.Brightness = 0.02
     ColorCorrection.Contrast = 0.08
     
-    -- ЛУЧИ ОТ СОЛНЦА (ЧЕРЕЗ BLOOM)
-    BloomEffect.Intensity = 0.5
-    BloomEffect.Size = 60
-    BloomEffect.Threshold = 0.15
+    -- УБИРАЕМ BLOOM
+    BloomEffect.Intensity = 0
     
     -- ТЕПЛАЯ АТМОСФЕРА
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
-        atm.Density = 0.25
+        atm.Density = 0.35
         atm.Offset = 0.25
-        atm.Color = Color3.fromRGB(200, 160, 110)
-        atm.Decay = Color3.fromRGB(180, 130, 70)
-        atm.Glare = 0.7
-        atm.Haze = 1.8
+        atm.Color = Color3.fromRGB(210, 170, 130)
+        atm.Decay = Color3.fromRGB(190, 140, 80)
+        atm.Glare = 0.4
+        atm.Haze = 2.5
         atm.Enabled = true
     end
 end
