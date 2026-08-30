@@ -10055,7 +10055,7 @@ playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 local shadersBox = Instance.new("Frame")
 shadersBox.Size = UDim2.new(0, 280, 0, 0)
-shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10)
+shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10 + 48 + 10) -- Сдвиг вниз на 10
 shadersBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 shadersBox.BackgroundTransparency = 0.25
 shadersBox.ClipsDescendants = true
@@ -10340,6 +10340,86 @@ skyCheckmark.Visible = false
 skyCheckmark.Parent = skyCheckboxBox
 
 -- ============================================================
+-- ТОГГЛ SUNSHINE
+-- ============================================================
+local sunshineBox = Instance.new("Frame")
+sunshineBox.Size = UDim2.new(1, -gap * 2, 0, 48)
+sunshineBox.Position = UDim2.new(0, gap, 0, shStartY + 48 + gap)
+sunshineBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+sunshineBox.BackgroundTransparency = 0.25
+sunshineBox.ClipsDescendants = true
+sunshineBox.Parent = shadersBox
+
+local sunshineBoxCorner = Instance.new("UICorner")
+sunshineBoxCorner.CornerRadius = UDim.new(0, 18)
+sunshineBoxCorner.Parent = sunshineBox
+
+local sunshineBoxStroke = Instance.new("UIStroke")
+sunshineBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+sunshineBoxStroke.Transparency = 0.2
+sunshineBoxStroke.Thickness = 1.0
+sunshineBoxStroke.Parent = sunshineBox
+
+local sunshineToggleBtn = Instance.new("TextButton")
+sunshineToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+sunshineToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+sunshineToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+sunshineToggleBtn.BackgroundTransparency = 0.2
+sunshineToggleBtn.Text = ""
+sunshineToggleBtn.AutoButtonColor = false
+sunshineToggleBtn.Parent = sunshineBox
+
+local sunshineToggleCorner = Instance.new("UICorner")
+sunshineToggleCorner.CornerRadius = UDim.new(0, 14)
+sunshineToggleCorner.Parent = sunshineToggleBtn
+
+local sunshineToggleStroke = Instance.new("UIStroke")
+sunshineToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+sunshineToggleStroke.Transparency = 0.2
+sunshineToggleStroke.Thickness = 0.8
+sunshineToggleStroke.Parent = sunshineToggleBtn
+
+local sunshineToggleLabel = Instance.new("TextLabel")
+sunshineToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+sunshineToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+sunshineToggleLabel.BackgroundTransparency = 1
+sunshineToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+sunshineToggleLabel.Text = "Sunshine"
+sunshineToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+sunshineToggleLabel.TextSize = 11
+sunshineToggleLabel.Font = Enum.Font.GothamBold
+sunshineToggleLabel.Parent = sunshineToggleBtn
+
+local sunshineCheckboxBox = Instance.new("Frame")
+sunshineCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+sunshineCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+sunshineCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+sunshineCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+sunshineCheckboxBox.BackgroundTransparency = 0.2
+sunshineCheckboxBox.BorderSizePixel = 0
+sunshineCheckboxBox.Parent = sunshineToggleBtn
+
+local sunshineCbCorner = Instance.new("UICorner")
+sunshineCbCorner.CornerRadius = UDim.new(0, 6)
+sunshineCbCorner.Parent = sunshineCheckboxBox
+
+local sunshineCbStroke = Instance.new("UIStroke")
+sunshineCbStroke.Color = Color3.fromRGB(150, 150, 150)
+sunshineCbStroke.Transparency = 0.2
+sunshineCbStroke.Thickness = 1
+sunshineCbStroke.Parent = sunshineCheckboxBox
+
+local sunshineCheckmark = Instance.new("TextLabel")
+sunshineCheckmark.Size = UDim2.new(1, 0, 1, 0)
+sunshineCheckmark.BackgroundTransparency = 1
+sunshineCheckmark.Text = "✓"
+sunshineCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+sunshineCheckmark.TextSize = 14
+sunshineCheckmark.Font = Enum.Font.GothamBold
+sunshineCheckmark.Visible = false
+sunshineCheckmark.Parent = sunshineCheckboxBox
+
+-- ============================================================
 -- ЛОГИКА GRAY SKY - ОБЛАКА ЧЕРЕЗ workspace.Terrain.Clouds
 -- ============================================================
 local graySkyEnabled = false
@@ -10406,6 +10486,17 @@ if Clouds then
 end
 
 -- ============================================================
+-- ЛОГИКА SUNSHINE
+-- ============================================================
+local sunshineEnabled = false
+
+-- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ДЛЯ SUNSHINE
+local originalColorCorrectionBrightness = ColorCorrection.Brightness
+local originalColorCorrectionContrast = ColorCorrection.Contrast
+local originalColorCorrectionSaturation = ColorCorrection.Saturation
+local originalBloomIntensity = BloomEffect.Intensity
+
+-- ============================================================
 -- ФУНКЦИЯ ПРИМЕНЕНИЯ ТЕКУЩИХ НАСТРОЕК
 -- ============================================================
 local function applyCurrentSettings()
@@ -10425,7 +10516,7 @@ local function applyGrayClouds()
     if not Clouds then return end
     
     pcall(function()
-        Clouds.Color = Color3.fromRGB(95, 95, 95) -- #5f5f5f
+        Clouds.Color = Color3.fromRGB(95, 95, 95)
         Clouds.Cover = 0.759
         Clouds.Density = 0.631
     end)
@@ -10465,6 +10556,64 @@ local function restoreSunInSky()
         sky.SunTextureId = originalSunTexture
         sky.MoonTextureId = originalMoonTexture
         sky.StarCount = originalStarCount
+    end
+end
+
+-- ============================================================
+-- ФУНКЦИЯ ПРИМЕНЕНИЯ SUNSHINE
+-- ============================================================
+local function applySunshine()
+    -- Теплая насыщенная атмосфера
+    ColorCorrection.Brightness = 0.15
+    ColorCorrection.Contrast = 0.2
+    ColorCorrection.Saturation = 0.3
+    BloomEffect.Intensity = 0.3
+    
+    -- Теплый туман
+    Lighting.FogColor = Color3.fromRGB(255, 200, 150)
+    Lighting.Ambient = Color3.fromRGB(255, 200, 180)
+    Lighting.OutdoorAmbient = Color3.fromRGB(255, 200, 180)
+    Lighting.Brightness = 1.5
+    
+    -- Атмосфера теплая
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Color = Color3.fromRGB(255, 200, 150)
+        atm.Decay = Color3.fromRGB(200, 150, 100)
+        atm.Glare = 0.3
+        atm.Haze = 2
+        atm.Density = 0.3
+        atm.Offset = 0.1
+        atm.Enabled = true
+    end
+end
+
+-- ============================================================
+-- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ПОСЛЕ SUNSHINE
+-- ============================================================
+local function restoreSunshine()
+    -- Восстанавливаем настройки из currentSettings
+    ColorCorrection.Brightness = currentSettings.brightness
+    ColorCorrection.Contrast = currentSettings.contrast
+    ColorCorrection.Saturation = currentSettings.saturation
+    BloomEffect.Intensity = currentSettings.bloom
+    
+    -- Восстанавливаем оригинальные настройки Lighting (кроме того что Gray Sky меняет)
+    Lighting.FogColor = originalFogColor
+    Lighting.Ambient = originalAmbient
+    Lighting.OutdoorAmbient = originalOutdoorAmbient
+    Lighting.Brightness = originalBrightness
+    
+    -- Атмосфера
+    local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then
+        atm.Color = originalAtmColor
+        atm.Decay = originalAtmDecay
+        atm.Glare = originalAtmGlare
+        atm.Haze = originalAtmHaze
+        atm.Density = originalAtmDensity
+        atm.Offset = originalAtmOffset
+        atm.Enabled = originalAtmEnabled
     end
 end
 
@@ -10562,7 +10711,7 @@ local function restoreSky()
 end
 
 -- ============================================================
--- ТОГГЛ
+-- ТОГГЛ GRAY SKY
 -- ============================================================
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
@@ -10576,9 +10725,23 @@ skyToggleBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================================
+-- ТОГГЛ SUNSHINE
+-- ============================================================
+sunshineToggleBtn.MouseButton1Click:Connect(function()
+    sunshineEnabled = not sunshineEnabled
+    sunshineCheckmark.Visible = sunshineEnabled
+    
+    if sunshineEnabled then
+        applySunshine()
+    else
+        restoreSunshine()
+    end
+end)
+
+-- ============================================================
 -- ПОЛЗУНКИ (С СОХРАНЕНИЕМ В currentSettings)
 -- ============================================================
-local shCurrentY = shStartY + 48 + gap
+local shCurrentY = shStartY + 48 + gap + 48 + gap -- + Gray Sky + Sunshine
 
 createSlider(shadersBox, "Time", shCurrentY, 0, 24, 14, function(v)
     currentSettings.clockTime = v
