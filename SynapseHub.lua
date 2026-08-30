@@ -10484,11 +10484,9 @@ if Clouds then
 end
 
 local originalOceanTransparency = 0
-local originalOceanVisible = true
 if Ocean then
     pcall(function()
         originalOceanTransparency = Ocean.Transparency
-        originalOceanVisible = Ocean.Visible
     end)
 end
 
@@ -10545,27 +10543,6 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- OCEAN
--- ============================================================
-local function setOceanInvisible()
-    if Ocean then
-        pcall(function()
-            Ocean.Transparency = 1
-            Ocean.Visible = false
-        end)
-    end
-end
-
-local function restoreOcean()
-    if Ocean then
-        pcall(function()
-            Ocean.Transparency = originalOceanTransparency
-            Ocean.Visible = originalOceanVisible
-        end)
-    end
-end
-
--- ============================================================
 -- SUNSHINE
 -- ============================================================
 local sunshineEnabled = false
@@ -10611,7 +10588,7 @@ local function applySunshine()
     sunRays.Intensity = 0.5
     sunRays.Spread = 0.3
     
-    -- СКАЙБОКС С ТЕКСТУРОЙ
+    -- СКАЙБОКС С ТЕКСТУРОЙ НА ВСЕ 6 СТОРОН
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
@@ -10624,8 +10601,12 @@ local function applySunshine()
     sky.SkyboxRt = SUNSHINE_TEXTURE
     sky.SkyboxUp = SUNSHINE_TEXTURE
     
-    -- OCEAN НЕВИДИМЫЙ
-    setOceanInvisible()
+    -- OCEAN НЕВИДИМЫЙ ЧЕРЕЗ TRANSPARENCY = 1
+    if Ocean then
+        pcall(function()
+            Ocean.Transparency = 1
+        end)
+    end
 end
 
 local function restoreSunshine()
@@ -10645,7 +10626,12 @@ local function restoreSunshine()
         sky.SkyboxUp = originalSkyUp
     end
     
-    restoreOcean()
+    -- ВОССТАНАВЛИВАЕМ OCEAN
+    if Ocean then
+        pcall(function()
+            Ocean.Transparency = originalOceanTransparency
+        end)
+    end
     
     Lighting.ClockTime = currentSettings.clockTime
     Lighting.FogColor = originalFogColor
