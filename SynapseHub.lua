@@ -10420,17 +10420,17 @@ sunshineCheckmark.Visible = false
 sunshineCheckmark.Parent = sunshineCheckboxBox
 
 -- ============================================================
--- ЛОГИКА GRAY SKY
+-- ЛОГИКА
 -- ============================================================
 local graySkyEnabled = false
 local GRAY_TEXTURE = "rbxassetid://119829605564975"
-local SUNSHINE_SKY_TEXTURE = "rbxassetid://132976098812793"
+local SUNSHINE_TEXTURE = "rbxassetid://132976098812793"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
 local Ocean = workspace:FindFirstChild("Ocean")
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ LIGHTING
+-- СОХРАНЯЕМ ОРИГИНАЛЫ
 local originalFogColor = Lighting.FogColor
 local originalAmbient = Lighting.Ambient
 local originalOutdoorAmbient = Lighting.OutdoorAmbient
@@ -10454,7 +10454,6 @@ end
 local originalSunTexture = "rbxasset://sky/sun.png"
 local originalMoonTexture = "rbxasset://sky/moon.png"
 local originalStarCount = 3000
-
 if sky then
     originalSunTexture = sky.SunTextureId
     originalMoonTexture = sky.MoonTextureId
@@ -10476,7 +10475,6 @@ end
 local originalCloudColor = Color3.fromRGB(255, 255, 255)
 local originalCloudCover = 0.5
 local originalCloudDensity = 1
-
 if Clouds then
     pcall(function()
         originalCloudColor = Clouds.Color
@@ -10500,8 +10498,6 @@ local originalDOFIntensity = DepthOfField.FarIntensity
 local originalDOFFocus = DepthOfField.FocusDistance
 
 -- ============================================================
--- ФУНКЦИЯ ПРИМЕНЕНИЯ ТЕКУЩИХ НАСТРОЕК
--- ============================================================
 local function applyCurrentSettings()
     Lighting.ClockTime = currentSettings.clockTime
     DepthOfField.FarIntensity = currentSettings.dofIntensity
@@ -10512,7 +10508,6 @@ local function applyCurrentSettings()
     BloomEffect.Intensity = currentSettings.bloom
 end
 
--- ============================================================
 local function applyGrayClouds()
     if not Clouds then return end
     pcall(function()
@@ -10576,29 +10571,23 @@ end
 local sunshineEnabled = false
 
 local function applySunshine()
-    -- ВРЕМЯ ЗАКАТА
     Lighting.ClockTime = 17
     
-    -- ОРАНЖЕВЫЙ ТУМАН
     Lighting.FogColor = Color3.fromRGB(210, 150, 90)
     Lighting.FogStart = 0
     Lighting.FogEnd = 2000
     
-    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ
     Lighting.Ambient = Color3.fromRGB(180, 130, 90)
     Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
     Lighting.Brightness = 1.0
     Lighting.ExposureCompensation = 0.1
     
-    -- НАСЫЩЕННОСТЬ
     ColorCorrection.Saturation = 0.15
     ColorCorrection.Brightness = 0
     ColorCorrection.Contrast = 0.08
     
-    -- УБИРАЕМ BLOOM
     BloomEffect.Intensity = 0
     
-    -- ТЕПЛАЯ АТМОСФЕРА
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = 0.35
@@ -10610,7 +10599,7 @@ local function applySunshine()
         atm.Enabled = true
     end
     
-    -- ДОБАВЛЯЕМ SUNRAYS
+    -- SUNRAYS
     for _, v in pairs(Lighting:GetChildren()) do
         if v:IsA("SunRays") then
             v:Destroy()
@@ -10622,32 +10611,30 @@ local function applySunshine()
     sunRays.Intensity = 0.5
     sunRays.Spread = 0.3
     
-    -- МЕНЯЕМ СКАЙБОКС НА САНШАЙН
+    -- СКАЙБОКС С ТЕКСТУРОЙ
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
         sky.Parent = Lighting
     end
-    sky.SkyboxBk = SUNSHINE_SKY_TEXTURE
-    sky.SkyboxDn = SUNSHINE_SKY_TEXTURE
-    sky.SkyboxFt = SUNSHINE_SKY_TEXTURE
-    sky.SkyboxLf = SUNSHINE_SKY_TEXTURE
-    sky.SkyboxRt = SUNSHINE_SKY_TEXTURE
-    sky.SkyboxUp = SUNSHINE_SKY_TEXTURE
+    sky.SkyboxBk = SUNSHINE_TEXTURE
+    sky.SkyboxDn = SUNSHINE_TEXTURE
+    sky.SkyboxFt = SUNSHINE_TEXTURE
+    sky.SkyboxLf = SUNSHINE_TEXTURE
+    sky.SkyboxRt = SUNSHINE_TEXTURE
+    sky.SkyboxUp = SUNSHINE_TEXTURE
     
-    -- ДЕЛАЕМ OCEAN НЕВИДИМЫМ
+    -- OCEAN НЕВИДИМЫЙ
     setOceanInvisible()
 end
 
 local function restoreSunshine()
-    -- УДАЛЯЕМ SUNRAYS
     for _, v in pairs(Lighting:GetChildren()) do
         if v:IsA("SunRays") then
             v:Destroy()
         end
     end
     
-    -- ВОССТАНАВЛИВАЕМ ОРИГИНАЛЬНЫЙ СКАЙБОКС
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
         sky.SkyboxBk = originalSkyBk
@@ -10658,11 +10645,9 @@ local function restoreSunshine()
         sky.SkyboxUp = originalSkyUp
     end
     
-    -- ВОССТАНАВЛИВАЕМ OCEAN
     restoreOcean()
     
     Lighting.ClockTime = currentSettings.clockTime
-    
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
     Lighting.OutdoorAmbient = originalOutdoorAmbient
@@ -10696,7 +10681,6 @@ end
 
 -- ============================================================
 local function applyGraySky()
-    -- ЕСЛИ ВКЛЮЧЕН SUNSHINE - ВЫКЛЮЧАЕМ ЕГО
     if sunshineEnabled then
         sunshineEnabled = false
         sunshineCheckmark.Visible = false
@@ -10776,7 +10760,7 @@ local function restoreSky()
 end
 
 -- ============================================================
--- ТОГГЛЫ С ВЗАИМОИСКЛЮЧЕНИЕМ
+-- ТОГГЛЫ
 -- ============================================================
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
