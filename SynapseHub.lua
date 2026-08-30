@@ -10055,7 +10055,7 @@ playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 local shadersBox = Instance.new("Frame")
 shadersBox.Size = UDim2.new(0, 280, 0, 0)
-shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10 + 48 + 10)
+shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10)
 shadersBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 shadersBox.BackgroundTransparency = 0.25
 shadersBox.ClipsDescendants = true
@@ -10128,7 +10128,7 @@ BloomEffect.Enabled = true
 -- ХРАНИЛИЩЕ ТЕКУЩИХ НАСТРОЕК
 -- ============================================================
 local currentSettings = {
-    clockTime = 17,
+    clockTime = 14,
     dofIntensity = 0,
     fogEnd = 10000,
     brightness = 0,
@@ -10539,45 +10539,54 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- SUNSHINE
+-- SUNSHINE - НОРМАЛЬНЫЙ С ЛУЧАМИ
 -- ============================================================
 local function applySunshine()
-    Lighting.FogColor = Color3.fromRGB(255, 200, 150)
-    Lighting.Ambient = Color3.fromRGB(255, 180, 150)
-    Lighting.OutdoorAmbient = Color3.fromRGB(255, 190, 160)
-    Lighting.Brightness = 2.0
+    -- Время заката
+    Lighting.ClockTime = 17
+    
+    -- ОРАНЖЕВЫЙ ТУМАН
+    Lighting.FogColor = Color3.fromRGB(255, 160, 80)
     Lighting.FogStart = 0
-    Lighting.FogEnd = 8000
-    Lighting.ExposureCompensation = 0.5
+    Lighting.FogEnd = 5000
     
-    ColorCorrection.Brightness = 0.2
-    ColorCorrection.Contrast = 0.25
-    ColorCorrection.Saturation = 0.4
+    -- ТЕПЛЫЙ СВЕТ
+    Lighting.Ambient = Color3.fromRGB(255, 180, 150)
+    Lighting.OutdoorAmbient = Color3.fromRGB(255, 200, 160)
+    Lighting.Brightness = 1.5
+    Lighting.ExposureCompensation = 0.3
     
-    BloomEffect.Intensity = 0.5
-    BloomEffect.Size = 20
-    BloomEffect.Threshold = 0.5
+    -- НАСЫЩЕННОСТЬ (чуть-чуть)
+    ColorCorrection.Saturation = 0.15
+    ColorCorrection.Brightness = 0.05
+    ColorCorrection.Contrast = 0.05
     
-    DepthOfField.FarIntensity = 0.1
-    DepthOfField.FocusDistance = 0.5
+    -- ЛУЧИ ОТ СОЛНЦА (Bloom)
+    BloomEffect.Intensity = 0.6
+    BloomEffect.Size = 30
+    BloomEffect.Threshold = 0.3
     
+    -- ТЕПЛАЯ АТМОСФЕРА
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
-        atm.Density = 0.2
-        atm.Offset = 0.2
-        atm.Color = Color3.fromRGB(255, 200, 150)
+        atm.Density = 0.15
+        atm.Offset = 0.3
+        atm.Color = Color3.fromRGB(255, 180, 120)
         atm.Decay = Color3.fromRGB(255, 150, 80)
-        atm.Glare = 0.5
-        atm.Haze = 1.5
+        atm.Glare = 0.8
+        atm.Haze = 1
         atm.Enabled = true
     end
 end
 
 local function restoreSunshine()
+    Lighting.ClockTime = currentSettings.clockTime
+    
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
     Lighting.OutdoorAmbient = originalOutdoorAmbient
     Lighting.Brightness = originalBrightness
+    Lighting.FogStart = originalFogStart
     Lighting.FogEnd = originalFogEnd
     Lighting.ExposureCompensation = originalExposure
     
@@ -10710,7 +10719,7 @@ end)
 -- ============================================================
 local shCurrentY = shStartY + 48 + gap + 48 + gap
 
-createSlider(shadersBox, "Time", shCurrentY, 0, 24, 17, function(v)
+createSlider(shadersBox, "Time", shCurrentY, 0, 24, 14, function(v)
     currentSettings.clockTime = v
     Lighting.ClockTime = v
 end)
