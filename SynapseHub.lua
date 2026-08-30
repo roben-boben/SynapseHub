@@ -10539,26 +10539,98 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- SUNSHINE - ТОЛЬКО АТМОСФЕРА, БЕЗ BLOOM
+-- СОЗДАНИЕ ЛУЧЕЙ ОТ СОЛНЦА (BEAM)
+-- ============================================================
+local rayParts = {}
+
+local function createSunRays()
+    -- УДАЛЯЕМ СТАРЫЕ ЛУЧИ
+    for _, v in pairs(rayParts) do
+        pcall(function() v:Destroy() end)
+    end
+    rayParts = {}
+    
+    local sunPos = Vector3.new(0, 500, 0)
+    local rayCount = 16
+    local radius = 80
+    
+    for i = 1, rayCount do
+        local angle = (i / rayCount) * math.pi * 2
+        local endPos = Vector3.new(
+            math.cos(angle) * radius,
+            0,
+            math.sin(angle) * radius
+        )
+        
+        local part = Instance.new("Part")
+        part.Name = "SunRay"
+        part.Size = Vector3.new(1, 1, 1)
+        part.Anchored = true
+        part.CanCollide = false
+        part.Material = Enum.Material.Neon
+        part.Color = Color3.fromRGB(255, 200, 150)
+        part.Transparency = 0.8
+        part.Parent = workspace
+        
+        local midPoint = (sunPos + endPos) / 2
+        local direction = (endPos - sunPos).Unit
+        local distance = (endPos - sunPos).Magnitude
+        
+        part.Size = Vector3.new(0.5, distance, 0.5)
+        part.CFrame = CFrame.lookAt(midPoint, sunPos)
+        
+        local attachment1 = Instance.new("Attachment")
+        attachment1.Position = Vector3.new(0, distance/2, 0)
+        attachment1.Parent = part
+        
+        local attachment2 = Instance.new("Attachment")
+        attachment2.Position = Vector3.new(0, -distance/2, 0)
+        attachment2.Parent = part
+        
+        local beam = Instance.new("Beam")
+        beam.Attachment0 = attachment1
+        beam.Attachment1 = attachment2
+        beam.Color = ColorSequence.new(Color3.fromRGB(255, 200, 150))
+        beam.Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.95),
+            NumberSequenceKeypoint.new(0.5, 0.7),
+            NumberSequenceKeypoint.new(1, 0.95)
+        })
+        beam.FaceCamera = true
+        beam.Parent = part
+        
+        table.insert(rayParts, part)
+    end
+end
+
+local function removeSunRays()
+    for _, v in pairs(rayParts) do
+        pcall(function() v:Destroy() end)
+    end
+    rayParts = {}
+end
+
+-- ============================================================
+-- SUNSHINE - С ЛУЧАМИ
 -- ============================================================
 local function applySunshine()
     -- ВРЕМЯ ЗАКАТА
     Lighting.ClockTime = 17
     
-    -- ОРАНЖЕВЫЙ ТУМАН
+    -- ОРАНЖЕВЫЙ ТУМАН (FOG INTENSITY 80)
     Lighting.FogColor = Color3.fromRGB(210, 150, 90)
     Lighting.FogStart = 0
-    Lighting.FogEnd = 3000
+    Lighting.FogEnd = 2000 -- 80% от 2500
     
-    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ
+    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ (БЕЗ BRIGHTNESS)
     Lighting.Ambient = Color3.fromRGB(180, 130, 90)
     Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
-    Lighting.Brightness = 1.2
-    Lighting.ExposureCompensation = 0.15
+    Lighting.Brightness = 1.0
+    Lighting.ExposureCompensation = 0.1
     
-    -- НАСЫЩЕННОСТЬ
+    -- НАСЫЩЕННОСТЬ (БЕЗ BRIGHTNESS)
     ColorCorrection.Saturation = 0.15
-    ColorCorrection.Brightness = 0.02
+    ColorCorrection.Brightness = 0
     ColorCorrection.Contrast = 0.08
     
     -- УБИРАЕМ BLOOM
@@ -10575,9 +10647,15 @@ local function applySunshine()
         atm.Haze = 2.5
         atm.Enabled = true
     end
+    
+    -- СОЗДАЕМ ЛУЧИ
+    createSunRays()
 end
 
 local function restoreSunshine()
+    -- УДАЛЯЕМ ЛУЧИ
+    removeSunRays()
+    
     Lighting.ClockTime = currentSettings.clockTime
     
     Lighting.FogColor = originalFogColor
