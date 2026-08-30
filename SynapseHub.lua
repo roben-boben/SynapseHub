@@ -10384,7 +10384,7 @@ sunshineToggleLabel.Size = UDim2.new(1, -40, 1, 0)
 sunshineToggleLabel.Position = UDim2.new(0, 12, 0, 0)
 sunshineToggleLabel.BackgroundTransparency = 1
 sunshineToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-sunshineToggleLabel.Text = "☀️ Sunshine"
+sunshineToggleLabel.Text = "Sunshine"
 sunshineToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
 sunshineToggleLabel.TextSize = 11
 sunshineToggleLabel.Font = Enum.Font.GothamBold
@@ -10539,42 +10539,42 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- SUNSHINE - НОРМАЛЬНЫЙ С ЛУЧАМИ
+-- SUNSHINE - ТЕПЛАЯ АТМОСФЕРА С ЛУЧАМИ КАК НА СКРИНЕ
 -- ============================================================
 local function applySunshine()
-    -- Время заката
+    -- ВРЕМЯ ЗАКАТА
     Lighting.ClockTime = 17
     
-    -- ОРАНЖЕВЫЙ ТУМАН
-    Lighting.FogColor = Color3.fromRGB(255, 160, 80)
+    -- ТЕПЛЫЙ ОРАНЖЕВЫЙ ТУМАН
+    Lighting.FogColor = Color3.fromRGB(200, 140, 80)
     Lighting.FogStart = 0
-    Lighting.FogEnd = 5000
+    Lighting.FogEnd = 4000
     
-    -- ТЕПЛЫЙ СВЕТ
-    Lighting.Ambient = Color3.fromRGB(255, 180, 150)
-    Lighting.OutdoorAmbient = Color3.fromRGB(255, 200, 160)
-    Lighting.Brightness = 1.5
-    Lighting.ExposureCompensation = 0.3
+    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ
+    Lighting.Ambient = Color3.fromRGB(180, 130, 90)
+    Lighting.OutdoorAmbient = Color3.fromRGB(200, 160, 120)
+    Lighting.Brightness = 1.2
+    Lighting.ExposureCompensation = 0.15
     
-    -- НАСЫЩЕННОСТЬ (чуть-чуть)
-    ColorCorrection.Saturation = 0.15
-    ColorCorrection.Brightness = 0.05
-    ColorCorrection.Contrast = 0.05
+    -- НАСЫЩЕННОСТЬ
+    ColorCorrection.Saturation = 0.12
+    ColorCorrection.Brightness = 0.02
+    ColorCorrection.Contrast = 0.08
     
-    -- ЛУЧИ ОТ СОЛНЦА (Bloom)
-    BloomEffect.Intensity = 0.6
-    BloomEffect.Size = 30
-    BloomEffect.Threshold = 0.3
+    -- ЛУЧИ ОТ СОЛНЦА (ЧЕРЕЗ BLOOM)
+    BloomEffect.Intensity = 0.5
+    BloomEffect.Size = 60
+    BloomEffect.Threshold = 0.15
     
     -- ТЕПЛАЯ АТМОСФЕРА
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
-        atm.Density = 0.15
-        atm.Offset = 0.3
-        atm.Color = Color3.fromRGB(255, 180, 120)
-        atm.Decay = Color3.fromRGB(255, 150, 80)
-        atm.Glare = 0.8
-        atm.Haze = 1
+        atm.Density = 0.25
+        atm.Offset = 0.25
+        atm.Color = Color3.fromRGB(200, 160, 110)
+        atm.Decay = Color3.fromRGB(180, 130, 70)
+        atm.Glare = 0.7
+        atm.Haze = 1.8
         atm.Enabled = true
     end
 end
