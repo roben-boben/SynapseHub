@@ -10055,7 +10055,7 @@ playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 local shadersBox = Instance.new("Frame")
 shadersBox.Size = UDim2.new(0, 280, 0, 0)
-shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10 + 48 + 10) -- Сдвиг вниз на 10
+shadersBox.Position = UDim2.new(0, 330, 0, 20 + 292 + 10 + 48 + 10)
 shadersBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 shadersBox.BackgroundTransparency = 0.25
 shadersBox.ClipsDescendants = true
@@ -10384,7 +10384,7 @@ sunshineToggleLabel.Size = UDim2.new(1, -40, 1, 0)
 sunshineToggleLabel.Position = UDim2.new(0, 12, 0, 0)
 sunshineToggleLabel.BackgroundTransparency = 1
 sunshineToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-sunshineToggleLabel.Text = "Sunshine"
+sunshineToggleLabel.Text = "☀️ Sunshine"
 sunshineToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
 sunshineToggleLabel.TextSize = 11
 sunshineToggleLabel.Font = Enum.Font.GothamBold
@@ -10486,15 +10486,14 @@ if Clouds then
 end
 
 -- ============================================================
--- ЛОГИКА SUNSHINE
+-- СОХРАНЯЕМ ОРИГИНАЛЫ ДЛЯ SUNSHINE
 -- ============================================================
-local sunshineEnabled = false
-
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ДЛЯ SUNSHINE
-local originalColorCorrectionBrightness = ColorCorrection.Brightness
-local originalColorCorrectionContrast = ColorCorrection.Contrast
-local originalColorCorrectionSaturation = ColorCorrection.Saturation
-local originalBloomIntensity = BloomEffect.Intensity
+local originalTintColor = ColorCorrection.TintColor
+local originalTintIntensity = ColorCorrection.TintIntensity
+local originalBloomSize = BloomEffect.Size
+local originalBloomThreshold = BloomEffect.Threshold
+local originalDOFIntensity = DepthOfField.FarIntensity
+local originalDOFFocus = DepthOfField.FocusDistance
 
 -- ============================================================
 -- ФУНКЦИЯ ПРИМЕНЕНИЯ ТЕКУЩИХ НАСТРОЕК
@@ -10563,27 +10562,40 @@ end
 -- ФУНКЦИЯ ПРИМЕНЕНИЯ SUNSHINE
 -- ============================================================
 local function applySunshine()
-    -- Теплая насыщенная атмосфера
-    ColorCorrection.Brightness = 0.15
-    ColorCorrection.Contrast = 0.2
-    ColorCorrection.Saturation = 0.3
-    BloomEffect.Intensity = 0.3
-    
-    -- Теплый туман
+    -- ТЕПЛЫЕ ЦВЕТА КАК НА ЗАКАТЕ
     Lighting.FogColor = Color3.fromRGB(255, 200, 150)
-    Lighting.Ambient = Color3.fromRGB(255, 200, 180)
-    Lighting.OutdoorAmbient = Color3.fromRGB(255, 200, 180)
-    Lighting.Brightness = 1.5
+    Lighting.Ambient = Color3.fromRGB(255, 180, 150)
+    Lighting.OutdoorAmbient = Color3.fromRGB(255, 190, 160)
+    Lighting.Brightness = 2.0
+    Lighting.FogStart = 0
+    Lighting.FogEnd = 8000
+    Lighting.ExposureCompensation = 0.5
     
-    -- Атмосфера теплая
+    -- COLOR CORRECTION
+    ColorCorrection.Brightness = 0.2
+    ColorCorrection.Contrast = 0.25
+    ColorCorrection.Saturation = 0.4
+    ColorCorrection.TintColor = Color3.fromRGB(255, 200, 150)
+    ColorCorrection.TintIntensity = 0.3
+    
+    -- BLOOM - солнечные лучи
+    BloomEffect.Intensity = 0.5
+    BloomEffect.Size = 20
+    BloomEffect.Threshold = 0.5
+    
+    -- DEPTH OF FIELD
+    DepthOfField.FarIntensity = 0.1
+    DepthOfField.FocusDistance = 0.5
+    
+    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
+        atm.Density = 0.2
+        atm.Offset = 0.2
         atm.Color = Color3.fromRGB(255, 200, 150)
-        atm.Decay = Color3.fromRGB(200, 150, 100)
-        atm.Glare = 0.3
-        atm.Haze = 2
-        atm.Density = 0.3
-        atm.Offset = 0.1
+        atm.Decay = Color3.fromRGB(255, 150, 80)
+        atm.Glare = 0.5
+        atm.Haze = 1.5
         atm.Enabled = true
     end
 end
@@ -10592,27 +10604,34 @@ end
 -- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ПОСЛЕ SUNSHINE
 -- ============================================================
 local function restoreSunshine()
-    -- Восстанавливаем настройки из currentSettings
-    ColorCorrection.Brightness = currentSettings.brightness
-    ColorCorrection.Contrast = currentSettings.contrast
-    ColorCorrection.Saturation = currentSettings.saturation
-    BloomEffect.Intensity = currentSettings.bloom
-    
-    -- Восстанавливаем оригинальные настройки Lighting (кроме того что Gray Sky меняет)
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
     Lighting.OutdoorAmbient = originalOutdoorAmbient
     Lighting.Brightness = originalBrightness
+    Lighting.FogEnd = originalFogEnd
+    Lighting.ExposureCompensation = originalExposure
     
-    -- Атмосфера
+    ColorCorrection.Brightness = currentSettings.brightness
+    ColorCorrection.Contrast = currentSettings.contrast
+    ColorCorrection.Saturation = currentSettings.saturation
+    ColorCorrection.TintColor = originalTintColor
+    ColorCorrection.TintIntensity = originalTintIntensity
+    
+    BloomEffect.Intensity = currentSettings.bloom
+    BloomEffect.Size = originalBloomSize
+    BloomEffect.Threshold = originalBloomThreshold
+    
+    DepthOfField.FarIntensity = currentSettings.dofIntensity
+    DepthOfField.FocusDistance = originalDOFFocus
+    
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
+        atm.Density = originalAtmDensity
+        atm.Offset = originalAtmOffset
         atm.Color = originalAtmColor
         atm.Decay = originalAtmDecay
         atm.Glare = originalAtmGlare
         atm.Haze = originalAtmHaze
-        atm.Density = originalAtmDensity
-        atm.Offset = originalAtmOffset
         atm.Enabled = originalAtmEnabled
     end
 end
@@ -10635,13 +10654,9 @@ local function applyGraySky()
     sky.SkyboxRt = GRAY_TEXTURE
     sky.SkyboxUp = GRAY_TEXTURE
     
-    -- УДАЛЯЕМ СОЛНЦЕ ИЗ SKY
     removeSunFromSky()
-    
-    -- ОБЛАКА (ЧЕРЕЗ Clouds В Terrain!)
     applyGrayClouds()
     
-    -- LIGHTING
     Lighting.FogColor = Color3.fromRGB(180, 180, 180)
     Lighting.Ambient = Color3.fromRGB(180, 180, 180)
     Lighting.OutdoorAmbient = Color3.fromRGB(180, 180, 180)
@@ -10649,7 +10664,6 @@ local function applyGraySky()
     Lighting.FogStart = 0
     Lighting.ExposureCompensation = 0
     
-    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = 0.4
@@ -10661,15 +10675,13 @@ local function applyGraySky()
         atm.Enabled = true
     end
     
-    -- ВОССТАНАВЛИВАЕМ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ
     applyCurrentSettings()
 end
 
 -- ============================================================
--- ВОССТАНОВЛЕНИЕ
+-- ВОССТАНОВЛЕНИЕ GRAY SKY
 -- ============================================================
 local function restoreSky()
-    -- LIGHTING
     Lighting.FogColor = originalFogColor
     Lighting.Ambient = originalAmbient
     Lighting.OutdoorAmbient = originalOutdoorAmbient
@@ -10677,7 +10689,6 @@ local function restoreSky()
     Lighting.FogStart = originalFogStart
     Lighting.ExposureCompensation = originalExposure
     
-    -- SKY
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if sky then
         sky.SkyboxBk = originalSkyBk
@@ -10688,10 +10699,8 @@ local function restoreSky()
         sky.SkyboxUp = originalSkyUp
     end
     
-    -- ВОССТАНАВЛИВАЕМ СОЛНЦЕ
     restoreSunInSky()
     
-    -- ATMOSPHERE
     local atm = Lighting:FindFirstChildOfClass("Atmosphere")
     if atm then
         atm.Density = originalAtmDensity
@@ -10703,15 +10712,12 @@ local function restoreSky()
         atm.Enabled = originalAtmEnabled
     end
     
-    -- ВОССТАНАВЛИВАЕМ ОБЛАКА
     restoreClouds()
-    
-    -- ВОССТАНАВЛИВАЕМ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ
     applyCurrentSettings()
 end
 
 -- ============================================================
--- ТОГГЛ GRAY SKY
+-- ТОГГЛЫ
 -- ============================================================
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
@@ -10724,9 +10730,6 @@ skyToggleBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ============================================================
--- ТОГГЛ SUNSHINE
--- ============================================================
 sunshineToggleBtn.MouseButton1Click:Connect(function()
     sunshineEnabled = not sunshineEnabled
     sunshineCheckmark.Visible = sunshineEnabled
@@ -10739,9 +10742,9 @@ sunshineToggleBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================================
--- ПОЛЗУНКИ (С СОХРАНЕНИЕМ В currentSettings)
+-- ПОЛЗУНКИ
 -- ============================================================
-local shCurrentY = shStartY + 48 + gap + 48 + gap -- + Gray Sky + Sunshine
+local shCurrentY = shStartY + 48 + gap + 48 + gap
 
 createSlider(shadersBox, "Time", shCurrentY, 0, 24, 14, function(v)
     currentSettings.clockTime = v
@@ -10792,7 +10795,7 @@ local shHeight = shCurrentY + gap
 shadersBox.Size = UDim2.new(0, 280, 0, shHeight)
 
 local currentCanvas = mainContentArea.CanvasSize.Y.Offset
-mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 20)
+mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 10)
 end
 
 -- ============================================================================
