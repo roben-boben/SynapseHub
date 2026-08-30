@@ -10128,7 +10128,7 @@ BloomEffect.Enabled = true
 -- ХРАНИЛИЩЕ ТЕКУЩИХ НАСТРОЕК
 -- ============================================================
 local currentSettings = {
-    clockTime = 14,
+    clockTime = 17,
     dofIntensity = 0,
     fogEnd = 10000,
     brightness = 0,
@@ -10420,7 +10420,7 @@ sunshineCheckmark.Visible = false
 sunshineCheckmark.Parent = sunshineCheckboxBox
 
 -- ============================================================
--- ЛОГИКА GRAY SKY - ОБЛАКА ЧЕРЕЗ workspace.Terrain.Clouds
+-- ЛОГИКА GRAY SKY
 -- ============================================================
 local graySkyEnabled = false
 local GRAY_TEXTURE = "rbxassetid://119829605564975"
@@ -10472,7 +10472,7 @@ if atm then
     originalAtmEnabled = atm.Enabled
 end
 
--- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ОБЛАКОВ ИЗ Clouds
+-- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ ОБЛАКОВ
 local originalCloudColor = Color3.fromRGB(255, 255, 255)
 local originalCloudCover = 0.5
 local originalCloudDensity = 1
@@ -10488,8 +10488,6 @@ end
 -- ============================================================
 -- СОХРАНЯЕМ ОРИГИНАЛЫ ДЛЯ SUNSHINE
 -- ============================================================
-local originalTintColor = ColorCorrection.TintColor
-local originalTintIntensity = ColorCorrection.TintIntensity
 local originalBloomSize = BloomEffect.Size
 local originalBloomThreshold = BloomEffect.Threshold
 local originalDOFIntensity = DepthOfField.FarIntensity
@@ -10575,8 +10573,6 @@ local function applySunshine()
     ColorCorrection.Brightness = 0.2
     ColorCorrection.Contrast = 0.25
     ColorCorrection.Saturation = 0.4
-    ColorCorrection.TintColor = Color3.fromRGB(255, 200, 150)
-    ColorCorrection.TintIntensity = 0.3
     
     -- BLOOM - солнечные лучи
     BloomEffect.Intensity = 0.5
@@ -10614,8 +10610,6 @@ local function restoreSunshine()
     ColorCorrection.Brightness = currentSettings.brightness
     ColorCorrection.Contrast = currentSettings.contrast
     ColorCorrection.Saturation = currentSettings.saturation
-    ColorCorrection.TintColor = originalTintColor
-    ColorCorrection.TintIntensity = originalTintIntensity
     
     BloomEffect.Intensity = currentSettings.bloom
     BloomEffect.Size = originalBloomSize
@@ -10746,7 +10740,7 @@ end)
 -- ============================================================
 local shCurrentY = shStartY + 48 + gap + 48 + gap
 
-createSlider(shadersBox, "Time", shCurrentY, 0, 24, 14, function(v)
+createSlider(shadersBox, "Time", shCurrentY, 0, 24, 17, function(v)
     currentSettings.clockTime = v
     Lighting.ClockTime = v
 end)
@@ -10795,7 +10789,7 @@ local shHeight = shCurrentY + gap
 shadersBox.Size = UDim2.new(0, 280, 0, shHeight)
 
 local currentCanvas = mainContentArea.CanvasSize.Y.Offset
-mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 10)
+mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 20)
 end
 
 -- ============================================================================
