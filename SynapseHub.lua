@@ -10427,6 +10427,7 @@ local GRAY_TEXTURE = "rbxassetid://119829605564975"
 
 local Terrain = workspace:FindFirstChild("Terrain")
 local Clouds = Terrain and Terrain:FindFirstChild("Clouds")
+local Ocean = workspace:FindFirstChild("Ocean")
 
 -- СОХРАНЯЕМ ОРИГИНАЛЬНЫЕ НАСТРОЙКИ LIGHTING
 local originalFogColor = Lighting.FogColor
@@ -10480,6 +10481,13 @@ if Clouds then
         originalCloudColor = Clouds.Color
         originalCloudCover = Clouds.Cover
         originalCloudDensity = Clouds.Density
+    end)
+end
+
+local originalOceanTransparency = 0
+if Ocean then
+    pcall(function()
+        originalOceanTransparency = Ocean.Transparency
     end)
 end
 
@@ -10539,96 +10547,43 @@ local function restoreSunInSky()
 end
 
 -- ============================================================
--- СОЗДАНИЕ ЛУЧЕЙ ОТ СОЛНЦА (BEAM)
--- ============================================================
-local rayParts = {}
-
-local function createSunRays()
-    -- УДАЛЯЕМ СТАРЫЕ ЛУЧИ
-    for _, v in pairs(rayParts) do
-        pcall(function() v:Destroy() end)
-    end
-    rayParts = {}
-    
-    local sunPos = Vector3.new(0, 500, 0)
-    local rayCount = 16
-    local radius = 80
-    
-    for i = 1, rayCount do
-        local angle = (i / rayCount) * math.pi * 2
-        local endPos = Vector3.new(
-            math.cos(angle) * radius,
-            0,
-            math.sin(angle) * radius
-        )
-        
-        local part = Instance.new("Part")
-        part.Name = "SunRay"
-        part.Size = Vector3.new(1, 1, 1)
-        part.Anchored = true
-        part.CanCollide = false
-        part.Material = Enum.Material.Neon
-        part.Color = Color3.fromRGB(255, 200, 150)
-        part.Transparency = 0.8
-        part.Parent = workspace
-        
-        local midPoint = (sunPos + endPos) / 2
-        local direction = (endPos - sunPos).Unit
-        local distance = (endPos - sunPos).Magnitude
-        
-        part.Size = Vector3.new(0.5, distance, 0.5)
-        part.CFrame = CFrame.lookAt(midPoint, sunPos)
-        
-        local attachment1 = Instance.new("Attachment")
-        attachment1.Position = Vector3.new(0, distance/2, 0)
-        attachment1.Parent = part
-        
-        local attachment2 = Instance.new("Attachment")
-        attachment2.Position = Vector3.new(0, -distance/2, 0)
-        attachment2.Parent = part
-        
-        local beam = Instance.new("Beam")
-        beam.Attachment0 = attachment1
-        beam.Attachment1 = attachment2
-        beam.Color = ColorSequence.new(Color3.fromRGB(255, 200, 150))
-        beam.Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 0.95),
-            NumberSequenceKeypoint.new(0.5, 0.7),
-            NumberSequenceKeypoint.new(1, 0.95)
-        })
-        beam.FaceCamera = true
-        beam.Parent = part
-        
-        table.insert(rayParts, part)
+local function applyOceanInvisible()
+    if Ocean then
+        pcall(function()
+            Ocean.Transparency = 1
+        end)
     end
 end
 
-local function removeSunRays()
-    for _, v in pairs(rayParts) do
-        pcall(function() v:Destroy() end)
+local function restoreOcean()
+    if Ocean then
+        pcall(function()
+            Ocean.Transparency = originalOceanTransparency
+        end)
     end
-    rayParts = {}
 end
 
 -- ============================================================
--- SUNSHINE - С ЛУЧАМИ
+-- SUNSHINE
 -- ============================================================
+local sunshineEnabled = false
+
 local function applySunshine()
     -- ВРЕМЯ ЗАКАТА
     Lighting.ClockTime = 17
     
-    -- ОРАНЖЕВЫЙ ТУМАН (FOG INTENSITY 80)
+    -- ОРАНЖЕВЫЙ ТУМАН
     Lighting.FogColor = Color3.fromRGB(210, 150, 90)
     Lighting.FogStart = 0
-    Lighting.FogEnd = 2000 -- 80% от 2500
+    Lighting.FogEnd = 2000
     
-    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ (БЕЗ BRIGHTNESS)
+    -- ТЕПЛЫЙ ПРИГЛУШЕННЫЙ СВЕТ
     Lighting.Ambient = Color3.fromRGB(180, 130, 90)
     Lighting.OutdoorAmbient = Color3.fromRGB(210, 170, 130)
     Lighting.Brightness = 1.0
     Lighting.ExposureCompensation = 0.1
     
-    -- НАСЫЩЕННОСТЬ (БЕЗ BRIGHTNESS)
+    -- НАСЫЩЕННОСТЬ
     ColorCorrection.Saturation = 0.15
     ColorCorrection.Brightness = 0
     ColorCorrection.Contrast = 0.08
@@ -10643,18 +10598,32 @@ local function applySunshine()
         atm.Offset = 0.25
         atm.Color = Color3.fromRGB(210, 170, 130)
         atm.Decay = Color3.fromRGB(190, 140, 80)
-        atm.Glare = 0.4
+        atm.Glare = 0.35
         atm.Haze = 2.5
         atm.Enabled = true
     end
     
-    -- СОЗДАЕМ ЛУЧИ
-    createSunRays()
+    -- ДОБАВЛЯЕМ SUNRAYS
+    local sunRays = Instance.new("SunRays")
+    sunRays.Parent = Lighting
+    sunRays.Enabled = true
+    sunRays.Intensity = 0.5
+    sunRays.Spread = 0.3
+    
+    -- ДЕЛАЕМ OCEAN НЕВИДИМЫМ
+    applyOceanInvisible()
 end
 
 local function restoreSunshine()
-    -- УДАЛЯЕМ ЛУЧИ
-    removeSunRays()
+    -- УДАЛЯЕМ SUNRAYS
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("SunRays") then
+            v:Destroy()
+        end
+    end
+    
+    -- ВОССТАНАВЛИВАЕМ OCEAN
+    restoreOcean()
     
     Lighting.ClockTime = currentSettings.clockTime
     
@@ -10691,6 +10660,13 @@ end
 
 -- ============================================================
 local function applyGraySky()
+    -- ЕСЛИ ВКЛЮЧЕН SUNSHINE - ВЫКЛЮЧАЕМ ЕГО
+    if sunshineEnabled then
+        sunshineEnabled = false
+        sunshineCheckmark.Visible = false
+        restoreSunshine()
+    end
+    
     local sky = Lighting:FindFirstChildOfClass("Sky")
     if not sky then
         sky = Instance.new("Sky")
@@ -10764,10 +10740,8 @@ local function restoreSky()
 end
 
 -- ============================================================
--- ТОГГЛЫ
+-- ТОГГЛЫ С ВЗАИМОИСКЛЮЧЕНИЕМ
 -- ============================================================
-local sunshineEnabled = false
-
 skyToggleBtn.MouseButton1Click:Connect(function()
     graySkyEnabled = not graySkyEnabled
     skyCheckmark.Visible = graySkyEnabled
@@ -10784,6 +10758,12 @@ sunshineToggleBtn.MouseButton1Click:Connect(function()
     sunshineCheckmark.Visible = sunshineEnabled
     
     if sunshineEnabled then
+        -- ЕСЛИ ВКЛЮЧЕН GRAY SKY - ВЫКЛЮЧАЕМ ЕГО
+        if graySkyEnabled then
+            graySkyEnabled = false
+            skyCheckmark.Visible = false
+            restoreSky()
+        end
         applySunshine()
     else
         restoreSunshine()
