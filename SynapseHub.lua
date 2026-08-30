@@ -9441,437 +9441,616 @@ local function setupVisualsTab(mainContentArea)
 		end)
 	end)
 
-	-- === ГРУППА 3: PLAYER VISUALS ===
-	local playerVisualsBox = Instance.new("Frame")
-	playerVisualsBox.Size = UDim2.new(0, 300, 0, 180)
-	playerVisualsBox.Position = UDim2.new(0, 20, 0, 520)
-	playerVisualsBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-	playerVisualsBox.BackgroundTransparency = 0.25
-	playerVisualsBox.ClipsDescendants = true
-	playerVisualsBox.Parent = mainContentArea
+-- ============================================================
+-- ГРУППА: PLAYER FEATURES (В ВИЗУАЛС ТАБ)
+-- ============================================================
+local playerVisualsBox = Instance.new("Frame")
+playerVisualsBox.Size = UDim2.new(0, 300, 0, 0)
+playerVisualsBox.Position = UDim2.new(0, 20, 0, 520)
+playerVisualsBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+playerVisualsBox.BackgroundTransparency = 0.25
+playerVisualsBox.ClipsDescendants = true
+playerVisualsBox.Parent = mainContentArea
 
-	local pvBoxCorner2 = Instance.new("UICorner")
-	pvBoxCorner2.CornerRadius = UDim.new(0, 18)
-	pvBoxCorner2.Parent = playerVisualsBox
+local pvBoxCorner2 = Instance.new("UICorner")
+pvBoxCorner2.CornerRadius = UDim.new(0, 18)
+pvBoxCorner2.Parent = playerVisualsBox
 
-	local pvBoxStroke2 = Instance.new("UIStroke")
-	pvBoxStroke2.Color = Color3.fromRGB(180, 180, 180)
-	pvBoxStroke2.Transparency = 0.2
-	pvBoxStroke2.Thickness = 1.0
-	pvBoxStroke2.Parent = playerVisualsBox
+local pvBoxStroke2 = Instance.new("UIStroke")
+pvBoxStroke2.Color = Color3.fromRGB(180, 180, 180)
+pvBoxStroke2.Transparency = 0.2
+pvBoxStroke2.Thickness = 1.0
+pvBoxStroke2.Parent = playerVisualsBox
 
-	-- Заголовок "Player Visuals"
-	local pvTitle2 = Instance.new("TextLabel")
-	pvTitle2.Size = UDim2.new(1, -30, 0, 30)
-	pvTitle2.Position = UDim2.new(0, 15, 0, 8)
-	pvTitle2.BackgroundTransparency = 1
-	pvTitle2.TextXAlignment = Enum.TextXAlignment.Left
-	pvTitle2.Text = "Player Visuals"
-	pvTitle2.TextColor3 = Color3.fromRGB(255, 255, 255)
-	pvTitle2.TextTransparency = 0.05
-	pvTitle2.TextSize = 16
-	pvTitle2.Font = Enum.Font.GothamBold
-	pvTitle2.Parent = playerVisualsBox
+-- Заголовок "Player Features"
+local pvTitle2 = Instance.new("TextLabel")
+pvTitle2.Size = UDim2.new(1, -30, 0, 30)
+pvTitle2.Position = UDim2.new(0, 15, 0, 8)
+pvTitle2.BackgroundTransparency = 1
+pvTitle2.TextXAlignment = Enum.TextXAlignment.Left
+pvTitle2.Text = "Player Features"
+pvTitle2.TextColor3 = Color3.fromRGB(255, 255, 255)
+pvTitle2.TextTransparency = 0.05
+pvTitle2.TextSize = 16
+pvTitle2.Font = Enum.Font.GothamBold
+pvTitle2.Parent = playerVisualsBox
 
-	-- Разделительная черта
-	local pvLine2 = Instance.new("Frame")
-	pvLine2.Size = UDim2.new(1, -30, 0, 1.5)
-	pvLine2.Position = UDim2.new(0, 15, 0, 42)
-	pvLine2.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
-	pvLine2.BackgroundTransparency = 0.3
-	pvLine2.BorderSizePixel = 0
-	pvLine2.Parent = playerVisualsBox
+-- Разделительная черта
+local pvLine2 = Instance.new("Frame")
+pvLine2.Size = UDim2.new(1, -30, 0, 1.5)
+pvLine2.Position = UDim2.new(0, 15, 0, 42)
+pvLine2.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+pvLine2.BackgroundTransparency = 0.3
+pvLine2.BorderSizePixel = 0
+pvLine2.Parent = playerVisualsBox
 
-	-- === PCLD ESP ===
-	local pclDespBox = Instance.new("Frame")
-	pclDespBox.Size = UDim2.new(0, 270, 0, 48)
-	pclDespBox.Position = UDim2.new(0, 15, 0, 52)
-	pclDespBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-	pclDespBox.BackgroundTransparency = 0.25
-	pclDespBox.ClipsDescendants = true
-	pclDespBox.Parent = playerVisualsBox
+local gap = 10
+local pvStartY = 52
+local itemHeight = 48
 
-	local pclBoxCorner = Instance.new("UICorner")
-	pclBoxCorner.CornerRadius = UDim.new(0, 18)
-	pclBoxCorner.Parent = pclDespBox
+-- ============================================================
+-- 1. PCLD ESP
+-- ============================================================
+local pclDespBox = Instance.new("Frame")
+pclDespBox.Size = UDim2.new(0, 270, 0, itemHeight)
+pclDespBox.Position = UDim2.new(0, 15, 0, pvStartY)
+pclDespBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+pclDespBox.BackgroundTransparency = 0.25
+pclDespBox.ClipsDescendants = true
+pclDespBox.Parent = playerVisualsBox
 
-	local pclBoxStroke = Instance.new("UIStroke")
-	pclBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-	pclBoxStroke.Transparency = 0.2
-	pclBoxStroke.Thickness = 1.0
-	pclBoxStroke.Parent = pclDespBox
+local pclBoxCorner = Instance.new("UICorner")
+pclBoxCorner.CornerRadius = UDim.new(0, 18)
+pclBoxCorner.Parent = pclDespBox
 
-	local pclToggleBtn = Instance.new("TextButton")
-	pclToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-	pclToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-	pclToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-	pclToggleBtn.BackgroundTransparency = 0.2
-	pclToggleBtn.Text = ""
-	pclToggleBtn.AutoButtonColor = false
-	pclToggleBtn.Parent = pclDespBox
+local pclBoxStroke = Instance.new("UIStroke")
+pclBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+pclBoxStroke.Transparency = 0.2
+pclBoxStroke.Thickness = 1.0
+pclBoxStroke.Parent = pclDespBox
 
-	local pclToggleCorner = Instance.new("UICorner")
-	pclToggleCorner.CornerRadius = UDim.new(0, 14)
-	pclToggleCorner.Parent = pclToggleBtn
+local pclToggleBtn = Instance.new("TextButton")
+pclToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+pclToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+pclToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+pclToggleBtn.BackgroundTransparency = 0.2
+pclToggleBtn.Text = ""
+pclToggleBtn.AutoButtonColor = false
+pclToggleBtn.Parent = pclDespBox
 
-	local pclToggleStroke = Instance.new("UIStroke")
-	pclToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-	pclToggleStroke.Transparency = 0.2
-	pclToggleStroke.Thickness = 0.8
-	pclToggleStroke.Parent = pclToggleBtn
+local pclToggleCorner = Instance.new("UICorner")
+pclToggleCorner.CornerRadius = UDim.new(0, 14)
+pclToggleCorner.Parent = pclToggleBtn
 
-	local pclToggleLabel = Instance.new("TextLabel")
-	pclToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-	pclToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-	pclToggleLabel.BackgroundTransparency = 1
-	pclToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-	pclToggleLabel.Text = "PCLD ESP"
-	pclToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-	pclToggleLabel.TextSize = 12
-	pclToggleLabel.Font = Enum.Font.GothamBold
-	pclToggleLabel.Parent = pclToggleBtn
+local pclToggleStroke = Instance.new("UIStroke")
+pclToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+pclToggleStroke.Transparency = 0.2
+pclToggleStroke.Thickness = 0.8
+pclToggleStroke.Parent = pclToggleBtn
 
-	local pclCheckboxBox = Instance.new("Frame")
-	pclCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-	pclCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-	pclCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-	pclCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-	pclCheckboxBox.BackgroundTransparency = 0.2
-	pclCheckboxBox.BorderSizePixel = 0
-	pclCheckboxBox.Parent = pclToggleBtn
+local pclToggleLabel = Instance.new("TextLabel")
+pclToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+pclToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+pclToggleLabel.BackgroundTransparency = 1
+pclToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+pclToggleLabel.Text = "PCLD ESP"
+pclToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+pclToggleLabel.TextSize = 12
+pclToggleLabel.Font = Enum.Font.GothamBold
+pclToggleLabel.Parent = pclToggleBtn
 
-	local pclCbCorner = Instance.new("UICorner")
-	pclCbCorner.CornerRadius = UDim.new(0, 6)
-	pclCbCorner.Parent = pclCheckboxBox
+local pclCheckboxBox = Instance.new("Frame")
+pclCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+pclCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+pclCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+pclCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+pclCheckboxBox.BackgroundTransparency = 0.2
+pclCheckboxBox.BorderSizePixel = 0
+pclCheckboxBox.Parent = pclToggleBtn
 
-	local pclCbStroke = Instance.new("UIStroke")
-	pclCbStroke.Color = Color3.fromRGB(150, 150, 150)
-	pclCbStroke.Transparency = 0.2
-	pclCbStroke.Thickness = 1
-	pclCbStroke.Parent = pclCheckboxBox
+local pclCbCorner = Instance.new("UICorner")
+pclCbCorner.CornerRadius = UDim.new(0, 6)
+pclCbCorner.Parent = pclCheckboxBox
 
-	local pclCheckmark = Instance.new("TextLabel")
-	pclCheckmark.Size = UDim2.new(1, 0, 1, 0)
-	pclCheckmark.BackgroundTransparency = 1
-	pclCheckmark.Text = "✓"
-	pclCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-	pclCheckmark.TextSize = 14
-	pclCheckmark.Font = Enum.Font.GothamBold
-	pclCheckmark.Visible = false
-	pclCheckmark.Parent = pclCheckboxBox
+local pclCbStroke = Instance.new("UIStroke")
+pclCbStroke.Color = Color3.fromRGB(150, 150, 150)
+pclCbStroke.Transparency = 0.2
+pclCbStroke.Thickness = 1
+pclCbStroke.Parent = pclCheckboxBox
 
-	-- PCLD ESP ЛОГИКА
-	do
-		local pclEspEnabled = false
-		local espBoxes = {}
-		local espCache = {}
-		local targetNames = {"partesp", "playercharacterlocationdetector"}
+local pclCheckmark = Instance.new("TextLabel")
+pclCheckmark.Size = UDim2.new(1, 0, 1, 0)
+pclCheckmark.BackgroundTransparency = 1
+pclCheckmark.Text = "✓"
+pclCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+pclCheckmark.TextSize = 14
+pclCheckmark.Font = Enum.Font.GothamBold
+pclCheckmark.Visible = false
+pclCheckmark.Parent = pclCheckboxBox
 
-		local function IsTarget(obj)
-			if not obj:IsA("BasePart") then return false end
-			for _, name in ipairs(targetNames) do
-				if string.lower(obj.Name) == string.lower(name) then
-					return true
-				end
-			end
-			return false
-		end
+-- PCLD ESP логика
+do
+    local pclEspEnabled = false
+    local espBoxes = {}
+    local espCache = {}
+    local targetNames = {"partesp", "playercharacterlocationdetector"}
 
-		local function AddBoxESP(obj)
-			if espBoxes[obj] then return end
-			local box = Instance.new("BoxHandleAdornment")
-			box.Adornee = obj
-			box.AlwaysOnTop = true
-			box.ZIndex = 5
-			box.Color3 = Color3.fromRGB(255, 255, 255)
-			box.Transparency = 0.7
-			box.Size = obj.Size
-			box.Parent = player.PlayerGui
-			espBoxes[obj] = box
-			obj.AncestryChanged:Connect(function(_, parent)
-				if not parent and espBoxes[obj] then
-					espBoxes[obj]:Destroy()
-					espBoxes[obj] = nil
-				end
-			end)
-		end
+    local function IsTarget(obj)
+        if not obj:IsA("BasePart") then return false end
+        for _, name in ipairs(targetNames) do
+            if string.lower(obj.Name) == string.lower(name) then
+                return true
+            end
+        end
+        return false
+    end
 
-		local function RemoveAllBoxes()
-			for obj, box in pairs(espBoxes) do
-				if box then box:Destroy() end
-			end
-			espBoxes = {}
-		end
+    local function AddBoxESP(obj)
+        if espBoxes[obj] then return end
+        local box = Instance.new("BoxHandleAdornment")
+        box.Adornee = obj
+        box.AlwaysOnTop = true
+        box.ZIndex = 5
+        box.Color3 = Color3.fromRGB(255, 255, 255)
+        box.Transparency = 0.7
+        box.Size = obj.Size
+        box.Parent = player.PlayerGui
+        espBoxes[obj] = box
+        obj.AncestryChanged:Connect(function(_, parent)
+            if not parent and espBoxes[obj] then
+                espBoxes[obj]:Destroy()
+                espBoxes[obj] = nil
+            end
+        end)
+    end
 
-		local function createNickESP(plr)
-			local char = plr.Character
-			if not char then char = plr.CharacterAdded:Wait() end
-			local hrp = char:WaitForChild("HumanoidRootPart", 5)
-			if not hrp then return end
-			
-			local old = hrp:FindFirstChild("PCLD_NickESP")
-			if old then old:Destroy() end
-			
-			local bill = Instance.new("BillboardGui")
-			bill.Name = "PCLD_NickESP"
-			bill.Adornee = hrp
-			bill.Size = UDim2.new(0, 180, 0, 30)
-			bill.StudsOffset = Vector3.new(0, 3, 0)
-			bill.AlwaysOnTop = true
-			bill.Enabled = pclEspEnabled
-			bill.Parent = hrp
-			
-			local txt = Instance.new("TextLabel")
-			txt.Name = "EspText"
-			txt.Size = UDim2.new(1, 0, 1, 0)
-			txt.BackgroundTransparency = 1
-			txt.TextColor3 = Color3.fromRGB(255, 255, 255)
-			txt.TextStrokeTransparency = 0.3
-			txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-			txt.TextSize = 12
-			txt.Font = Enum.Font.GothamBold
-			txt.TextScaled = false
-			txt.Parent = bill
-			
-			local displayName = plr.DisplayName
-			local username = plr.Name
-			if displayName ~= username then
-				txt.Text = string.format("%s (%s)", displayName, username)
-			else
-				txt.Text = username
-			end
-			
-			espCache[plr] = bill
-			
-			plr.CharacterAdded:Connect(function()
-				task.wait(0.5)
-				if pclEspEnabled then createNickESP(plr) end
-			end)
-		end
+    local function RemoveAllBoxes()
+        for obj, box in pairs(espBoxes) do
+            if box then box:Destroy() end
+        end
+        espBoxes = {}
+    end
 
-		local function removeNickESP(plr)
-			if espCache[plr] then
-				espCache[plr]:Destroy()
-				espCache[plr] = nil
-			end
-		end
+    local function createNickESP(plr)
+        local char = plr.Character
+        if not char then char = plr.CharacterAdded:Wait() end
+        local hrp = char:WaitForChild("HumanoidRootPart", 5)
+        if not hrp then return end
+        
+        local old = hrp:FindFirstChild("PCLD_NickESP")
+        if old then old:Destroy() end
+        
+        local bill = Instance.new("BillboardGui")
+        bill.Name = "PCLD_NickESP"
+        bill.Adornee = hrp
+        bill.Size = UDim2.new(0, 180, 0, 30)
+        bill.StudsOffset = Vector3.new(0, 3, 0)
+        bill.AlwaysOnTop = true
+        bill.Enabled = pclEspEnabled
+        bill.Parent = hrp
+        
+        local txt = Instance.new("TextLabel")
+        txt.Name = "EspText"
+        txt.Size = UDim2.new(1, 0, 1, 0)
+        txt.BackgroundTransparency = 1
+        txt.TextColor3 = Color3.fromRGB(255, 255, 255)
+        txt.TextStrokeTransparency = 0.3
+        txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        txt.TextSize = 12
+        txt.Font = Enum.Font.GothamBold
+        txt.TextScaled = false
+        txt.Parent = bill
+        
+        local displayName = plr.DisplayName
+        local username = plr.Name
+        if displayName ~= username then
+            txt.Text = string.format("%s (%s)", displayName, username)
+        else
+            txt.Text = username
+        end
+        
+        espCache[plr] = bill
+        
+        plr.CharacterAdded:Connect(function()
+            task.wait(0.5)
+            if pclEspEnabled then createNickESP(plr) end
+        end)
+    end
 
-		for _, p in ipairs(Players:GetPlayers()) do
-			task.spawn(function() createNickESP(p) end)
-		end
+    local function removeNickESP(plr)
+        if espCache[plr] then
+            espCache[plr]:Destroy()
+            espCache[plr] = nil
+        end
+    end
 
-		Players.PlayerAdded:Connect(function(plr)
-			task.spawn(function() createNickESP(plr) end)
-		end)
+    for _, p in ipairs(Players:GetPlayers()) do
+        task.spawn(function() createNickESP(p) end)
+    end
 
-		Players.PlayerRemoving:Connect(removeNickESP)
+    Players.PlayerAdded:Connect(function(plr)
+        task.spawn(function() createNickESP(plr) end)
+    end)
 
-		Workspace.DescendantAdded:Connect(function(obj)
-			if pclEspEnabled and IsTarget(obj) then AddBoxESP(obj) end
-		end)
+    Players.PlayerRemoving:Connect(removeNickESP)
 
-		pclToggleBtn.MouseButton1Click:Connect(function()
-			pclEspEnabled = not pclEspEnabled
-			pclCheckmark.Visible = pclEspEnabled
-			
-			if pclEspEnabled then
-				for _, obj in ipairs(Workspace:GetDescendants()) do
-					if IsTarget(obj) then AddBoxESP(obj) end
-				end
-				for _, bill in pairs(espCache) do
-					if bill and bill.Parent then bill.Enabled = true end
-				end
-			else
-				RemoveAllBoxes()
-				for _, bill in pairs(espCache) do
-					if bill and bill.Parent then bill.Enabled = false end
-				end
-			end
-		end)
+    Workspace.DescendantAdded:Connect(function(obj)
+        if pclEspEnabled and IsTarget(obj) then AddBoxESP(obj) end
+    end)
 
-		RunService.RenderStepped:Connect(function()
-			if not pclEspEnabled then return end
-			for _, plr in ipairs(Players:GetPlayers()) do
-				local bill = espCache[plr]
-				if not bill or not bill.Parent then
-					task.spawn(function() createNickESP(plr) end)
-					continue
-				end
-				local char = plr.Character
-				local hrp = char and char:FindFirstChild("HumanoidRootPart")
-				local hum = char and char:FindFirstChildOfClass("Humanoid")
-				if bill and hrp and hum and hum.Health > 0 then
-					bill.Adornee = hrp
-					bill.Enabled = true
-				else
-					if bill then bill.Enabled = false end
-				end
-			end
-		end)
-	end
+    pclToggleBtn.MouseButton1Click:Connect(function()
+        pclEspEnabled = not pclEspEnabled
+        pclCheckmark.Visible = pclEspEnabled
+        
+        if pclEspEnabled then
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if IsTarget(obj) then AddBoxESP(obj) end
+            end
+            for _, bill in pairs(espCache) do
+                if bill and bill.Parent then bill.Enabled = true end
+            end
+        else
+            RemoveAllBoxes()
+            for _, bill in pairs(espCache) do
+                if bill and bill.Parent then bill.Enabled = false end
+            end
+        end
+    end)
 
-	-- === Anti Kick ESP ===
-	local antiKickEspBox = Instance.new("Frame")
-	antiKickEspBox.Size = UDim2.new(0, 270, 0, 48)
-	antiKickEspBox.Position = UDim2.new(0, 15, 0, 52 + 48 + 10)
-	antiKickEspBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-	antiKickEspBox.BackgroundTransparency = 0.25
-	antiKickEspBox.ClipsDescendants = true
-	antiKickEspBox.Parent = playerVisualsBox
+    RunService.RenderStepped:Connect(function()
+        if not pclEspEnabled then return end
+        for _, plr in ipairs(Players:GetPlayers()) do
+            local bill = espCache[plr]
+            if not bill or not bill.Parent then
+                task.spawn(function() createNickESP(plr) end)
+                continue
+            end
+            local char = plr.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if bill and hrp and hum and hum.Health > 0 then
+                bill.Adornee = hrp
+                bill.Enabled = true
+            else
+                if bill then bill.Enabled = false end
+            end
+        end
+    end)
+end
 
-	local akEspBoxCorner = Instance.new("UICorner")
-	akEspBoxCorner.CornerRadius = UDim.new(0, 18)
-	akEspBoxCorner.Parent = antiKickEspBox
+-- ============================================================
+-- 2. ANTI KICK ESP
+-- ============================================================
+local pvY = pvStartY + itemHeight + gap
 
-	local akEspBoxStroke = Instance.new("UIStroke")
-	akEspBoxStroke.Color = Color3.fromRGB(180, 180, 180)
-	akEspBoxStroke.Transparency = 0.2
-	akEspBoxStroke.Thickness = 1.0
-	akEspBoxStroke.Parent = antiKickEspBox
+local antiKickEspBox = Instance.new("Frame")
+antiKickEspBox.Size = UDim2.new(0, 270, 0, itemHeight)
+antiKickEspBox.Position = UDim2.new(0, 15, 0, pvY)
+antiKickEspBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+antiKickEspBox.BackgroundTransparency = 0.25
+antiKickEspBox.ClipsDescendants = true
+antiKickEspBox.Parent = playerVisualsBox
 
-	local akEspToggleBtn = Instance.new("TextButton")
-	akEspToggleBtn.Size = UDim2.new(1, -24, 1, -12)
-	akEspToggleBtn.Position = UDim2.new(0, 12, 0, 6)
-	akEspToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-	akEspToggleBtn.BackgroundTransparency = 0.2
-	akEspToggleBtn.Text = ""
-	akEspToggleBtn.AutoButtonColor = false
-	akEspToggleBtn.Parent = antiKickEspBox
+local akEspBoxCorner = Instance.new("UICorner")
+akEspBoxCorner.CornerRadius = UDim.new(0, 18)
+akEspBoxCorner.Parent = antiKickEspBox
 
-	local akEspToggleCorner = Instance.new("UICorner")
-	akEspToggleCorner.CornerRadius = UDim.new(0, 14)
-	akEspToggleCorner.Parent = akEspToggleBtn
+local akEspBoxStroke = Instance.new("UIStroke")
+akEspBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+akEspBoxStroke.Transparency = 0.2
+akEspBoxStroke.Thickness = 1.0
+akEspBoxStroke.Parent = antiKickEspBox
 
-	local akEspToggleStroke = Instance.new("UIStroke")
-	akEspToggleStroke.Color = Color3.fromRGB(180, 180, 180)
-	akEspToggleStroke.Transparency = 0.2
-	akEspToggleStroke.Thickness = 0.8
-	akEspToggleStroke.Parent = akEspToggleBtn
+local akEspToggleBtn = Instance.new("TextButton")
+akEspToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+akEspToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+akEspToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+akEspToggleBtn.BackgroundTransparency = 0.2
+akEspToggleBtn.Text = ""
+akEspToggleBtn.AutoButtonColor = false
+akEspToggleBtn.Parent = antiKickEspBox
 
-	local akEspToggleLabel = Instance.new("TextLabel")
-	akEspToggleLabel.Size = UDim2.new(1, -40, 1, 0)
-	akEspToggleLabel.Position = UDim2.new(0, 12, 0, 0)
-	akEspToggleLabel.BackgroundTransparency = 1
-	akEspToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-	akEspToggleLabel.Text = "Anti Kick ESP"
-	akEspToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-	akEspToggleLabel.TextSize = 12
-	akEspToggleLabel.Font = Enum.Font.GothamBold
-	akEspToggleLabel.Parent = akEspToggleBtn
+local akEspToggleCorner = Instance.new("UICorner")
+akEspToggleCorner.CornerRadius = UDim.new(0, 14)
+akEspToggleCorner.Parent = akEspToggleBtn
 
-	local akEspCheckboxBox = Instance.new("Frame")
-	akEspCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-	akEspCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
-	akEspCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
-	akEspCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-	akEspCheckboxBox.BackgroundTransparency = 0.2
-	akEspCheckboxBox.BorderSizePixel = 0
-	akEspCheckboxBox.Parent = akEspToggleBtn
+local akEspToggleStroke = Instance.new("UIStroke")
+akEspToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+akEspToggleStroke.Transparency = 0.2
+akEspToggleStroke.Thickness = 0.8
+akEspToggleStroke.Parent = akEspToggleBtn
 
-	local akEspCbCorner = Instance.new("UICorner")
-	akEspCbCorner.CornerRadius = UDim.new(0, 6)
-	akEspCbCorner.Parent = akEspCheckboxBox
+local akEspToggleLabel = Instance.new("TextLabel")
+akEspToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+akEspToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+akEspToggleLabel.BackgroundTransparency = 1
+akEspToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+akEspToggleLabel.Text = "Anti Kick ESP"
+akEspToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+akEspToggleLabel.TextSize = 12
+akEspToggleLabel.Font = Enum.Font.GothamBold
+akEspToggleLabel.Parent = akEspToggleBtn
 
-	local akEspCbStroke = Instance.new("UIStroke")
-	akEspCbStroke.Color = Color3.fromRGB(150, 150, 150)
-	akEspCbStroke.Transparency = 0.2
-	akEspCbStroke.Thickness = 1
-	akEspCbStroke.Parent = akEspCheckboxBox
+local akEspCheckboxBox = Instance.new("Frame")
+akEspCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+akEspCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+akEspCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+akEspCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+akEspCheckboxBox.BackgroundTransparency = 0.2
+akEspCheckboxBox.BorderSizePixel = 0
+akEspCheckboxBox.Parent = akEspToggleBtn
 
-	local akEspCheckmark = Instance.new("TextLabel")
-	akEspCheckmark.Size = UDim2.new(1, 0, 1, 0)
-	akEspCheckmark.BackgroundTransparency = 1
-	akEspCheckmark.Text = "✓"
-	akEspCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-	akEspCheckmark.TextSize = 14
-	akEspCheckmark.Font = Enum.Font.GothamBold
-	akEspCheckmark.Visible = false
-	akEspCheckmark.Parent = akEspCheckboxBox
+local akEspCbCorner = Instance.new("UICorner")
+akEspCbCorner.CornerRadius = UDim.new(0, 6)
+akEspCbCorner.Parent = akEspCheckboxBox
 
-	-- Anti Kick ESP логика
-	do
-		local akEspEnabled = false
-		local highlights = {}
-		local watchConn = nil
+local akEspCbStroke = Instance.new("UIStroke")
+akEspCbStroke.Color = Color3.fromRGB(150, 150, 150)
+akEspCbStroke.Transparency = 0.2
+akEspCbStroke.Thickness = 1
+akEspCbStroke.Parent = akEspCheckboxBox
 
-		local function addHighlight(toy)
-			if not toy or not toy.Parent then return end
-			if highlights[toy] then return end
-			
-			local hl = Instance.new("Highlight")
-			hl.Adornee = toy
-			hl.FillColor = Color3.fromRGB(255, 255, 255)
-			hl.FillTransparency = 0.3
-			hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-			hl.OutlineTransparency = 0.2
-			hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-			hl.Parent = toy
-			highlights[toy] = hl
-		end
+local akEspCheckmark = Instance.new("TextLabel")
+akEspCheckmark.Size = UDim2.new(1, 0, 1, 0)
+akEspCheckmark.BackgroundTransparency = 1
+akEspCheckmark.Text = "✓"
+akEspCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+akEspCheckmark.TextSize = 14
+akEspCheckmark.Font = Enum.Font.GothamBold
+akEspCheckmark.Visible = false
+akEspCheckmark.Parent = akEspCheckboxBox
 
-		local function removeAllHighlights()
-			for toy, hl in pairs(highlights) do
-				if hl then hl:Destroy() end
-			end
-			table.clear(highlights)
-		end
+-- Anti Kick ESP логика
+do
+    local akEspEnabled = false
+    local highlights = {}
+    local watchConn = nil
 
-		local function findAllShurikens()
-			local result = {}
-			for _, obj in ipairs(Workspace:GetDescendants()) do
-				if obj.Name == "NinjaShuriken" and obj:IsA("Model") then
-					table.insert(result, obj)
-				end
-			end
-			return result
-		end
+    local function addHighlight(toy)
+        if not toy or not toy.Parent then return end
+        if highlights[toy] then return end
+        
+        local hl = Instance.new("Highlight")
+        hl.Adornee = toy
+        hl.FillColor = Color3.fromRGB(255, 255, 255)
+        hl.FillTransparency = 0.3
+        hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+        hl.OutlineTransparency = 0.2
+        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        hl.Parent = toy
+        highlights[toy] = hl
+    end
 
-		local function applyToAll()
-			removeAllHighlights()
-			local shurikens = findAllShurikens()
-			for _, toy in ipairs(shurikens) do
-				addHighlight(toy)
-			end
-		end
+    local function removeAllHighlights()
+        for toy, hl in pairs(highlights) do
+            if hl then hl:Destroy() end
+        end
+        table.clear(highlights)
+    end
 
-		local function enableESP()
-			applyToAll()
-			
-			if watchConn then watchConn:Disconnect() end
-			watchConn = Workspace.DescendantAdded:Connect(function(obj)
-				if akEspEnabled and obj.Name == "NinjaShuriken" and obj:IsA("Model") then
-					task.wait(0.05)
-					addHighlight(obj)
-				end
-			end)
-		end
+    local function findAllShurikens()
+        local result = {}
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if obj.Name == "NinjaShuriken" and obj:IsA("Model") then
+                table.insert(result, obj)
+            end
+        end
+        return result
+    end
 
-		local function disableESP()
-			removeAllHighlights()
-			if watchConn then
-				watchConn:Disconnect()
-				watchConn = nil
-			end
-		end
+    local function applyToAll()
+        removeAllHighlights()
+        local shurikens = findAllShurikens()
+        for _, toy in ipairs(shurikens) do
+            addHighlight(toy)
+        end
+    end
 
-		akEspToggleBtn.MouseButton1Click:Connect(function()
-			akEspEnabled = not akEspEnabled
-			akEspCheckmark.Visible = akEspEnabled
-			if akEspEnabled then
-				enableESP()
-			else
-				disableESP()
-			end
-		end)
+    local function enableESP()
+        applyToAll()
+        
+        if watchConn then watchConn:Disconnect() end
+        watchConn = Workspace.DescendantAdded:Connect(function(obj)
+            if akEspEnabled and obj.Name == "NinjaShuriken" and obj:IsA("Model") then
+                task.wait(0.05)
+                addHighlight(obj)
+            end
+        end)
+    end
 
-		player.CharacterAdded:Connect(function()
-			if akEspEnabled then
-				task.wait(0.5)
-				applyToAll()
-			end
-		end)
-	end
+    local function disableESP()
+        removeAllHighlights()
+        if watchConn then
+            watchConn:Disconnect()
+            watchConn = nil
+        end
+    end
 
+    akEspToggleBtn.MouseButton1Click:Connect(function()
+        akEspEnabled = not akEspEnabled
+        akEspCheckmark.Visible = akEspEnabled
+        if akEspEnabled then
+            enableESP()
+        else
+            disableESP()
+        end
+    end)
+
+    player.CharacterAdded:Connect(function()
+        if akEspEnabled then
+            task.wait(0.5)
+            applyToAll()
+        end
+    end)
+end
+
+-- ============================================================
+-- 3. SPAWN SAVE POSITION (РАБОТАЕТ КАЖДЫЙ РАЗ)
+-- ============================================================
+pvY = pvY + itemHeight + gap
+
+local spawnSaveBox = Instance.new("Frame")
+spawnSaveBox.Size = UDim2.new(0, 270, 0, itemHeight)
+spawnSaveBox.Position = UDim2.new(0, 15, 0, pvY)
+spawnSaveBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+spawnSaveBox.BackgroundTransparency = 0.25
+spawnSaveBox.ClipsDescendants = true
+spawnSaveBox.Parent = playerVisualsBox
+
+local ssBoxCorner = Instance.new("UICorner")
+ssBoxCorner.CornerRadius = UDim.new(0, 18)
+ssBoxCorner.Parent = spawnSaveBox
+
+local ssBoxStroke = Instance.new("UIStroke")
+ssBoxStroke.Color = Color3.fromRGB(180, 180, 180)
+ssBoxStroke.Transparency = 0.2
+ssBoxStroke.Thickness = 1.0
+ssBoxStroke.Parent = spawnSaveBox
+
+local ssToggleBtn = Instance.new("TextButton")
+ssToggleBtn.Size = UDim2.new(1, -24, 1, -12)
+ssToggleBtn.Position = UDim2.new(0, 12, 0, 6)
+ssToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+ssToggleBtn.BackgroundTransparency = 0.2
+ssToggleBtn.Text = ""
+ssToggleBtn.AutoButtonColor = false
+ssToggleBtn.Parent = spawnSaveBox
+
+local ssToggleCorner = Instance.new("UICorner")
+ssToggleCorner.CornerRadius = UDim.new(0, 14)
+ssToggleCorner.Parent = ssToggleBtn
+
+local ssToggleStroke = Instance.new("UIStroke")
+ssToggleStroke.Color = Color3.fromRGB(180, 180, 180)
+ssToggleStroke.Transparency = 0.2
+ssToggleStroke.Thickness = 0.8
+ssToggleStroke.Parent = ssToggleBtn
+
+local ssToggleLabel = Instance.new("TextLabel")
+ssToggleLabel.Size = UDim2.new(1, -40, 1, 0)
+ssToggleLabel.Position = UDim2.new(0, 12, 0, 0)
+ssToggleLabel.BackgroundTransparency = 1
+ssToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+ssToggleLabel.Text = "Respawn Save Position"
+ssToggleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+ssToggleLabel.TextSize = 12
+ssToggleLabel.Font = Enum.Font.GothamBold
+ssToggleLabel.Parent = ssToggleBtn
+
+local ssCheckboxBox = Instance.new("Frame")
+ssCheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+ssCheckboxBox.AnchorPoint = Vector2.new(1, 0.5)
+ssCheckboxBox.Position = UDim2.new(1, -12, 0.5, 0)
+ssCheckboxBox.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+ssCheckboxBox.BackgroundTransparency = 0.2
+ssCheckboxBox.BorderSizePixel = 0
+ssCheckboxBox.Parent = ssToggleBtn
+
+local ssCbCorner = Instance.new("UICorner")
+ssCbCorner.CornerRadius = UDim.new(0, 6)
+ssCbCorner.Parent = ssCheckboxBox
+
+local ssCbStroke = Instance.new("UIStroke")
+ssCbStroke.Color = Color3.fromRGB(150, 150, 150)
+ssCbStroke.Transparency = 0.2
+ssCbStroke.Thickness = 1
+ssCbStroke.Parent = ssCheckboxBox
+
+local ssCheckmark = Instance.new("TextLabel")
+ssCheckmark.Size = UDim2.new(1, 0, 1, 0)
+ssCheckmark.BackgroundTransparency = 1
+ssCheckmark.Text = "✓"
+ssCheckmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+ssCheckmark.TextSize = 14
+ssCheckmark.Font = Enum.Font.GothamBold
+ssCheckmark.Visible = false
+ssCheckmark.Parent = ssCheckboxBox
+
+-- ЛОГИКА
+do
+    local spawnSaveEnabled = false
+    local savedPos = nil
+    local deathConn = nil
+    local respawnConn = nil
+
+    local function savePosition()
+        local char = LocalPlayer.Character
+        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            savedPos = hrp.CFrame
+        end
+    end
+
+    local function teleportToSavedPosition(newChar)
+        if not spawnSaveEnabled or not savedPos then return end
+        
+        task.wait(0.5)
+        local newHrp = newChar:FindFirstChild("HumanoidRootPart")
+        if newHrp and savedPos then
+            newHrp.CFrame = savedPos
+            newHrp.AssemblyLinearVelocity = Vector3.zero
+            newHrp.AssemblyAngularVelocity = Vector3.zero
+            
+            task.wait(0.1)
+            savePosition()
+        end
+    end
+
+    local function setupTracking()
+        if respawnConn then respawnConn:Disconnect() end
+        
+        respawnConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
+            if spawnSaveEnabled then
+                teleportToSavedPosition(newChar)
+                
+                local hum = newChar:WaitForChild("Humanoid", 5)
+                if hum then
+                    if deathConn then deathConn:Disconnect() end
+                    deathConn = hum.Died:Connect(function()
+                        if spawnSaveEnabled then
+                            savePosition()
+                        end
+                    end)
+                end
+            end
+        end)
+        
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            if deathConn then deathConn:Disconnect() end
+            deathConn = hum.Died:Connect(function()
+                if spawnSaveEnabled then
+                    savePosition()
+                end
+            end)
+        end
+    end
+
+    ssToggleBtn.MouseButton1Click:Connect(function()
+        spawnSaveEnabled = not spawnSaveEnabled
+        ssCheckmark.Visible = spawnSaveEnabled
+        
+        if spawnSaveEnabled then
+            savePosition()
+            setupTracking()
+        else
+            if deathConn then
+                deathConn:Disconnect()
+                deathConn = nil
+            end
+            if respawnConn then
+                respawnConn:Disconnect()
+                respawnConn = nil
+            end
+            savedPos = nil
+        end
+    end)
+end
+
+-- ВЫСОТА ФРЕЙМА (3 айтема + 3 гапа)
+local pvHeight = pvStartY + (3 * itemHeight) + (3 * gap)
+playerVisualsBox.Size = UDim2.new(0, 300, 0, pvHeight)
 -- ============================================================
 -- ГРУППА: SHADERS (ВСЕ ЭФФЕКТЫ РАБОТАЮТ)
 -- ============================================================
