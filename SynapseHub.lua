@@ -10759,7 +10759,7 @@ local shHeight = shCurrentY + gap
 shadersBox.Size = UDim2.new(0, 280, 0, shHeight)
 
 local currentCanvas = mainContentArea.CanvasSize.Y.Offset
-mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 10)
+mainContentArea.CanvasSize = UDim2.new(0, 0, 0, currentCanvas + shHeight + gap + 20)
 end
 
 -- ============================================================================
