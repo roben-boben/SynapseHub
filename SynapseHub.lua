@@ -9568,55 +9568,258 @@ pclCheckmark.Font = Enum.Font.GothamBold
 pclCheckmark.Visible = false
 pclCheckmark.Parent = pclCheckboxBox
 
--- PCLD ESP логика
+-- ============================================================
+-- PCLD ESP (ОПТИМИЗИРОВАННАЯ ВЕРСИЯ БЕЗ ЛАГОВ)
+-- ============================================================
 do
     local pclEspEnabled = false
     local espBoxes = {}
     local espCache = {}
-    local targetNames = {"partesp", "playercharacterlocationdetector"}
-
-    local function IsTarget(obj)
+    local scanTask = nil
+    local cleanupTask = nil
+    
+    -- КЭШ ДЛЯ БЫСТРОГО ДОСТУПА
+    local validObjectsCache = {}
+    local cacheTime = 0
+    local CACHE_DURATION = 0.3 -- Обновляем раз в 0.3 секунды
+    
+    -- РАСШИРЕННЫЙ СПИСОК ИМЕН
+    local targetNames = {
+        "partesp",
+        "playercharacterlocationdetector",
+        "pcld",
+        "locationdetector",
+        "playerdetector",
+        "characterdetector",
+        "detector",
+        "esp",
+        "posdetector",
+        "cl_detector",
+        "clientlocation",
+        "playerpos",
+        "location",
+        "position"
+    }
+    
+    -- СОЗДАЕМ SET ДЛЯ БЫСТРОГО ПОИСКА
+    local targetSet = {}
+    for _, name in ipairs(targetNames) do
+        targetSet[string.lower(name)] = true
+    end
+    
+    -- БЫСТРАЯ ПРОВЕРКА (БЕЗ ПЕРЕБОРА)
+    local function IsTargetFast(obj)
         if not obj:IsA("BasePart") then return false end
-        for _, name in ipairs(targetNames) do
-            if string.lower(obj.Name) == string.lower(name) then
+        return targetSet[string.lower(obj.Name)] ~= nil
+    end
+    
+    -- РАСШИРЕННАЯ ПРОВЕРКА (ДЛЯ НЕСТАНДАРТНЫХ ИМЕН)
+    local function IsTargetExtended(obj)
+        if not obj:IsA("BasePart") then return false end
+        
+        local nameLower = string.lower(obj.Name)
+        
+        -- ПРОВЕРЯЕМ ПО ШАБЛОНАМ
+        for _, pattern in ipairs(targetNames) do
+            if nameLower:find(pattern) then
                 return true
             end
         end
+        
+        -- ПРОВЕРЯЕМ РОДИТЕЛЯ
+        local parent = obj.Parent
+        if parent then
+            local parentNameLower = string.lower(parent.Name)
+            for _, pattern in ipairs(targetNames) do
+                if parentNameLower:find(pattern) then
+                    return true
+                end
+            end
+        end
+        
         return false
     end
-
-    local function AddBoxESP(obj)
+    
+    -- ОПТИМИЗИРОВАННЫЙ ПОИСК (С КЭШИРОВАНИЕМ)
+    local function FindAllTargets()
+        local currentTime = tick()
+        
+        -- ИСПОЛЬЗУЕМ КЭШ, ЕСЛИ ОН СВЕЖИЙ
+        if currentTime - cacheTime < CACHE_DURATION then
+            return validObjectsCache
+        end
+        
+        cacheTime = currentTime
+        validObjectsCache = {}
+        
+        -- ИСПОЛЬЗУЕМ ЛОКАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ СКОРОСТИ
+        local workspace = Workspace
+        local found = validObjectsCache
+        local isTargetFast = IsTargetFast
+        local isTargetExtended = IsTargetExtended
+        
+        -- СНАЧАЛА БЫСТРЫЙ ПОИСК
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if isTargetFast(obj) then
+                table.insert(found, obj)
+            end
+        end
+        
+        -- ЕСЛИ МАЛО НАШЛИ - ДЕЛАЕМ РАСШИРЕННЫЙ ПОИСК
+        if #found < 3 then
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if isTargetExtended(obj) then
+                    table.insert(found, obj)
+                end
+            end
+        end
+        
+        return found
+    end
+    
+    -- ОПТИМИЗИРОВАННОЕ ДОБАВЛЕНИЕ ESP
+    local function AddESP(obj)
         if espBoxes[obj] then return end
+        
+        -- ПРОВЕРЯЕМ ВАЛИДНОСТЬ
+        if not obj or not obj.Parent then return end
+        
+        -- СОЗДАЕМ ESP ТОЛЬКО ЕСЛИ ОБЪЕКТ ВИДИМ
         local box = Instance.new("BoxHandleAdornment")
         box.Adornee = obj
         box.AlwaysOnTop = true
         box.ZIndex = 5
-        box.Color3 = Color3.fromRGB(255, 255, 255)
-        box.Transparency = 0.7
+        box.Color3 = Color3.fromRGB(255, 50, 50) -- КРАСНЫЙ
+        box.Transparency = 0.3
         box.Size = obj.Size
+        
+        -- ЕСЛИ РАЗМЕР СЛИШКОМ МАЛЕНЬКИЙ
+        if box.Size.Magnitude < 0.5 then
+            box.Size = Vector3.new(1, 1, 1)
+        end
+        
         box.Parent = player.PlayerGui
         espBoxes[obj] = box
-        obj.AncestryChanged:Connect(function(_, parent)
+        
+        -- АВТОМАТИЧЕСКОЕ УДАЛЕНИЕ ПРИ УНИЧТОЖЕНИИ ОБЪЕКТА
+        local connection
+        connection = obj.AncestryChanged:Connect(function(_, parent)
             if not parent and espBoxes[obj] then
-                espBoxes[obj]:Destroy()
+                pcall(function() espBoxes[obj]:Destroy() end)
                 espBoxes[obj] = nil
+                connection:Disconnect()
             end
         end)
+        
+        return box
     end
-
-    local function RemoveAllBoxes()
+    
+    -- УДАЛЯЕМ ВСЕ ESP
+    local function ClearAllESP()
         for obj, box in pairs(espBoxes) do
-            if box then box:Destroy() end
+            if box then 
+                pcall(function() box:Destroy() end)
+            end
         end
         espBoxes = {}
+        validObjectsCache = {}
     end
-
+    
+    -- ОСНОВНОЙ ЦИКЛ С ОПТИМИЗАЦИЕЙ
+    local function ESPLoop()
+        local lastCleanup = 0
+        
+        while pclEspEnabled do
+            -- ПОЛУЧАЕМ ОБЪЕКТЫ ИЗ КЭША
+            local targets = FindAllTargets()
+            
+            -- ДОБАВЛЯЕМ ТОЛЬКО НОВЫЕ (ПАКЕТАМИ)
+            local addedCount = 0
+            local batchSize = 5
+            
+            for _, obj in ipairs(targets) do
+                if not espBoxes[obj] then
+                    AddESP(obj)
+                    addedCount = addedCount + 1
+                    
+                    -- ДАЕМ ПЕРЕДЫШКУ ПРИ БОЛЬШОЙ ЗАГРУЗКЕ
+                    if addedCount >= batchSize then
+                        task.wait(0.01)
+                        addedCount = 0
+                    end
+                end
+            end
+            
+            -- ОЧИЩАЕМ УСТАРЕВШИЕ (РАЗ В СЕКУНДУ)
+            if tick() - lastCleanup > 1 then
+                lastCleanup = tick()
+                
+                local toRemove = {}
+                for obj, box in pairs(espBoxes) do
+                    if not obj or not obj.Parent then
+                        table.insert(toRemove, obj)
+                    end
+                end
+                
+                for _, obj in ipairs(toRemove) do
+                    if espBoxes[obj] then
+                        pcall(function() espBoxes[obj]:Destroy() end)
+                        espBoxes[obj] = nil
+                    end
+                end
+            end
+            
+            -- ЖДЕМ ПЕРЕД СЛЕДУЮЩИМ СКАНОМ
+            task.wait(0.05)
+        end
+    end
+    
+    -- ЗАПУСК ESP
+    local function StartESP()
+        ClearAllESP()
+        validObjectsCache = {}
+        cacheTime = 0
+        
+        -- ЗАПУСКАЕМ ОСНОВНОЙ ЦИКЛ В ФОНЕ
+        if scanTask then
+            task.cancel(scanTask)
+        end
+        scanTask = task.spawn(ESPLoop)
+        
+        -- ВКЛЮЧАЕМ NICK ESP (ЕСЛИ ЕСТЬ)
+        for _, bill in pairs(espCache) do
+            if bill and bill.Parent then 
+                bill.Enabled = true 
+            end
+        end
+    end
+    
+    -- ОСТАНОВКА ESP
+    local function StopESP()
+        pclEspEnabled = false
+        if scanTask then
+            task.cancel(scanTask)
+            scanTask = nil
+        end
+        ClearAllESP()
+        
+        for _, bill in pairs(espCache) do
+            if bill and bill.Parent then 
+                bill.Enabled = false 
+            end
+        end
+    end
+    
+    -- ============================================================
+    -- NICKNAME ESP (СОХРАНЯЕМ ИЗ ТВОЕГО КОДА)
+    -- ============================================================
     local function createNickESP(plr)
         local char = plr.Character
         if not char then char = plr.CharacterAdded:Wait() end
         local hrp = char:WaitForChild("HumanoidRootPart", 5)
         if not hrp then return end
         
+        -- УДАЛЯЕМ СТАРЫЙ
         local old = hrp:FindFirstChild("PCLD_NickESP")
         if old then old:Destroy() end
         
@@ -9641,6 +9844,7 @@ do
         txt.TextScaled = false
         txt.Parent = bill
         
+        -- ОТОБРАЖАЕМ ИМЯ
         local displayName = plr.DisplayName
         local username = plr.Name
         if displayName ~= username then
@@ -9651,68 +9855,127 @@ do
         
         espCache[plr] = bill
         
+        -- ПРИ ПЕРЕРОЖДЕНИИ
         plr.CharacterAdded:Connect(function()
             task.wait(0.5)
-            if pclEspEnabled then createNickESP(plr) end
+            if pclEspEnabled then 
+                createNickESP(plr) 
+            end
         end)
+        
+        return bill
     end
-
+    
+    -- УДАЛЕНИЕ NICK ESP
     local function removeNickESP(plr)
         if espCache[plr] then
-            espCache[plr]:Destroy()
+            pcall(function() espCache[plr]:Destroy() end)
             espCache[plr] = nil
         end
     end
-
+    
+    -- ============================================================
+    -- ИНИЦИАЛИЗАЦИЯ ДЛЯ ВСЕХ ИГРОКОВ
+    -- ============================================================
     for _, p in ipairs(Players:GetPlayers()) do
-        task.spawn(function() createNickESP(p) end)
+        task.spawn(function() 
+            if p ~= player then
+                createNickESP(p) 
+            end
+        end)
     end
-
+    
     Players.PlayerAdded:Connect(function(plr)
         task.spawn(function() createNickESP(plr) end)
     end)
-
+    
     Players.PlayerRemoving:Connect(removeNickESP)
-
+    
+    -- ============================================================
+    -- ОБРАБОТЧИК НОВЫХ ОБЪЕКТОВ
+    -- ============================================================
     Workspace.DescendantAdded:Connect(function(obj)
-        if pclEspEnabled and IsTarget(obj) then AddBoxESP(obj) end
+        if not pclEspEnabled then return end
+        
+        -- ПРОВЕРЯЕМ БЫСТРО
+        if IsTargetFast(obj) then
+            -- ДАЕМ ВРЕМЯ НА ИНИЦИАЛИЗАЦИЮ
+            task.wait(0.05)
+            if obj and obj.Parent then
+                AddESP(obj)
+            end
+        end
     end)
-
+    
+    -- ============================================================
+    -- ОБНОВЛЕНИЕ NICK ESP В РЕАЛЬНОМ ВРЕМЕНИ (ОПТИМИЗИРОВАННО)
+    -- ============================================================
+    local nickUpdateTask = nil
+    
+    local function StartNickUpdate()
+        if nickUpdateTask then
+            task.cancel(nickUpdateTask)
+        end
+        
+        nickUpdateTask = task.spawn(function()
+            while pclEspEnabled do
+                task.wait(0.5) -- ОБНОВЛЯЕМ РАЗ В ПОЛСЕКУНДЫ
+                
+                for _, plr in ipairs(Players:GetPlayers()) do
+                    if plr ~= player then
+                        local bill = espCache[plr]
+                        if not bill or not bill.Parent then
+                            -- ПЕРЕСОЗДАЕМ, ЕСЛИ ПРОПАЛ
+                            task.spawn(function() createNickESP(plr) end)
+                            continue
+                        end
+                        
+                        local char = plr.Character
+                        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                        local hum = char and char:FindFirstChildOfClass("Humanoid")
+                        
+                        if bill and hrp and hum and hum.Health > 0 then
+                            bill.Adornee = hrp
+                            bill.Enabled = true
+                        else
+                            if bill then bill.Enabled = false end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    -- ============================================================
+    -- ПОДКЛЮЧЕНИЕ КНОПКИ (МГНОВЕННОЕ)
+    -- ============================================================
     pclToggleBtn.MouseButton1Click:Connect(function()
         pclEspEnabled = not pclEspEnabled
         pclCheckmark.Visible = pclEspEnabled
         
         if pclEspEnabled then
-            for _, obj in ipairs(Workspace:GetDescendants()) do
-                if IsTarget(obj) then AddBoxESP(obj) end
-            end
-            for _, bill in pairs(espCache) do
-                if bill and bill.Parent then bill.Enabled = true end
-            end
+            StartESP()
+            StartNickUpdate()
         else
-            RemoveAllBoxes()
-            for _, bill in pairs(espCache) do
-                if bill and bill.Parent then bill.Enabled = false end
+            StopESP()
+            if nickUpdateTask then
+                task.cancel(nickUpdateTask)
+                nickUpdateTask = nil
             end
         end
     end)
-
-    RunService.RenderStepped:Connect(function()
-        if not pclEspEnabled then return end
-        for _, plr in ipairs(Players:GetPlayers()) do
-            local bill = espCache[plr]
-            if not bill or not bill.Parent then
-                task.spawn(function() createNickESP(plr) end)
-                continue
-            end
-            local char = plr.Character
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
-            if bill and hrp and hum and hum.Health > 0 then
-                bill.Adornee = hrp
-                bill.Enabled = true
-            else
-                if bill then bill.Enabled = false end
+    
+    -- ============================================================
+    -- ОЧИСТКА ПРИ ВЫКЛЮЧЕНИИ GUI
+    -- ============================================================
+    player.CharacterAdded:Connect(function()
+        if pclEspEnabled then
+            task.wait(0.5)
+            -- ПЕРЕСОЗДАЕМ ESP ДЛЯ НОВОГО ПЕРСОНАЖА
+            for _, p in ipairs(Players:GetPlayers()) do
+                if p ~= player then
+                    task.spawn(function() createNickESP(p) end)
+                end
             end
         end
     end)
